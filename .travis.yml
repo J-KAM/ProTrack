@@ -9,13 +9,25 @@ services:
 install:
   - pip install -r requirements.txt
 
+before_script:
+  - docker-compose up --build -d
+
 script:
   - python tests.py
 
+after_script:
+  - docker-compose down
+
+env:
+  - DOCKER_COMPOSE_VERSION = 1.4.2
+
 before_install:
   - docker --version
-  #- docker build -t $DOCKER_USERNAME/protrack:latest .
-  - docker-compose up
+  - docker build -t $DOCKER_USERNAME/protrack:latest .
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
   - docker images
 
 after_success:
