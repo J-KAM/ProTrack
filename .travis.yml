@@ -1,0 +1,27 @@
+sudo: required
+langauge: python
+python:
+  - '3.5'
+
+services:
+  - docker
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  - python tests.py
+
+before_install:
+  - docker --version
+  - docker build -t $DOCKER_USERNAME/protrack:latest .
+  - docker images
+
+after_success:
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+  - docker push $DOCKER_USERNAME/protrack:latest
+
+branches:
+  only:
+  - master
+  - development
