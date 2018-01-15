@@ -7,15 +7,27 @@ services:
   - docker
 
 install:
-  - pip install -r requirements.txt
+  - sudo pip install -r requirements.txt
+
+before_script:
+  - docker-compose up --build -d
 
 script:
   - python tests.py
+
+after_script:
+  - docker-compose down
+
+env:
+  - DOCKER_COMPOSE_VERSION = 1.4.2
 
 before_install:
   - docker --version
   - docker build -t $DOCKER_USERNAME/protrack:latest .
   - docker images
+  - curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > ./docker-compose
+  - sudo mv ./docker-compose /usr/bin/docker-compose
+  - sudo chmod +x /usr/bin/docker-compose
 
 after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
@@ -25,3 +37,4 @@ branches:
   only:
   - master
   - development
+  - Project_init
