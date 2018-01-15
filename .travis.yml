@@ -14,7 +14,8 @@ script:
 
 before_install:
   - docker --version
-  - docker build -t $DOCKER_USERNAME/protrack:latest .
+  #- docker build -t $DOCKER_USERNAME/protrack:latest .
+  - docker-compose up
   - docker images
 
 after_success:
@@ -25,3 +26,4 @@ branches:
   only:
   - master
   - development
+  - Project_init
