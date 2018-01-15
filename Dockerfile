@@ -1,10 +1,6 @@
 FROM python:3
 ENV PYTHONUNBUFFERED 1
-RUN apk add --update \
-    python \
-    python-dev \
-    py-pip \
-    build-base
+RUN apt-get update -yq && apt-get install -yqq python
 RUN pip install --upgrade pip
 RUN mkdir /code
 WORKDIR /code
