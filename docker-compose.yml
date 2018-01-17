@@ -3,10 +3,12 @@ version: '3'
 services:
   db:
     image: postgres
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
   web:
 #    build: .
     image: jkam/protrack:latest
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
