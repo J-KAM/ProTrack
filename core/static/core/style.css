@@ -1,0 +1,100 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #2E3740;
+  color: #435160;
+  font-family: "Open Sans", sans-serif;
+}
+
+h2 {
+  color: #6D7781;
+  font-family: "Sofia", cursive;
+  #font-size: 15px;
+  font-weight: bold;
+  font-size: 3.0em;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+a {
+  color: #435160;
+  text-decoration: none;
+}
+
+.login {
+  width: 350px;
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  margin-left: -175px;
+}
+
+input[type="text"], input[type="password"], input[type="email"] {
+  height: 20px;
+  width: 350px;
+  padding: 20px 0px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #435160;
+  outline: none;
+  color: #6D7781;
+  font-size: 16px;
+}
+
+ form.field.label_tag{
+  display: block;
+  position: absolute;
+  margin-right: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  content: "";
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  border: 3px solid #435160;
+}
+
+
+button[type="submit"] {
+  background: #1FCE6D;
+  margin-top: 10px;
+  border: 0;
+  width: 350px;
+  height: 40px;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+button[type="submit"]:hover {
+  background: #16aa56;
+  animation-name: shake;
+}
+
+
+::-webkit-input-placeholder {
+  color: #435160;
+  font-size: 12px;
+}
+
+.animated {
+  animation-fill-mode: both;
+  animation-duration: 1s;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-10px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(10px);
+  }
+}
