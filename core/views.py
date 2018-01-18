@@ -29,7 +29,9 @@ class UserFormView(View):
             user.save()
 
             if user is not None:
-                return redirect('core:registration')
+                return redirect('core:sign_in')
+
+        return render(request, 'core/registration_form.html', {'form': form})
 
 
 class SignInFormView(View):

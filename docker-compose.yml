@@ -3,8 +3,15 @@ version: '3'
 services:
   db:
     image: postgres
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+#    ports:
+#      - "5432:5432"
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      #- ./postgres-data:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
   web:
 #    build: .
     image: jkam/protrack:latest
@@ -15,3 +22,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
+
+volumes:
+  database:
