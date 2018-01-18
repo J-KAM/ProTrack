@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <title>Sign in</title>
     {% load staticfiles %}
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
     <link href="{% static 'core/style.css' %}" rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Sofia' rel='stylesheet' type='text/css'>
-
 </head>
 <body>
 
 <div align="right">
     <label>New to ProTrack?</label>
-    <a href = "{% url 'core:registration' %}" class="animated btn btn-success">Sign up</a>
+    <a href = "{% url 'core:registration' %}" class="btn-link">Sign up</a>
 </div>
 <h2>Sign in</h2>
 <div class="login">

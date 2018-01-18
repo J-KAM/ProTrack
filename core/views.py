@@ -54,3 +54,7 @@ class SignInFormView(View):
                 return render(request, 'core/home_page.html', None)
 
         return render(request, self.template_name, {'form':form, 'error_message': 'Invalid username and/or password. Please try again.'})
+
+
+def home(request):
+    return render(request, "core/home_page.html")

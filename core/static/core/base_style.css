@@ -1,0 +1,13 @@
+body {
+    background: white url("images/sypmhony.png");
+}
+
+.navbar-brand {
+    font-family: 'Sofia', cursive;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.navbar {
+    border-radius: 0;
+}
