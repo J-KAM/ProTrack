@@ -63,15 +63,4 @@ class ProfileForm(forms.ModelForm):
         model = User
         fields = ['first_name', 'last_name', 'email']
 
-    # def clean_email(self):
-    #     print('aaa')
-    #     email = self.cleaned_data['email']
-    #
-    #
-    #     if User.objects.filter(email=email):
-    #         # if the email exists, then raise an error message
-    #         raise forms.ValidationError(
-    #             self.error_messages['duplicate_email'],
-    #             code='duplicate_email',  # set the error message key
-    #             )
-    #         return email
+

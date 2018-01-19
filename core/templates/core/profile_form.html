@@ -3,6 +3,9 @@
 {% block title %}Welcome to ProTrack{% endblock %}
 
 {% block body %}
+<div class="right">
+        <a href="{% url 'core:change_password' %}" class="btn btn-default">Change password</a>
+</div>
 <h2>Profile update</h2>
 <div class="login">
   <form method="post">
