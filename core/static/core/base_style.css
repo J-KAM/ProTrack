@@ -11,3 +11,7 @@ body {
 .navbar {
     border-radius: 0;
 }
+
+.error {
+  color: red;
+}
