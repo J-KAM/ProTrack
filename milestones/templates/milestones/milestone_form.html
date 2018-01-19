@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Milestones{% endblock %}
+
+{% block body %}
+
+<script>
+$(document).ready(function() {
+    $('.datepicker').datepicker();
+});
+</script>
+
+    <div class = "container-fluid">
+
+        <div class = "row">
+            <div class = "col-md-6 col-md-7">
+                <div class = "panel-body">
+                    <h2>New milestone</h2>
+                    <form method="post" class = "form-horizontal">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class = "form-group">
+                                <label class = "control-label col-sm-2">{{ field.label_tag }}</label>
+                                <div class = "col-sm-10"> {{ field }}</div>
+                            </div>
+                        {% endfor %}
+                        <div class = "form-group">
+                            <div class = "col-sm-12 col-md-7">
+                               <button type="submit" class = "btn btn-success">Submit milestone</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            </div>
+
+    </div>
+
+{% endblock %}

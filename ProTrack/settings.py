@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
+    'milestones.apps.MilestonesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,7 +83,8 @@ DATABASES = {
         'NAME': 'pro_track_db',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'db',
+        #'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': 5432,
     }
 }
