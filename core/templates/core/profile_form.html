@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Profile update{% endblock %}
+
+{% block body %}
+<div class="right">
+        <a href="{% url 'core:change_password' %}" class="btn btn-default">Change password</a>
+</div>
+<h2>Profile update</h2>
+
+<div>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="inlineDivs">
+       <img src="{{ user.profile.profile_picture.url }}" class="profileImage">
+
+      {% for field in profile_form %}
+      <p>
+          {{ field.label_tag }}
+          {{ field }}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+      {% endfor %}
+    </div>
+  <div class="inlineDivs">
+    {% for field in user_form %}
+      <p>
+        {{ field.label_tag }}
+          {{ field }}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+    {% endfor %}
+    <div class="error">
+      {{ error_message }}
+    </div>
+   <button type="submit">Update profile</button>
+  </div>
+
+  </form>
+</div>
+{% endblock %}
