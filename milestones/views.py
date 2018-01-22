@@ -31,8 +31,6 @@ class MilestoneFormView(View):
 
         if form.is_valid():
             milestone = form.save(commit=False)
-            milestone.total_progress = 0
-            milestone.total_time_spent = 0.0
             milestone.save()
             return redirect('milestones:preview')
 
