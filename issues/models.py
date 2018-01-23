@@ -34,7 +34,7 @@ TYPE_CHOICES = (
 )
 
 STATUS_CHOICES = (
-    ('New', 'New'),
+    ('Open', 'Open'),
     ('In progress', 'In progress'),
     ('Done', 'Done'),
     ('Closed', 'Closed'),
@@ -62,3 +62,6 @@ class Issue(models.Model):
 
     def __str__(self):
         return self.title
+
+    def progress_in_numbers(self):
+        return self.progress.split('%')[0]
