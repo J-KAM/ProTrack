@@ -17,6 +17,12 @@ class preview(generic.ListView):
     def get_queryset(self):
         return Milestone.objects.all()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['open_milestones'] = context['all_milestones'].filter(status="OPEN")
+        context['closed_milestones'] = context['all_milestones'].filter(status="CLOSED")
+        return context
+
 
 class MilestoneFormView(View):
     form_class = MilestoneForm

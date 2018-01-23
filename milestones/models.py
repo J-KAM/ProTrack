@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 
 class Milestone(models.Model):
@@ -13,3 +14,9 @@ class Milestone(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_past_due(self):
+        if self.status != 'OPEN':
+            return False
+        return date.today() > self.due_date

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>{% block title %} ProTrack {% endblock %}</title>
 
+
     {% load staticfiles %}
     <link href="{% static 'core/base_style.css' %}" rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -15,8 +16,7 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
     <!--<script src="http://code.jquery.com/jquery-1.9.1.js"></script>-->
     <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-
-    {% block dependencies %}{% endblock %}
+    {% block extra_css %} {% endblock %}
 
 </head>
 <body>
