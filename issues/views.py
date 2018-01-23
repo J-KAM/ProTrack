@@ -1,6 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 # Create your views here.
+from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
 
@@ -30,10 +32,12 @@ class IssueFormView(CreateView):
 
 
     #display blank form
+    @method_decorator(login_required)
     def get(self, request):
         form = self.form_class(None)
         return render(request, self.template_name, {'form': form, 'action': 'New'})
 
+    @method_decorator(login_required)
     def post(self, request):
         form = self.form_class(request.POST)
 
@@ -54,16 +58,14 @@ class IssueUpdate(UpdateView):
     form_class = IssueForm
     model = Issue
     template_name = 'issues/issue_form.html'
-    #
-    # def get_object(self, queryset=None):
-    #     obj = Issue.objects.get(id=self.kwargs['id'])
-    #     return obj
 
+    @method_decorator(login_required)
     def get(self, request, **kwargs):
         self.object = Issue.objects.get(id=self.kwargs['id'])
         form = self.get_form(self.form_class)
         return render(request, self.template_name, {'form': form, 'object': self.object, 'action': 'Edit'})
 
+    @method_decorator(login_required)
     def post(self, request, **kwargs):
         issue = Issue.objects.get(id=self.kwargs['id'])
         form = self.form_class(request.POST, instance=issue)
@@ -81,3 +83,19 @@ class IssueUpdate(UpdateView):
                 return redirect('issues:preview')
 
         return render(request, 'issues/issue_form.html', {'form': form, 'action': 'Edit'})
+
+@login_required
+def close_issue(request, **kwargs):
+    issue = Issue.objects.get(id=kwargs['id'])
+    issue.status = 'Closed'
+    issue.save()
+
+    return redirect('issues:preview')
+
+@login_required
+def reopen_issue(request, **kwargs):
+    issue = Issue.objects.get(id=kwargs['id'])
+    issue.status = 'Open'
+    issue.save()
+
+    return redirect('issues:preview')
