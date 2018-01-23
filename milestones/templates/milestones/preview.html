@@ -1,0 +1,52 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Milestones{% endblock %}
+{% block extra_css %}
+    {% load staticfiles %}
+    <link href="{% static 'milestones/style.css' %}" rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block body %}
+
+ <div class="panel panel-success panel-list">
+
+        <div class="panel-heading">
+            <ul class = "nav nav-pills" id = "milestoneTab">
+                <li class = "active"><a data-toggle ="tab" href = "#open">Open <span class = "badge">{{open_milestones.count}}</span></a></li>
+                <li><a data-toggle ="tab" href = "#closed">Closed <span class = "badge">{{closed_milestones.count}}</span></a></li>
+                <li><a data-toggle ="tab" href = "#all">All <span class = "badge">{{all_milestones.count}}</span></a></li>
+            </ul>
+        </div>
+
+        <div class="panel-body">
+            <div id = "content" class = "tab-content">
+
+                <div class = "tab-pane active" id = "open">
+                    {% with open_milestones as milestones %}
+                    {% include 'milestones/milestone_table.html' %}
+                    {% endwith %}
+                </div>
+
+
+                <div class = "tab-pane" id="closed">
+                     {% with closed_milestones as milestones %}
+                    {% include 'milestones/milestone_table.html' %}
+                    {% endwith %}
+                </div>
+
+                <div class = "tab-pane" id="all">
+                    {% with all_milestones as milestones %}
+                    {% include 'milestones/milestone_table.html' %}
+                    {% endwith %}
+                </div>
+
+            </div>
+        </div>
+
+ </div>
+
+
+
+
+
+{% endblock %}
