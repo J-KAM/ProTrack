@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ action }} issue{% endblock %}
+
+{% block body %}
+
+    <div class="panel panel-success milestone-panel">
+    <div class="panel-heading">
+        <h1 class="panel-title panel-h1">{{ action }} issue</h1>
+    </div>
+    <div class="panel-body milestone-form">
+       <form method="post" class = "form-horizontal">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            {% if field.html_name == 'description'%}
+                                 <div class = "form-group col-lg-11">
+                                <label  class = "control-label  col-sm-2">{{ field.label_tag }}</label>
+
+                                {%  else %}
+                                <div class = "form-group col-lg-6">
+                                <label  class = "control-label">{{ field.label_tag }}</label>
+
+                            {% endif %}
+
+                                {{ field }}
+                                {% for error in field.errors %}
+                                    <div ><p style="color: red">{{ error }}</p></div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        <div class = "form-group">
+                            <div class = "col-sm-12 col-md-12" align="right">
+                                <hr>
+                                {% if action == 'New' %}
+                                    <button type="submit" class = "btn btn-success">Submit issue</button>
+                                    {% else %}
+                                    <button type="submit" class = "btn btn-success">Save changes</button>
+
+                                {% endif %}
+                                <a href = "{% url 'issues:preview' %}" class="btn btn-info" role="button">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+    </div>
+</div>
+
+{% endblock %}
