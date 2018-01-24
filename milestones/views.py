@@ -1,16 +1,14 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import generic
-from django.views.generic import View
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Milestone
 from .forms import MilestoneForm
 
 
-# def preview(request):
-#     return render(request, 'core/home_page.html')
-
-
-class preview(generic.ListView):
+class MilestonesPreview(generic.ListView):
     template_name = 'milestones/preview.html'
     context_object_name = 'all_milestones'
 
@@ -24,14 +22,16 @@ class preview(generic.ListView):
         return context
 
 
-class MilestoneFormView(View):
+class MilestoneFormView(CreateView):
     form_class = MilestoneForm
     template_name = 'milestones/milestone_form.html'
 
+    @method_decorator(login_required)
     def get(self, request):
         form = self.form_class(None)
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'action': 'New'})
 
+    @method_decorator(login_required)
     def post(self, request):
         form = self.form_class(request.POST)
 
@@ -40,9 +40,54 @@ class MilestoneFormView(View):
             milestone.save()
             return redirect('milestones:preview')
 
-        return render(request, 'milestones/milestone_form.html', {'form': form})
+        return render(request, 'milestones/milestone_form.html', {'form': form, 'action': 'New'})
 
 
-class MilestoneCreate(CreateView):
+class MilestoneUpdate(UpdateView):
+    form_class = MilestoneForm
+    template_name = 'milestones/milestone_form.html'
+
+    @method_decorator(login_required)
+    def get(self, request, **kwargs):
+        self.object = Milestone.objects.get(id=self.kwargs['id'])
+        form = self.get_form(self.form_class)
+        form.fields['start_date'].disabled = True
+        return render(request, self.template_name, {'form': form, 'object': self.object, 'action': 'Edit'})
+
+    @method_decorator(login_required)
+    def post(self, request, **kwargs):
+        milestone = Milestone.objects.get(id=self.kwargs['id'])
+        form = self.form_class(request.POST, instance=milestone)
+        form.fields['start_date'].disabled = True
+
+        if form.is_valid():
+            milestone.save()
+
+            if milestone is not None:
+                return redirect('milestones:preview')
+
+        return render(request, 'milestones/milestone_form.html', {'form': form, 'object':milestone, 'action': 'Edit'})
+
+
+@method_decorator(login_required, name='dispatch')
+class MilestoneDelete(DeleteView):
     model = Milestone
-    fields = ['name', 'description', 'start_date', 'due_date']
+    success_url = reverse_lazy('milestones:preview')
+
+
+@login_required
+def close_milestone(request, **kwargs):
+    milestone = Milestone.objects.get(id=kwargs['id'])
+    milestone.status = 'CLOSED'
+    milestone.save()
+
+    return redirect('milestones:preview')
+
+
+@login_required
+def reopen_milestone(request, **kwargs):
+    milestone = Milestone.objects.get(id=kwargs['id'])
+    milestone.status = 'OPEN'
+    milestone.save()
+
+    return redirect('milestones:preview')

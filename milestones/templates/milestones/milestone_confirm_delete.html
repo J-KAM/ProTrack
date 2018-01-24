@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block body %}
+
+  <div class="panel panel-success milestone-panel">
+        <div class="panel-heading">
+            <h1 class="panel-title panel-h1">Confirmation</h1>
+        </div>
+        <div class="panel-body">
+            <form action = "" method="post">
+                {% csrf_token %}
+                <h4>Are you sure you want to delete milestone {{object}}?</h4>
+                <p style="color:gray">Issues associated with this milestone will not be deleted.</p>
+            <div align="right">
+                <hr>
+                <button type="submit" class = "btn btn-success">Delete</button>
+                <a href = "{% url 'milestones:preview' %}" class="btn btn-info" role="button">Cancel</a>
+            </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

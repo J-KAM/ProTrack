@@ -7,7 +7,7 @@ from functools import partial
 class MilestoneForm(forms.ModelForm):
     DateInput = partial(forms.DateInput, {'class': 'datepicker'})
     start_date = forms.DateField(widget=DateInput(format='%m/%d/%Y'),initial=date.today)
-    due_date = forms.DateField(widget=DateInput())
+    due_date = forms.DateField(widget=DateInput(format='%m/%d/%Y'))
 
     error_messages = {
         'past_start': 'Start date cannot be in the past.',
@@ -22,7 +22,7 @@ class MilestoneForm(forms.ModelForm):
                    }
 
     def clean_start_date(self):
-        start_date = self.cleaned_data['start_date']
+        start_date = self.cleaned_data.get('start_date')
         if start_date < date.today():
             raise forms.ValidationError(
                 self.error_messages['past_start'],
@@ -31,11 +31,13 @@ class MilestoneForm(forms.ModelForm):
         return start_date
 
     def clean_due_date(self):
-        due_date = self.cleaned_data['due_date']
-        start_date = self.cleaned_data['start_date']
-        if due_date < start_date:
-            raise forms.ValidationError(
-                self.error_messages['due_before_start'],
-                code='due_before_start',
-            )
+        due_date = self.cleaned_data.get('due_date')
+        start_date = self.cleaned_data.get('start_date')
+
+        if start_date:
+            if due_date < start_date:
+                raise forms.ValidationError(
+                    self.error_messages['due_before_start'],
+                    code='due_before_start',
+                )
         return due_date
