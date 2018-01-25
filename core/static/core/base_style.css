@@ -1,0 +1,52 @@
+body {
+    background: white url("images/sypmhony.png");
+}
+
+.navbar-brand {
+    font-family: 'Sofia', cursive;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.navbar {
+    border-radius: 0;
+}
+
+.special-img {
+    position: relative;
+    top: -5px;
+    float: left;
+    left: -5px;
+    height: 30px;
+    width: 30px;
+}
+
+.profile-img {
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+}
+
+.error {
+  color: red;
+}
+
+.right {
+    text-align: right;
+    float: right;
+}
+
+.alert {
+    width:30%;
+}
+
+.inlineDivs {
+    width: 25%;
+    float:left;
+    display: inline;
+}
+
+.profileImage {
+    height: 130px;
+    width: 130px;
+}
