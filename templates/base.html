@@ -57,10 +57,22 @@
                 </form>
 
                 <ul class = "nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class = "dropdown-toggle" data-toggle = "dropdown" href = "#">
+                            <span class="glyphicon glyphicon-plus" aria-hidden = "true"></span>
+                            <span class = "caret"></span>
+                        </a>
+                        <ul class = "dropdown-menu">
+                            <li><a href = "{% url 'projects:create' %}">New project</a></li>
+                            <li class = "divider"></li>
+                            <li><a href = "#">New milestone</a></li>
+                            <li><a href = "#">New issue</a></li>
+                        </ul>
+                    </li>
                     <li class = "dropdown">
                     <a class = "dropdown-toggle profile-img" data-toggle = "dropdown" href="#">
                        <img src="{{ user.profile.profile_picture.url }}" class="special-img img-circle">
-{#                        <span class="glyphicon glyphicon-user" aria-hidden = "true"></span>#}
+                        <span class="glyphicon glyphicon-user" aria-hidden = "true"></span>
                         <span class = "caret"></span>
                     </a>
                     <ul class = "dropdown-menu">
