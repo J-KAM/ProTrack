@@ -13,7 +13,7 @@ before_script:
   - docker-compose up --build -d
 
 script:
-  - python3 manage.py test
+  - py.test
 
 after_script:
   - docker-compose down
