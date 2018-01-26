@@ -8,10 +8,12 @@ class UserModelTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',
+        test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',
                             first_name='Pera', last_name="Peric")
-        User.objects.create_user(username='mika', email='mika@gmail.com', password='mika333',
+        test_user1.save()
+        test_user1 = User.objects.create_user(username='mika', email='mika@gmail.com', password='mika333',
                             first_name='Mika', last_name="Mikic")
+        test_user1.save()
 
     def test_field_label(self):
         user = User.objects.get(id=1)
@@ -63,7 +65,7 @@ class UserModelTest(TestCase):
         }
         response = self.client.post('', credentials, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(User.objects.all()[0].is_authenticated())
+        self.assertTrue(User.objects.get(id=1).is_authenticated())
 
     def test_registration(self):
         user = {
