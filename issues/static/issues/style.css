@@ -13,6 +13,7 @@ p {
 }
 
 .list-item-subtitle {
+
     font-size: 18px;
 }
 
@@ -30,6 +31,5 @@ p {
 .badge-label {
     display: block;
     margin-bottom: 10px;
-    width: 15%;
-    min-width: 58px;
+    width: 20%;
 }

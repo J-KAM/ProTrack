@@ -4,11 +4,14 @@
     <tr>
         <td class = "col-md-5">
             <p class="list-item-title">{{ milestone.name }}</p>&nbsp;<p class="list-item-subtitle">- Project name</p></br>
+            {% if milestone.status == 'OPEN' %}
+                <span class="label label-default badge-label">OPEN</span>
+            {% endif %}
             {% if milestone.is_past_due %}
                 <span class="label label-warning badge-label">PAST DUE</span>
             {% endif %}
             {% if milestone.status == 'CLOSED' %}
-                <span class="label label-success badge-label">CLOSED</span>
+                <span class="label label-danger badge-label">CLOSED</span>
             {% endif %}
             <p class = "list-item-date"><span class="glyphicon glyphicon-calendar"></span> Start date: {{ milestone.start_date|date:"SHORT_DATE_FORMAT" }}</p>
             &nbsp;
@@ -27,12 +30,12 @@
         </td>
         <td class = "col-md-3" align="center">
             {% if milestone.status == 'OPEN' %}
-                <a href = "#">Edit</a></br>
-                <a href = "#">Close</a></br>
+                <a href = "{% url 'milestones:update' milestone.id %}">Edit</a></br>
+                <a href = "{% url 'milestones:close' milestone.id %}">Close</a></br>
             {% else %}
-                <a href = "#">Reopen</a></br>
+                <a href = "{% url 'milestones:reopen' milestone.id %}">Reopen</a></br>
             {% endif %}
-            <a href = "#" color="red">Delete</a>
+            <a href = "{% url 'milestones:delete' milestone.id %}">Delete</a>
         </td>
     </tr>
     {% endfor %}
