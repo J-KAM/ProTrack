@@ -67,14 +67,13 @@
                         <li class = "divider"></li>
                         <li><a href = "{% url 'milestones:create' %}">New milestone</a></li>
                         <li><a href = "{% url 'issues:create' %}">New issue</a></li>
-
+                        <li><a href = "{% url 'organizations:create' %}">New organization</a></li>
                     </ul>
                     </li>
 
                     <li class = "dropdown">
                     <a class = "dropdown-toggle profile-img" data-toggle = "dropdown" href="#">
                        <img src="{{ user.profile.profile_picture.url }}" class="special-img img-circle">
-                        <span class="glyphicon glyphicon-user" aria-hidden = "true"></span>
                         <span class = "caret"></span>
                     </a>
                     <ul class = "dropdown-menu">
