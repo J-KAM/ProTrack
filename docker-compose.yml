@@ -7,15 +7,16 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
-#    ports:
-#      - "5432:5432"
     volumes:
-      #- ./postgres-data:/var/lib/postgresql/data
       - database:/var/lib/postgresql/data
   web:
 #    build: .
     image: jkam/protrack:latest
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - PGDATABASE
+      - PGUSER
+      - PGPASSWORD
+    command: bash -c "./wait-for-postgres.sh db -- && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
