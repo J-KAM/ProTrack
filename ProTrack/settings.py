@@ -84,8 +84,8 @@ DATABASES = {
         'NAME': 'pro_track_db',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'db',
-        # 'HOST': 'localhost',
+        # 'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': 5432,
     }
 }
