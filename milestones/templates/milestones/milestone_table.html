@@ -1,0 +1,40 @@
+<table class = "table">
+    <tbody>
+    {% for milestone in milestones %}
+    <tr>
+        <td class = "col-md-5">
+            <p class="list-item-title">{{ milestone.name }}</p>&nbsp;<p class="list-item-subtitle">- Project name</p></br>
+            {% if milestone.is_past_due %}
+                <span class="label label-warning badge-label">PAST DUE</span>
+            {% endif %}
+            {% if milestone.status == 'CLOSED' %}
+                <span class="label label-success badge-label">CLOSED</span>
+            {% endif %}
+            <p class = "list-item-date"><span class="glyphicon glyphicon-calendar"></span> Start date: {{ milestone.start_date|date:"SHORT_DATE_FORMAT" }}</p>
+            &nbsp;
+            <p class = "list-item-date"><span class="glyphicon glyphicon-calendar"></span> Due date: {{ milestone.due_date|date:"SHORT_DATE_FORMAT" }}</p></br>
+            <p class="list-item-description">{{ milestone.description }}</p>
+        </td>
+        <td class = "col-md-4">
+            <div class = "progress">
+                <div class = "progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{milestone.total_progress}}"
+                     aria-valuemin="0" aria-valuemax="100" style="width:{{milestone.total_progress}}%">
+                    {{milestone.total_progress}} % complete
+                </div>
+            </div>
+            <p><span class="glyphicon glyphicon-time"></span> Total time: {{milestone.total_time_spent}}</p></br>
+            <p><span class="glyphicon glyphicon-list-alt"></span> Issues: 0 open 0 closed</p>
+        </td>
+        <td class = "col-md-3" align="center">
+            {% if milestone.status == 'OPEN' %}
+                <a href = "#">Edit</a></br>
+                <a href = "#">Close</a></br>
+            {% else %}
+                <a href = "#">Reopen</a></br>
+            {% endif %}
+            <a href = "#" color="red">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
