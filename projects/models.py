@@ -3,6 +3,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 
+from organizations.models import Organization
+
 
 class Project(models.Model):
     name = models.CharField(max_length=80, unique=True)
@@ -11,6 +13,7 @@ class Project(models.Model):
     created = models.DateField()
     num_of_stars = models.PositiveIntegerField(default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    org_owner = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     collaborators = models.ManyToManyField(User, related_name='project_collaborator')
 
     def __str__(self):

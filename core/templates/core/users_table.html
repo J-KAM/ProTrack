@@ -1,0 +1,15 @@
+<table class = "table">
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td class = "col-md-5">
+            <img src="{{ user.profile.profile_picture.url }}" class="special-img img-circle"> &nbsp;&nbsp;
+            <p class="list-item-title">{{ user.username }}</p>&nbsp;</br>
+        </td>
+        <td class = "col-md-3" align="center">
+                <a href = "#">Remove from organization</a></br>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

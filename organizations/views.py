@@ -16,6 +16,15 @@ class OrganizationPreview(ListView):
             return User.objects.get(id=self.request.user.id).organization_member.all()
 
 
+class OrganizationDetails(ListView):
+    template_name = 'organizations/organization_details.html'
+    context_object_name = 'organization'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated():
+            return User.objects.get(id=self.request.user.id).organization_member.get(id=self.kwargs['id'])
+
+
 class OrganizationFormView(CreateView):
     form_class = OrganizationForm
     template_name = 'organizations/organization_form.html'

@@ -1,0 +1,19 @@
+<table class = "table">
+    <tbody>
+    {% for project in projects %}
+    <tr>
+        <td class = "col-md-5">
+            <p class="list-item-title">{{ project.name }}</p>&nbsp;
+            <p><span class="glyphicon glyphicon-star"></span> {{project.num_of_stars}}</p>&nbsp;&nbsp;&nbsp;</br>
+            <p class = "list-item-date"><span class="glyphicon glyphicon-calendar"></span> Created: {{ project.created|date:"SHORT_DATE_FORMAT" }}</p></br>
+            <p class="list-item-description">{{ project.description }}</p>
+        </td>
+
+        <td class = "col-md-3" align="center">
+                <a href = "#">Edit</a></br>
+                <a href = "#">Delete</a></br>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
