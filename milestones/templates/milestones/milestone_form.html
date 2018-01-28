@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Milestones{% endblock %}
+
+{% block body %}
+
+<script>
+$(document).ready(function() {
+    $('.datepicker').datepicker();
+});
+</script>
+
+    <div class="panel panel-success milestone-panel">
+        <div class="panel-heading">
+            <h1 class="panel-title panel-h1">New milestone</h1>
+        </div>
+        <div class="panel-body milestone-form">
+            <form method="post" class = "form-horizontal">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class = "form-group">
+                    <label class = "control-label col-sm-4">{{ field.label_tag }}</label>
+                    <div class = "col-sm-3"> {{ field }}</div>
+                    {% for error in field.errors %}
+                    <div class = "col-sm-3"><p style="color: red">{{ error }}</p></div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <div class = "form-group">
+                    <div class = "col-lg-12 col-md-7" align="right">
+                        <hr>
+                        <button type="submit" class = "btn btn-success">Submit milestone</button>
+                        <a href = "{% url 'milestones:preview' %}" class="btn btn-info" role="button">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

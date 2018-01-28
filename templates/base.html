@@ -42,10 +42,10 @@
                     </ul>
                     </li>
                     <li>
-                        <a href="#">Milestones</a>
+                        <a href="{% url 'milestones:preview' %}">Milestones</a>
                     </li>
                     <li>
-                        <a href="#">Groups</a>
+                        <a href="{% url 'issues:preview' %}">Issues</a>
                     </li>
                 </ul>
 
@@ -57,15 +57,29 @@
                 </form>
 
                 <ul class = "nav navbar-nav navbar-right">
+                   <li class = "dropdown">
+                    <a class = "dropdown-toggle" data-toggle = "dropdown" href="#">
+                        <span class="glyphicon glyphicon-plus" aria-hidden = "true"></span>
+                        <span class = "caret"></span>
+                    </a>
+                    <ul class = "dropdown-menu">
+                        <li><a href = "{% url 'projects:create' %}">New project</a></li>
+                        <li class = "divider"></li>
+                        <li><a href = "{% url 'milestones:create' %}">New milestone</a></li>
+                        <li><a href = "{% url 'issues:create' %}">New issue</a></li>
+                        <li><a href = "{% url 'organizations:create' %}">New organization</a></li>
+                    </ul>
+                    </li>
+
                     <li class = "dropdown">
                     <a class = "dropdown-toggle profile-img" data-toggle = "dropdown" href="#">
                        <img src="{{ user.profile.profile_picture.url }}" class="special-img img-circle">
-{#                        <span class="glyphicon glyphicon-user" aria-hidden = "true"></span>#}
                         <span class = "caret"></span>
                     </a>
                     <ul class = "dropdown-menu">
                         <li><a href = "{% url 'core:profile' %}">Your profile</a></li>
                         <li><a href = "#">Your projects</a></li>
+                        <li><a href = "{% url 'organizations:preview' %}">Your organizations</a></li>
                         <li class = "divider"></li>
                         <li><a href = "{% url 'core:sign_out' %}">Sign out</a></li>
                     </ul>
