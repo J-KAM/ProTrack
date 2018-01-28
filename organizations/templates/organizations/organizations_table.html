@@ -9,7 +9,7 @@
 
         <td class = "col-md-3" align="center">
                 <a href = "{% url 'organizations:details' organization.id %}">Details</a></br>
-                <a href = "#">Edit</a></br>
+                <a href = "{% url 'organizations:update' organization.id %}">Edit</a></br>
                 <a href = "#">Delete</a></br>
         </td>
 
