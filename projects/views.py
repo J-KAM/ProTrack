@@ -50,22 +50,36 @@ def add_collaborators(request):
 
 
 @login_required
-def accept_invitation(request, uidb64, pidb64, token):
-    try:
+def show_invitation(request, uidb64, pidb64):
+    uid = force_text(urlsafe_base64_decode(uidb64))
+    pid = force_text(urlsafe_base64_decode(pidb64))
 
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        pid = force_text(urlsafe_base64_decode(pidb64))
-        user = User.objects.get(id=uid)
+    if User.objects.filter(id=uid).exists() and Project.objects.filter(id=pid).exists():
         project = Project.objects.get(id=pid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist, Project.DoesNotExist):
-        user = None
+        return render(request, 'projects/invitation.html', {'user_id': uid, 'project_id': pid, 'project_name': project.name, 'new': project.invited_collaborators.filter(id=uid).exists()})
+    else:
+        return render(request, 'core/home_page.html')
 
-    if user is not None and default_token_generator.check_token(user,token):
-        project.invited_collaborators.remove(user)
-        project.collaborators.add(user)
-        project.save()
 
-    return render(request, 'core/home_page.html')
+@login_required
+def manage_invitation(request):
+    if request.method == 'POST':
+        try:
+            user_id = request.POST['user_id']
+            project_id = request.POST['project_id']
+            user = User.objects.get(id=user_id)
+            project = Project.objects.get(id=project_id)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist, Project.DoesNotExist):
+            user = None
+
+        if user is not None and 'accept' in request.POST:
+            project.invited_collaborators.remove(user)
+            project.collaborators.add(user)
+            project.save()
+        elif user is not None and 'decline' in request.POST:
+            project.invited_collaborators.remove(user)
+            project.save()
+        return render(request, 'core/home_page.html')
 
 
 @login_required
@@ -84,21 +98,20 @@ def invite_collaborators(request):
             user = None
 
         error_message = check_collaborator(user, project)
-        if error_message is not None:
+        if error_message == "":
             project.invited_collaborators.add(user)
 
-            # mail_subject = 'You have been invited to collaborate on a project'
-            # message = render_to_string('projects/acc_active_email.html', {
-            #     'project': project,
-            #     'user': user,
-            #     'domain': get_current_site(request),
-            #     'uid': urlsafe_base64_encode(force_bytes(user.id)),
-            #     'pid': urlsafe_base64_encode(force_bytes(project.id)),
-            #     'token': default_token_generator.make_token(user)
-            # })
-            # email = EmailMessage(mail_subject, message, to=[user.email])
-            # email.content_subtype = 'html'
-            # email.send(fail_silently=True)
+            mail_subject = 'You have been invited to collaborate on a project'
+            message = render_to_string('projects/invitation_email.html', {
+                'project': project,
+                'user': user,
+                'domain': get_current_site(request),
+                'uid': urlsafe_base64_encode(force_bytes(user.id)),
+                'pid': urlsafe_base64_encode(force_bytes(project.id)),
+            })
+            email = EmailMessage(mail_subject, message, to=[user.email])
+            email.content_subtype = 'html'
+            email.send(fail_silently=True)
 
             project.save()
 
@@ -112,10 +125,10 @@ def check_collaborator(user, project):
     if user == project.owner:
         error_message = 'Owner of the project cannot be a collaborator. Please try again.'
         return error_message
-    elif user in project.collaborators:
+    elif user in project.collaborators.all():
         error_message = 'User is already a collaborator. Please try again.'
         return error_message
-    elif user in project.invited_collaborators:
+    elif user in project.invited_collaborators.all():
         error_message = 'User is already invited to be a collaborator. Please try again.'
         return error_message
-    return None
+    return ""
