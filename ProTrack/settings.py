@@ -85,8 +85,8 @@ DATABASES = {
         'NAME': 'pro_track_db',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'db',
-        #'HOST': 'localhost',
+        #'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': 5432,
     }
 }
@@ -142,3 +142,5 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+#login redirect
+LOGIN_URL = 'core:sign_in'

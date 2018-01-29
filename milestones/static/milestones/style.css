@@ -33,3 +33,8 @@ p {
     width: 15%;
     min-width: 58px;
 }
+
+input, select {
+    width: 130%;
+    box-sizing: border-box;
+}

@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Milestones{% endblock %}
 {% block extra_css %}
@@ -9,13 +9,13 @@
 {% block body %}
 
  <div class="panel panel-success panel-list">
-
         <div class="panel-heading">
             <ul class = "nav nav-pills" id = "milestoneTab">
                 <li class = "active"><a data-toggle ="tab" href = "#open">Open <span class = "badge">{{open_milestones.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#closed">Closed <span class = "badge">{{closed_milestones.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#all">All <span class = "badge">{{all_milestones.count}}</span></a></li>
             </ul>
+
         </div>
 
         <div class="panel-body">
