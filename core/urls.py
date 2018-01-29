@@ -11,5 +11,4 @@ urlpatterns = [
     url(r'^home/$', views.home, name="home"),
     url(r'^home/profile/$', views.UserUpdateFormView.as_view(), name="profile"),
     url(r'^home/profile/password/$', views.change_password, name="change_password")
-
 ]
