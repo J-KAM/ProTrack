@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 
 from organizations.forms import OrganizationForm
 from organizations.models import Organization
@@ -43,6 +44,8 @@ class OrganizationFormView(CreateView):
             organization = form.save(commit=False)
             organization.save()
             organization.members.add(request.user)
+            organization.owner = request.user
+            organization.save()
             return redirect('organizations:preview')
 
         return render(request, 'organizations/organization_form.html', {'form': form, 'action': 'New'})
@@ -74,3 +77,15 @@ class OrganizationUpdate(UpdateView):
 
         return render(request, 'organizations/organization_form.html', {'form': form, 'action': 'Edit'})
 
+
+class OrganizationDelete(DeleteView):
+    model = Organization
+    success_url = reverse_lazy('organizations:preview')
+
+@login_required
+def remove_member_from_organization(request, **kwargs):
+    organization = Organization.objects.get(id=kwargs['id_org'])
+    member = User.objects.get(id=kwargs['id_mem'])
+    organization.members.remove(member)
+
+    return redirect('organizations:details', id=organization.id)
