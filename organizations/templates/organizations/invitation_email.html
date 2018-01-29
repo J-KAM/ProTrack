@@ -1,0 +1,12 @@
+{% autoescape off %}
+
+Hi {{user.username}},<br>
+
+You have been invited to join in organization.<br>
+Please click <a href ="http://{{domain}}{% url 'organizations:show_invitation' uidb64=uid oidb64=oid %}">here</a> to accept or decline the invitation.
+
+<br>
+
+Thank you for using ProTrack.
+
+{% endautoescape %}

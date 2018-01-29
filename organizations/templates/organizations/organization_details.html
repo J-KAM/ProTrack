@@ -27,7 +27,6 @@
                 </div>
 
                 <div class = "tab-pane" id = "members">
-{#                    {% with organization.members.all as users %}#}
                     {% with users=organization.members.all organization=organization%}
                     {% include 'core/users_table.html' %}
                     {% endwith %}

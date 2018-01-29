@@ -1,3 +1,6 @@
+<div class="right">
+    <a href="{% url 'organizations:add_members' organization.id %}" class="btn btn-success">Invite member(s)</a>
+</div>
 <table class = "table">
     <tbody>
     {% for user in users %}
