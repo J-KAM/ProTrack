@@ -1,0 +1,40 @@
+.panel-list {
+    width: 80%;
+    margin: 0 auto;
+    min-width: 550px;
+}
+
+p {
+    display: inline;
+}
+.list-item-title {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.list-item-subtitle {
+    font-size: 18px;
+}
+
+.list-item-date {
+    font-size: 15px;
+    color: #565555;
+}
+
+.list-item-description {
+    font-size: 15px;
+    font-style: italic;
+    color: #565555;
+}
+
+.badge-label {
+    display: block;
+    margin-bottom: 10px;
+    width: 15%;
+    min-width: 58px;
+}
+
+input, select {
+    width: 130%;
+    box-sizing: border-box;
+}

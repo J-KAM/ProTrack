@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}New issue{% endblock %}
+{% block title %}{{ action }} issue{% endblock %}
 
 {% block body %}
 
     <div class="panel panel-success milestone-panel">
     <div class="panel-heading">
-        <h1 class="panel-title panel-h1">New issue</h1>
+        <h1 class="panel-title panel-h1">{{ action }} issue</h1>
     </div>
     <div class="panel-body milestone-form">
        <form method="post" class = "form-horizontal">
@@ -31,7 +31,12 @@
                         <div class = "form-group">
                             <div class = "col-sm-12 col-md-12" align="right">
                                 <hr>
-                                <button type="submit" class = "btn btn-success">Submit issue</button>
+                                {% if action == 'New' %}
+                                    <button type="submit" class = "btn btn-success">Submit issue</button>
+                                    {% else %}
+                                    <button type="submit" class = "btn btn-success">Save changes</button>
+
+                                {% endif %}
                                 <a href = "{% url 'issues:preview' %}" class="btn btn-info" role="button">Cancel</a>
                             </div>
                         </div>
