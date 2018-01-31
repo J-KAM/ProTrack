@@ -2,19 +2,36 @@ from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.db import IntegrityError
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.views.generic import UpdateView
 
 from projects.forms import ProjectForm
 from projects.models import Project
+
+
+class ProjectsPreview(ListView):
+    template_name = 'projects/preview.html'
+    context_object_name = 'all_projects'
+
+    def get_queryset(self):
+        return Project.objects.filter(owner=self.request.user) | Project.objects.filter(collaborators=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['owned_projects'] = context['all_projects'].filter(owner=self.request.user)
+        context['collaborated_projects'] = context['all_projects'].filter(collaborators=self.request.user)
+        return context
 
 
 class ProjectCreate(CreateView):
@@ -24,7 +41,7 @@ class ProjectCreate(CreateView):
     @method_decorator(login_required)
     def get(self, request):
         form = self.form_class(None)
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'action': 'New'})
 
     @method_decorator(login_required)
     def post(self, request):
@@ -41,15 +58,60 @@ class ProjectCreate(CreateView):
             except IntegrityError:
                 error_message = "Entered data is not valid. Please try again."
 
-        return render(request, 'projects/project_form.html', {'form': form, 'error_message': error_message})
+        return render(request, 'projects/project_form.html', {'form': form, 'action': 'New', 'error_message': error_message})
+
+
+class ProjectUpdate(UpdateView):
+    form_class = ProjectForm
+    template_name = 'projects/project_form.html'
+
+    @method_decorator(login_required)
+    def get(self, request, **kwargs):
+        self.object = Project.objects.get(id=self.kwargs['id'])
+        form = self.get_form(self.form_class)
+        return render(request, self.template_name, {'form': form, 'object': self.object, 'action': 'Edit'})
+
+    @method_decorator(login_required)
+    def post(self, request, **kwargs):
+        project = Project.objects.get(id=self.kwargs['id'])
+        form = self.form_class(request.POST, instance=project)
+
+        if form.is_valid():
+            try:
+                project.save()
+                return redirect('projects:detail', project.id)
+            except IntegrityError:
+                error_message = "Entered data is not valid. Please try again."
+
+        return render(request, self.template_name, {'form': form, 'action': 'Edit', 'error_message': error_message})
+
+
+class ProjectDetail(DetailView):
+    model = Project
+    template_name = 'projects/detail_preview.html'
+
+
+class ProjectDelete(DeleteView):
+    model = Project
+    success_url = reverse_lazy('projects:preview')
 
 
 @login_required
-def add_collaborators(request):
-    return render(request, 'projects/add_collaborators.html')
+def remove_collaborator(request, uid, pid):
+    if User.objects.filter(id=uid).exists() and Project.objects.filter(id=pid).exists():
+        collaborator = User.objects.get(id=uid)
+        project = Project.objects.get(id=pid)
+        project.collaborators.remove(collaborator)
+
+    return redirect('projects:detail', pid)
 
 
 @login_required
+def add_collaborators(request, **kwargs):
+    project = Project.objects.get(id=kwargs['id'])
+    return render(request, 'projects/add_collaborators.html', {'project': project})
+
+
 def show_invitation(request, uidb64, pidb64):
     uid = force_text(urlsafe_base64_decode(uidb64))
     pid = force_text(urlsafe_base64_decode(pidb64))
@@ -61,7 +123,6 @@ def show_invitation(request, uidb64, pidb64):
         return render(request, 'core/home_page.html')
 
 
-@login_required
 def manage_invitation(request):
     if request.method == 'POST':
         try:

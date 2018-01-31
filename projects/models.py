@@ -16,5 +16,5 @@ class Project(models.Model):
         unique_together = ('name', 'url')
 
     def __str__(self):
-        return self.name + self.url
+        return self.name
 
