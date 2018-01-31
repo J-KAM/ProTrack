@@ -10,7 +10,11 @@
 
     <div class = "panel panel-success panel-list">
         <div class = "panel-before-heading">
-            <a href = "{% url 'core:profile' %}" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+            {% if project.owner != None %}
+                <a href = "{% url 'core:profile' %}" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+            {% else %}
+                <a href = "#" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+            {% endif %}
         </div>
         <div class = "panel-heading">
             <ul class = "nav nav-pills" id = "projectTab">

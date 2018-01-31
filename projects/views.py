@@ -16,8 +16,8 @@ from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 
-from projects.forms import ProjectForm
-from projects.models import Project
+from projects.forms import CreateProjectForm, UpdateProjectForm
+from projects.models import Project, Organization
 
 
 class ProjectsPreview(ListView):
@@ -35,23 +35,36 @@ class ProjectsPreview(ListView):
 
 
 class ProjectCreate(CreateView):
-    form_class = ProjectForm
+    form_class = CreateProjectForm
     template_name='projects/project_form.html'
 
     @method_decorator(login_required)
     def get(self, request):
         form = self.form_class(None)
+        form.fields['organization_owner'].queryset = Organization.objects.filter(members=request.user)
+        form.fields['organization_owner'].required = False
         return render(request, self.template_name, {'form': form, 'action': 'New'})
 
     @method_decorator(login_required)
     def post(self, request):
         form = self.form_class(request.POST)
+        form.fields['organization_owner'].required = False
 
         if form.is_valid():
             project = form.save(commit=False)
-            project.url = str(get_current_site(request)) + '/' + request.user.username + '/' + form.cleaned_data['name']
+
+            if form.cleaned_data['owner_type'] == 'o':
+                project.organization_owner = form.cleaned_data['organization_owner']
+                project.owner = None
+                project.url = str(get_current_site(request)) + '/' + project.organization_owner.name + '/' + form.cleaned_data['name']
+
+            elif form.cleaned_data['owner_type'] == 'm':
+                project.organization_owner = None
+                project.owner = request.user
+                project.url = str(get_current_site(request)) + '/' + request.user.username + '/' + form.cleaned_data['name']
+
             project.created = date.today()
-            project.owner = request.user
+
             try:
                 project.save()
                 return render(request, 'projects/add_collaborators.html', {'project': project})
@@ -62,7 +75,7 @@ class ProjectCreate(CreateView):
 
 
 class ProjectUpdate(UpdateView):
-    form_class = ProjectForm
+    form_class = UpdateProjectForm
     template_name = 'projects/project_form.html'
 
     @method_decorator(login_required)
