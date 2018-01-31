@@ -1,21 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Milestones{% endblock %}
-{% block extra_css %}
-    {% load staticfiles %}
-    <link href="{% static 'milestones/style.css' %}" rel='stylesheet' type='text/css'>
-{% endblock %}
-{% block body %}
+{% block title%}Projects{% endblock %}
 
-<script>
-$(document).ready(function() {
-    $('.datepicker').datepicker();
-});
-</script>
+{% block body %}
 
     <div class="panel panel-success milestone-panel">
         <div class="panel-heading">
-            <h1 class="panel-title panel-h1">{{ action }} milestone</h1>
+            <h1 class="panel-title panel-h1">New project</h1>
         </div>
         <div class="panel-body milestone-form">
             <form method="post" class = "form-horizontal">
@@ -30,15 +21,11 @@ $(document).ready(function() {
                 </div>
                 {% endfor %}
                 <div class = "form-group">
+                    <div class = "col-sm-3"><p style="color: red">{{ error_message }}</p></div>
                     <div class = "col-lg-12 col-md-7" align="right">
                         <hr>
-                        {% if action == 'New' %}
-                            <button type="submit" class = "btn btn-success">Submit milestone</button>
-                        {% else %}
-                            <button type="submit" class = "btn btn-success">Save changes</button>
-                            <a href = "{% url 'milestones:close' object.id %}" class="btn btn-info" role="button">Close milestone</a>
-                        {% endif %}
-                        <a href = "{% url 'milestones:preview' %}" class="btn btn-info" role="button">Cancel</a>
+                        <button type="submit" class = "btn btn-success">Submit project</button>
+                        <a href = "{% url 'core:home' %}" class="btn btn-info" role="button">Cancel</a>
                     </div>
                 </div>
             </form>
@@ -46,3 +33,4 @@ $(document).ready(function() {
     </div>
 
 {% endblock %}
+
