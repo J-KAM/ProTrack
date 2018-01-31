@@ -61,7 +61,7 @@ class Issue(models.Model):
     priority = models.CharField(max_length=10, null=True, blank=True, choices=PRIORITY_CHOICES)
 
     total_time_spent = models.FloatField(null=False, default=0.0)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=False)
     milestone = models.ForeignKey(Milestone, on_delete=models.CASCADE, null=True)
     assignees = models.ManyToManyField(User, related_name='assignees')
 
