@@ -11,10 +11,25 @@ from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
+from django.views.generic import DetailView
 
 from projects.forms import ProjectForm
 from projects.models import Project
+
+
+class ProjectsPreview(ListView):
+    template_name = 'projects/preview.html'
+    context_object_name = 'all_projects'
+
+    def get_queryset(self):
+        return Project.objects.filter(owner=self.request.user) | Project.objects.filter(collaborators=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['owned_projects'] = context['all_projects'].filter(owner=self.request.user)
+        context['collaborated_projects'] = context['all_projects'].filter(collaborators=self.request.user)
+        return context
 
 
 class ProjectCreate(CreateView):
@@ -42,6 +57,11 @@ class ProjectCreate(CreateView):
                 error_message = "Entered data is not valid. Please try again."
 
         return render(request, 'projects/project_form.html', {'form': form, 'error_message': error_message})
+
+
+class ProjectDetail(DetailView):
+    model = Project
+    template_name = 'projects/detail_preview.html'
 
 
 @login_required

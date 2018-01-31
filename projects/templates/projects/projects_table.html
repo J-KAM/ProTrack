@@ -1,0 +1,22 @@
+<table class = "table-hover">
+    <tbody>
+        {% for project in projects %}
+        <tr>
+            <td>
+                <p class = "list-item-title">{{project.name}}</p>
+                    <p><span class = "glyphicon glyphicon-star"></span>{{project.num_of_stars}}</p>&nbsp;&nbsp;&nbsp;</br>
+                {% if tab != 'o' %}
+                <p class = "list-item-subtitle"><span class = "glyphicon glyphicon-user"></span> Owner: {{project.owner}}</p></br>
+                {% endif %}
+                <p class = "list-item-date"><span class = "glyphicon glyphicon-calendar"></span> Created: {{project.created|date:"SHORT_DATE_FORMAT"}}</p></br>
+                <p class = "list-item-description">{{project.description}}</p>
+            </td>
+            <td align = "center">
+                <a href = "{% url 'projects:detail' project.id %}">Details</a></br>
+                <a href = "#">Edit</a></br>
+                <a href = "#">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
