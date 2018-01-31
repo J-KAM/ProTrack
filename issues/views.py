@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
-# Create your views here.
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView
@@ -18,7 +17,11 @@ class IssuePreview(generic.ListView):
     context_object_name = 'all_issues'
 
     def get_queryset(self):
-        return Issue.objects.all()
+        if self.request.user.is_authenticated():
+            projects = Project.objects.filter(collaborators=self.request.user) | Project.objects.filter(
+                owner=self.request.user)
+            issues = Issue.objects.filter(project__in=projects)
+            return issues
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
