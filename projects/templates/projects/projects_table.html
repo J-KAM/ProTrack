@@ -1,10 +1,10 @@
-<table class = "table-hover">
+<table class = "table">
     <tbody>
         {% for project in projects %}
         <tr>
             <td>
-                <p class = "list-item-title">{{project.name}}</p>
-                    <p><span class = "glyphicon glyphicon-star"></span>{{project.num_of_stars}}</p>&nbsp;&nbsp;&nbsp;</br>
+                <p class = "list-item-title">{{project.name}}</p>&nbsp;&nbsp;
+                <p><span class = "glyphicon glyphicon-star"></span>{{project.num_of_stars}}</p>&nbsp;</br>
                 {% if tab != 'o' %}
                 <p class = "list-item-subtitle"><span class = "glyphicon glyphicon-user"></span> Owner: {{project.owner}}</p></br>
                 {% endif %}
@@ -13,8 +13,8 @@
             </td>
             <td align = "center">
                 <a href = "{% url 'projects:detail' project.id %}">Details</a></br>
-                <a href = "#">Edit</a></br>
-                <a href = "#">Delete</a>
+                <a href = "{% url 'projects:update' project.id %}">Edit</a></br>
+                <a href = "{% url 'projects:delete' project.id %}">Delete</a>
             </td>
         </tr>
         {% endfor %}

@@ -15,7 +15,7 @@
         <div class = "panel-heading">
             <ul class = "nav nav-pills" id = "projectTab">
                 <li class = "active"><a data-toggle = "tab" href = "#code"><span class="glyphicon glyphicon-edit"></span> Code</a></li>
-                <li><a data-toggle = "tab" href = "#issues"><span class="glyphicon glyphicon-tasks"></span> Issues </a></li>
+                <li><a data-toggle = "tab" href = "#issues"><span class="glyphicon glyphicon-tasks"></span> Issues</a></li>
                 <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
             </ul>
         </div>
@@ -28,7 +28,20 @@
                     <p>issues</p>
                 </div>
                 <div class = "tab-pane" id = "settings">
-                    <p>settings</p>
+                    <ul class = "nav nav-tabs" id = "settingsTab">
+                        <li class = "active"><a data-toggle = "tab" href = "#options"> Options</a></li>
+                        <li><a data-toggle = "tab" href = "#collaborators"> Collaborators </a></li>
+                    </ul>
+                    <div id = "settings-content" class = "tab-content">
+                        <div class = "tab-pane active" id = "options">
+                           {% include 'projects/options.html' %}
+                        </div>
+                        <div class = "tab-pane" id = "collaborators">
+                            {% with project=project %}
+                            {% include 'projects/collaborators_table.html' %}
+                            {% endwith %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
