@@ -1,7 +1,9 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
-
+from milestones.models import Milestone
+from projects.models import Project
 
 WEIGHT_CHOICES = (
     (1, 1),
@@ -59,6 +61,9 @@ class Issue(models.Model):
     priority = models.CharField(max_length=10, null=True, blank=True, choices=PRIORITY_CHOICES)
 
     total_time_spent = models.FloatField(null=False, default=0.0)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True)
+    milestone = models.ForeignKey(Milestone, on_delete=models.CASCADE, null=True)
+    assignees = models.ManyToManyField(User, related_name='assignees')
 
     def __str__(self):
         return self.title

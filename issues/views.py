@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -8,6 +9,8 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from issues.forms import IssueForm
 from issues.models import Issue
+from milestones.models import Milestone
+from projects.models import Project
 
 
 class IssuePreview(generic.ListView):
@@ -30,22 +33,35 @@ class IssueFormView(CreateView):
     form_class = IssueForm
     template_name = 'issues/issue_form.html'
 
-
-    #display blank form
+    # display blank form
     @method_decorator(login_required)
-    def get(self, request):
+    def get(self, request, **kwargs):
         form = self.form_class(None)
+        project = Project.objects.get(id=kwargs['project_id'])
+        form.fields['milestone'].queryset = Milestone.objects.filter(project=project)
+        form.fields['assignees'].queryset = User.objects.filter(id=project.owner.id) | project.collaborators.all()
+        form.fields['milestone'].required = False
+        form.fields['assignees'].required = False
+
         return render(request, self.template_name, {'form': form, 'action': 'New'})
 
     @method_decorator(login_required)
-    def post(self, request):
+    def post(self, request, **kwargs):
         form = self.form_class(request.POST)
+        form.fields['milestone'].required = False
+        form.fields['assignees'].required = False
 
         if form.is_valid():
             issue = form.save(commit=False)
+            project = Project.objects.get(id=kwargs['project_id'])
+            issue.project = project
             if issue.time_spent is None:
                 issue.time_spent = 0.0
             issue.total_time_spent = issue.time_spent
+
+            issue.save()
+
+            issue.assignees = form.cleaned_data['assignees']
             issue.save()
 
             if issue is not None:
@@ -84,6 +100,7 @@ class IssueUpdate(UpdateView):
 
         return render(request, 'issues/issue_form.html', {'form': form, 'action': 'Edit'})
 
+
 @login_required
 def close_issue(request, **kwargs):
     issue = Issue.objects.get(id=kwargs['id'])
@@ -91,6 +108,7 @@ def close_issue(request, **kwargs):
     issue.save()
 
     return redirect('issues:preview')
+
 
 @login_required
 def reopen_issue(request, **kwargs):
