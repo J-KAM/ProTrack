@@ -3,8 +3,8 @@ from django.db import models
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=80, unique=True)
-    url = models.URLField(unique=True)
+    name = models.CharField(max_length=80)
+    url = models.URLField()
     description = models.TextField(null=True, blank=True)
     created = models.DateField()
     num_of_stars = models.PositiveIntegerField(default=0)
