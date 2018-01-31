@@ -82,12 +82,18 @@ class IssueUpdate(UpdateView):
     def get(self, request, **kwargs):
         self.object = Issue.objects.get(id=self.kwargs['id'])
         form = self.get_form(self.form_class)
+        form.fields['milestone'].queryset = Milestone.objects.filter(project=self.object.project)
+        form.fields['assignees'].queryset = User.objects.filter(id=self.object.project.owner.id) | self.object.project.collaborators.all()
+        form.fields['milestone'].required = False
+        form.fields['assignees'].required = False
         return render(request, self.template_name, {'form': form, 'object': self.object, 'action': 'Edit'})
 
     @method_decorator(login_required)
     def post(self, request, **kwargs):
         issue = Issue.objects.get(id=self.kwargs['id'])
         form = self.form_class(request.POST, instance=issue)
+        form.fields['milestone'].required = False
+        form.fields['assignees'].required = False
 
         if form.is_valid():
             time_spent = form.cleaned_data['time_spent']
@@ -96,6 +102,9 @@ class IssueUpdate(UpdateView):
 
             issue.total_time_spent = issue.total_time_spent + time_spent
             issue.time_spent = 0.0
+            issue.save()
+
+            issue.assignees = form.cleaned_data['assignees']
             issue.save()
 
             if issue is not None:

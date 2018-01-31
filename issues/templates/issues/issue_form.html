@@ -35,6 +35,7 @@
                                     <button type="submit" class = "btn btn-success">Submit issue</button>
                                     {% else %}
                                     <button type="submit" class = "btn btn-success">Save changes</button>
+                                     <a href = "{% url 'issues:close' object.id %}" class="btn btn-info" role="button">Close issue</a>
 
                                 {% endif %}
                                 <a href = "{% url 'issues:preview' %}" class="btn btn-info" role="button">Cancel</a>
