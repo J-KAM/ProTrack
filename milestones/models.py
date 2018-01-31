@@ -1,6 +1,13 @@
 from django.db import models
 from datetime import date
 
+from projects.models import Project
+
+STATUS_CHOICES = (
+    ('OPEN', 'Open'),
+    ('CLOSED', 'Closed'),
+)
+
 
 class Milestone(models.Model):
     name = models.CharField(max_length=80)
@@ -9,8 +16,9 @@ class Milestone(models.Model):
     due_date = models.DateField()
     total_progress = models.PositiveIntegerField(default=0)
     total_time_spent = models.FloatField(default=0.0)
-    status = models.CharField(max_length=8,default="OPEN")
-    #TODO: add relation with reposiroty
+    status = models.CharField(max_length=6,choices=STATUS_CHOICES,default="OPEN")
+    #TODO: Change this if possible
+    project = models.ForeignKey(Project,on_delete=models.CASCADE,null=True)
 
     def __str__(self):
         return self.name

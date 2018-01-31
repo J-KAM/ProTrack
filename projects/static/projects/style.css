@@ -1,5 +1,5 @@
 .panel-list {
-    width: 80%;
+    width:80%;
     margin: 0 auto;
     min-width: 550px;
 }
@@ -7,13 +7,18 @@
 p {
     display: inline;
 }
+
+table {
+    width: 100%;
+}
+
 .list-item-title {
     font-weight: bold;
     font-size: 24px;
 }
 
 .list-item-subtitle {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .list-item-date {
@@ -27,14 +32,10 @@ p {
     color: #565555;
 }
 
-.badge-label {
-    display: block;
-    margin-bottom: 10px;
-    width: 15%;
-    min-width: 58px;
+.panel-before-heading{
+    margin-left: 2%;
 }
 
-input, select {
-    width: 130%;
-    box-sizing: border-box;
+.project-link {
+    font-size: 30px;
 }

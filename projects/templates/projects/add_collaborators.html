@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title%}Collaborators{% endblock %}
+
+{% block body %}
+
+    <div class="panel panel-success milestone-panel">
+        <div class="panel-heading">
+            <h1 class="panel-title panel-h1">Collaborators</h1>
+        </div>
+        <div class="panel-body milestone-form">
+            <div>
+                 <table class="table">
+                    <tbody>
+                    {% for collaborator in project.invited_collaborators.all %}
+                    <tr>
+                        <td class = "col-md-5">{{collaborator.username}}</td>
+                        <td class = "col-md-5">This user has been invited to collaborate on project <b>{{project.name}}</b></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <hr>
+            <div>
+                <h4>Search ProTrack users by username or email</h4>
+                <h6>An invitation will be sent to the user's email.</h6>
+                </br>
+                <form action = "{% url 'projects:invite' %}" method="post" class="form-inline">
+                    {% csrf_token %}
+                    <input type = "text" class = "form-control" name = "collaborator" value = "" placeholder="Search collaborators..." required>
+                    <input type = "hidden" name="project_id" value = "{{project.id}}">
+                    <button type = "submit" class = "btn btn-success">Invite</button>
+                    <a href = "{% url 'core:home' %}" class="btn btn-info" role="button">Done</a>
+                </form>
+            </div>
+                </br><p class="error">{{error_message}}</p>
+        </div>
+    </div>
+
+{% endblock %}
