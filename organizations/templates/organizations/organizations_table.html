@@ -1,0 +1,19 @@
+<table class = "table">
+    <tbody>
+    {% for organization in organizations %}
+    <tr>
+        <td class = "col-md-5">
+            <p class="list-item-title">{{ organization.name }}</p></br>
+            <p class="list-item-description">{{ organization.description }}</p>
+        </td>
+
+        <td class = "col-md-3" align="center">
+                <a href = "{% url 'organizations:details' organization.id %}">Details</a></br>
+                <a href = "#">Edit</a></br>
+                <a href = "#">Delete</a></br>
+        </td>
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
