@@ -3,7 +3,7 @@
     {% for milestone in milestones %}
     <tr>
         <td class = "col-md-5">
-            <p class="list-item-title">{{ milestone.name }}</p>&nbsp;<p class="list-item-subtitle">- Project name</p></br>
+            <p class="list-item-title">{{ milestone.name }}</p>&nbsp;<p class="list-item-subtitle">&nbsp;&nbsp;( <span class="glyphicon glyphicon-briefcase"></span> {{milestone.project.name}} )</p></br>
             {% if milestone.status == 'OPEN' %}
                 <span class="label label-default badge-label">OPEN</span>
             {% endif %}
