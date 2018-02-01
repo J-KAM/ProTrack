@@ -33,3 +33,11 @@ p {
     margin-bottom: 10px;
     width: 20%;
 }
+
+.panel-before-heading{
+    margin-left: 2%;
+}
+
+.organization-link {
+    font-size: 30px;
+}

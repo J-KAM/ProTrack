@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block title %}Organization details{% endblock %}
@@ -9,11 +10,16 @@
 {% block body %}
 
  <div class="panel panel-success panel-list">
+    <div class = "panel-before-heading">
+        <a href = "{% url 'organizations:details' organization.id %}" class = "organization-link">{{organization.name}}</a>
+    </div>
 
         <div class="panel-heading">
             <ul class = "nav nav-pills" id = "organizationTab">
                 <li class = "active"><a data-toggle ="tab" href = "#projects"><span class="glyphicon glyphicon-blackboard"></span> Projects <span class = "badge">{{organization.project_set.all.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#members"><span class="glyphicon glyphicon-user"></span> Members <span class = "badge">{{organization.members.all.count}}</span></a></li>
+                <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+
             </ul>
         </div>
 
@@ -31,6 +37,13 @@
                     {% include 'core/users_table.html' %}
                     {% endwith %}
                 </div>
+
+                <div class = "tab-pane" id = "settings">
+                    {% with organization=organization %}
+                        {% include 'organizations/options.html' %}
+                    {% endwith %}
+                </div>
+
 
 
             </div>
