@@ -67,6 +67,8 @@ class ProjectCreate(CreateView):
 
             try:
                 project.save()
+                if form.cleaned_data['owner_type'] == 'o':
+                    project.collaborators.add(request.user)
                 return render(request, 'projects/add_collaborators.html', {'project': project})
             except IntegrityError:
                 error_message = "Entered data is not valid. Please try again."
