@@ -142,5 +142,13 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+#email service
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'protrack.service@gmail.com'
+EMAIL_HOST_PASSWORD = 'protrack'
+EMAIL_PORT = 587
+
 #login redirect
 LOGIN_URL = 'core:sign_in'
+LOGIN_REDIRECT_URL = 'core:home'

@@ -51,13 +51,38 @@ body {
     width: 130px;
 }
 
-.panel-h1{
+.error {
+    color:red;
+}
+
+.right {
+    text-align: right;
+    float: right;
+}
+
+.alert {
+    width: 30%;
+}
+
+.inlineDivs {
+    width: 25%;
+    float: left;
+    display: inline;
+}
+
+.profileImage {
+    height: 130px;
+    width: 130px;
+}
+
+.panel-h1 {
     text-align: center;
     font-weight: bold;
     font-size: 14px;
 }
+
 .panel-hr {
-    border-width:1px;
+    border-width: 1px;
     border-color: darkgray;
     /*border-color: #428bca;*/
 }
@@ -71,4 +96,8 @@ body {
 .milestone-form {
     display: block;
     text-align: center;
+}
+
+.my-div {
+    width: 100%;
 }

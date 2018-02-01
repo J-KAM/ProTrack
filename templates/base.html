@@ -41,7 +41,7 @@
                         <span class = "caret"></span>
                     </a>
                     <ul class = "dropdown-menu">
-                       <li><a href = "#">My projects</a></li>
+                       <li><a href = "{% url 'projects:preview' %}">My projects</a></li>
                         <li><a href = "#">Starred projects</a></li>
                     </ul>
                     </li>
@@ -81,7 +81,7 @@
                     </a>
                     <ul class = "dropdown-menu">
                         <li><a href = "{% url 'core:profile' %}">Your profile</a></li>
-                        <li><a href = "#">Your projects</a></li>
+                        <li><a href = "{% url 'projects:preview' %}">Your projects</a></li>
                         <li class = "divider"></li>
                         <li><a href = "{% url 'core:sign_out' %}">Sign out</a></li>
                     </ul>
