@@ -1,0 +1,19 @@
+<table class="table">
+    <tbody>
+        {% for collaborator in project.collaborators.all %}
+        <tr>
+            <td class = "col-md-5">
+                <img src="{{ user.profile.profile_picture.url }}" class = "special-img img-circle"> &nbsp;&nbsp;
+                <p class = "list-item-title">{{collaborator.username}}</p>
+            </td>
+            <td class = "col-md-3" align="center">
+                <a href = "{% url 'projects:remove_collaborator' pid=project.id uid=collaborator.id%}" class="btn btn-danger" role = "danger">Remove collaborator</a></br>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<hr>
+<div class="right">
+    <a href = "{% url 'projects:add_collaborators' project.id %}" class="btn btn-success" role = "danger"><span class = "glyphicon glyphicon-plus"></span> Invite collaborator(s)</a></br>
+</div>

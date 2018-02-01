@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
+    'projects.apps.ProjectsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,8 +83,8 @@ DATABASES = {
         'NAME': 'pro_track_db',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'db',
-        # 'HOST': 'localhost',
+        #'HOST': 'db',
+         'HOST': 'localhost',
         'PORT': 5432,
     }
 }
@@ -139,3 +140,13 @@ STATICFILES_FINDERS = ('django.contrib.staticfiles.finders.AppDirectoriesFinder'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+#email service
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'protrack.service@gmail.com'
+EMAIL_HOST_PASSWORD = 'protrack'
+EMAIL_PORT = 587
+
+#login redirect
+LOGIN_URL = 'core:sign_in'
+LOGIN_REDIRECT_URL = 'core:home'
