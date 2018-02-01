@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, update_session_auth_hash
+from django.utils.decorators import method_decorator
 from django.views.generic import View
-from django import forms
 
 
 from core.forms import ProfileForm, UserUpdateForm
@@ -65,22 +65,27 @@ class SignInFormView(View):
                 login(request, user)
                 return render(request, 'core/home_page.html', None)
 
-        return render(request, self.template_name, {'form':form, 'error_message': 'Invalid username and/or password. Please try again.'})
+        return render(request, self.template_name, {'form':form,
+                                                    'error_message': 'Invalid username and/or password. Please try again.'})
 
 
+@login_required
 def home(request):
     return render(request, "core/home_page.html")
+
 
 class UserUpdateFormView(View):
     user_update_form_class = UserUpdateForm
     profile_form_class = ProfileForm
     template_name = 'core/profile_form.html'
 
+    @method_decorator(login_required)
     def get(self, request):
         user_form = self.user_update_form_class(instance=request.user)
         profile_form = self.profile_form_class(instance=request.user.profile)
         return render(request, self.template_name, {'user_form': user_form, 'profile_form': profile_form})
 
+    @method_decorator(login_required)
     def post(self, request):
 
         user_form = self.user_update_form_class(data=request.POST, instance=request.user)
@@ -105,6 +110,8 @@ class UserUpdateFormView(View):
 
         return render(request, self.template_name, {'user_form': user_form, 'profile_form': profile_form})
 
+
+@login_required
 def change_password(request):
 
     if request.method == 'POST':
@@ -120,6 +127,7 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'core/change_password.html', {'form': form})
+
 
 @login_required
 def update_profile(request):
