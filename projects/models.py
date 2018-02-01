@@ -11,7 +11,7 @@ class Project(models.Model):
     created = models.DateField()
     num_of_stars = models.PositiveIntegerField(default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    org_owner = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
+    organization_owner = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     collaborators = models.ManyToManyField(User, related_name='collaborators')
     invited_collaborators = models.ManyToManyField(User, related_name='invited_collaborators')
 
@@ -19,5 +19,5 @@ class Project(models.Model):
         unique_together = ('name', 'url')
 
     def __str__(self):
-        return self.name + self.url
+        return self.name
 

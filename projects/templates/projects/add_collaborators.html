@@ -31,7 +31,7 @@
                     <input type = "text" class = "form-control" name = "collaborator" value = "" placeholder="Search collaborators..." required>
                     <input type = "hidden" name="project_id" value = "{{project.id}}">
                     <button type = "submit" class = "btn btn-success">Invite</button>
-                    <a href = "{% url 'core:home' %}" class="btn btn-info" role="button">Done</a>
+                    <a href = "{% url 'projects:detail' project.id %}" class="btn btn-info" role="button">Done</a>
                 </form>
             </div>
                 </br><p class="error">{{error_message}}</p>
