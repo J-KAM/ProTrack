@@ -21,7 +21,12 @@ class IssuePreview(generic.ListView):
             projects = Project.objects.filter(collaborators=self.request.user) | Project.objects.filter(
                 owner=self.request.user)
             issues = Issue.objects.filter(project__in=projects)
-            return issues
+
+            if self.request.path == '/issues/all/':
+                return issues
+            else:  # assigned
+                issues = Issue.objects.filter(project__in=projects, assignees=self.request.user)
+                return issues
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -68,7 +73,7 @@ class IssueFormView(CreateView):
             issue.save()
 
             if issue is not None:
-                return redirect('issues:preview')
+                return redirect('issues:preview_all')
 
         return render(request, 'issues/issue_form.html', {'form': form, 'action': 'New'})
 
@@ -108,7 +113,7 @@ class IssueUpdate(UpdateView):
             issue.save()
 
             if issue is not None:
-                return redirect('issues:preview')
+                return redirect('issues:preview_all')
 
         return render(request, 'issues/issue_form.html', {'form': form, 'action': 'Edit'})
 
@@ -119,7 +124,7 @@ def close_issue(request, **kwargs):
     issue.status = 'Closed'
     issue.save()
 
-    return redirect('issues:preview')
+    return redirect("issues:preview_all")
 
 
 @login_required
@@ -128,4 +133,5 @@ def reopen_issue(request, **kwargs):
     issue.status = 'Open'
     issue.save()
 
-    return redirect('issues:preview')
+    return redirect("issues:preview_all")
+
