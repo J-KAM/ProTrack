@@ -16,8 +16,9 @@ from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 
+from organizations.models import Organization
 from projects.forms import CreateProjectForm, UpdateProjectForm
-from projects.models import Project, Organization
+from projects.models import Project
 
 
 class ProjectsPreview(ListView):
@@ -43,6 +44,13 @@ class ProjectCreate(CreateView):
         form = self.form_class(None)
         form.fields['organization_owner'].queryset = Organization.objects.filter(members=request.user)
         form.fields['organization_owner'].required = False
+
+        if request.META.get('HTTP_REFERER') is not None:
+            url_path = request.META.get('HTTP_REFERER').split('/')
+            if url_path[3] == "organizations" and url_path[5] == "details":  # creating project in organization
+                organization = Organization.objects.get(id=int(url_path[4]))
+                form.initial['organization_owner'] = organization
+
         return render(request, self.template_name, {'form': form, 'action': 'New'})
 
     @method_decorator(login_required)
@@ -68,8 +76,10 @@ class ProjectCreate(CreateView):
             try:
                 project.save()
                 if form.cleaned_data['owner_type'] == 'o':
-                    project.collaborators.add(request.user)
-                return render(request, 'projects/add_collaborators.html', {'project': project})
+                    members = Organization.objects.get(id=project.organization_owner.id).members.all()
+                    for member in members:
+                        project.collaborators.add(member)
+                return redirect('projects:preview')
             except IntegrityError:
                 error_message = "Entered data is not valid. Please try again."
 
