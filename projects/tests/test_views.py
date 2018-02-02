@@ -31,8 +31,7 @@ class ProjectCreateFormViewTest(TestCase):
 
         login = self.client.login(username='pera', password='pera1234')
         response = self.client.post(reverse('projects:create'), project_data)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'projects/add_collaborators.html')
+        self.assertEqual(response.status_code, 302)
 
 
 class ProjectUpdateFormViewTest(TestCase):

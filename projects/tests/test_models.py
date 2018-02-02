@@ -1,15 +1,17 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from projects.models import Project, Organization
-
+from organizations.models import Organization
+from projects.models import Project
 
 class ProjectModelTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
         test_user1 = User.objects.create(username='pera', email='pera@gmail.com', password='pera1234',first_name='Pera',last_name='Peric')
+        test_user1.save()
         test_user2 = User.objects.create(username='zika', email='zika@gmail.com', password='zikinasifra',first_name='Zika', last_name='Zikic')
+        test_user2.save()
 
         test_organization1 = Organization.objects.create(name='JKAM', owner=test_user1)
 
@@ -86,11 +88,11 @@ class ProjectModelTest(TestCase):
         self.assertEquals(project3.url, 'localhost:8000/zika/First project')
 
     def test_owner_values(self):
-        user1 = User.objects.get(id=1)
+        user1 = User.objects.get(username="pera")
         project1 = Project.objects.get(id=1)
-        user2 = User.objects.get(id=2)
+        user2 = User.objects.get(username="zika")
         project2 = Project.objects.get(id=2)
-        organization1 = Organization.objects.get(id=1)
+        organization1 = Organization.objects.get(name="JKAM")
         project3 = Project.objects.get(id=3)
 
         self.assertEquals(project1.owner, user1)
