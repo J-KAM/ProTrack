@@ -1,5 +1,5 @@
 <div class="right">
-    <a href="{% url 'organizations:add_members' organization.id %}" class="btn btn-success">Invite member(s)</a>
+    <a href="{% url 'organizations:add_members' organization.id %}" class="btn btn-success"><span class = "glyphicon glyphicon-plus"></span>Invite member(s)</a></br>
 </div>
 <table class = "table">
     <tbody>
@@ -11,10 +11,11 @@
         </td>
         <td class = "col-md-3" align="center">
             {% if user.id != organization.owner.id %}
-                <a href = "{% url 'organizations:remove_from_org' id_org=organization.id id_mem=user.id %}">Remove from organization</a></br>
+                <a href = "{% url 'organizations:remove_from_org' id_org=organization.id id_mem=user.id %}" class="btn btn-danger" role = "danger">Remove from organization</a></br>
             {% endif %}
         </td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
+

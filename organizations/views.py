@@ -131,6 +131,8 @@ def manage_invitation(request):
             organization.invited_members.remove(user)
             organization.members.add(user)
             organization.save()
+            for project in organization.project_set.all():
+                project.collaborators.add(user)
         elif user is not None and 'decline' in request.POST:
             organization.invited_members.remove(user)
             organization.save()

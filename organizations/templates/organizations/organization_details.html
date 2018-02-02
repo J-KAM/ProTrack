@@ -34,7 +34,7 @@
 
                 <div class = "tab-pane" id = "members">
                     {% with users=organization.members.all organization=organization%}
-                    {% include 'core/users_table.html' %}
+                    {% include 'organizations/members_table.html' %}
                     {% endwith %}
                 </div>
 
