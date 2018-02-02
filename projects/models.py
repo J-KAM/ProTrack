@@ -1,14 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-
-class Organization(models.Model):
-    name = models.CharField(max_length=80, unique=True, null=False)
-    owner = models.ForeignKey(User, null=True)
-    members = models.ManyToManyField(User, related_name="members")
-
-    def __str__(self):
-        return self.name
+from organizations.models import Organization
 
 
 class Project(models.Model):

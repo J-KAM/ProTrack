@@ -15,6 +15,7 @@ class UserModelTest(TestCase):
                             first_name='Mika', last_name="Mikic")
         test_user1.save()
 
+
     def test_field_label(self):
         user = User.objects.get(id=1)
         username_label = user._meta.get_field('username').verbose_name
@@ -57,24 +58,4 @@ class UserModelTest(TestCase):
         self.assertEquals(user1.email, 'pera@gmail.com')
         self.assertEquals(user2.email, 'mika@gmail.com')
 
-    def test_login(self):
-        user = User.objects.get(id=1)
-        credentials = {
-            'username': user.username,
-            'password': user.password
-        }
-        response = self.client.post('', credentials, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(User.objects.get(id=1).is_authenticated())
 
-    def test_registration(self):
-        user = {
-            'username': 'zika',
-            'password': 'zika',
-            'email': 'zika@gmail.com',
-            'first_name': 'Zika',
-            'last_name': 'Zikic'
-        }
-        response = self.client.post('/register/', user, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(User.objects.all()[2].first_name, 'Zika')
