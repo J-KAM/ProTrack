@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 
 from django.utils.decorators import method_decorator
 from django.views import generic
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 
 from issues.forms import IssueForm
@@ -37,6 +38,15 @@ class IssuePreview(generic.ListView):
         return context
 
 
+class IssueDetails(ListView):
+    template_name = 'issues/issue_details.html'
+    context_object_name = 'issue'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated():
+            return Issue.objects.get(id=self.kwargs['id'])
+
+
 class IssueFormView(CreateView):
     form_class = IssueForm
     template_name = 'issues/issue_form.html'
@@ -47,7 +57,11 @@ class IssueFormView(CreateView):
         form = self.form_class(None)
         project = Project.objects.get(id=kwargs['project_id'])
         form.fields['milestone'].queryset = Milestone.objects.filter(project=project)
-        form.fields['assignees'].queryset = User.objects.filter(id=project.owner.id) | project.collaborators.all()
+        if project.owner is not None:
+            form.fields['assignees'].queryset = User.objects.filter(id=project.owner.id) | project.collaborators.all()
+        else:
+            form.fields['assignees'].queryset = project.collaborators.all()
+
         form.fields['milestone'].required = False
         form.fields['assignees'].required = False
 
@@ -88,7 +102,11 @@ class IssueUpdate(UpdateView):
         self.object = Issue.objects.get(id=self.kwargs['id'])
         form = self.get_form(self.form_class)
         form.fields['milestone'].queryset = Milestone.objects.filter(project=self.object.project)
-        form.fields['assignees'].queryset = User.objects.filter(id=self.object.project.owner.id) | self.object.project.collaborators.all()
+        if self.object.project.owner is not None:
+            form.fields['assignees'].queryset = User.objects.filter(id=self.object.project.owner.id) | self.object.project.collaborators.all()
+        else:
+            form.fields['assignees'].queryset = self.object.project.collaborators.all()
+
         form.fields['milestone'].required = False
         form.fields['assignees'].required = False
         return render(request, self.template_name, {'form': form, 'object': self.object, 'action': 'Edit'})
@@ -135,3 +153,11 @@ def reopen_issue(request, **kwargs):
 
     return redirect("issues:preview_all")
 
+
+@login_required
+def remove_assignment(request, **kwargs):
+    issue = Issue.objects.get(id=kwargs['iid'])
+    assignee = User.objects.get(id=kwargs['uid'])
+    issue.assignees.remove(assignee)
+
+    return redirect('issues:details', id=issue.id)

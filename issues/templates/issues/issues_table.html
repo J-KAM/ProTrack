@@ -6,7 +6,7 @@
     {% for issue in issues %}
     <tr>
         <td class = "col-md-5">
-            <p class="list-item-title">{{ issue.title }}</p>&nbsp;<p class="list-item-subtitle">- Project name</p></br>
+            <p class="list-item-title">{{ issue.title }}</p>&nbsp;<p class="list-item-subtitle"> ( <span class="glyphicon glyphicon-briefcase"></span>  {{issue.project.name}} )</p></br>
             {% if issue.status == 'Open' %}
                 <span class="label label-default badge-label">OPEN</span>
                 {% elif issue.status == 'In progress' %}
@@ -36,6 +36,8 @@
 
         </td>
         <td class = "col-md-3" align="center">
+            <a href = "{% url 'issues:details' issue.id %}">Details</a></br>
+
             {% if issue.status != 'Closed' %}
                 <a href = "{% url 'issues:update' issue.id %}">Edit</a></br>
                 <a href = "{% url 'issues:close' issue.id %}">Close</a></br>
