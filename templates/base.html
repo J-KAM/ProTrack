@@ -49,7 +49,7 @@
                         <a href="{% url 'milestones:preview' %}">Milestones</a>
                     </li>
                     <li>
-                        <a href="#">Groups</a>
+                        <a href="{% url 'issues:preview_all' %}">Issues</a>
                     </li>
                 </ul>
 
@@ -70,9 +70,9 @@
                             <li><a href = "{% url 'projects:create' %}">New project</a></li>
                             <li class = "divider"></li>
                             <li><a href = "{% url 'milestones:create' %}">New milestone</a></li>
-                            <li><a href = "#">New issue</a></li>
                         </ul>
                     </li>
+                <ul class = "nav navbar-nav navbar-right">
                     <li class = "dropdown">
                     <a class = "dropdown-toggle profile-img" data-toggle = "dropdown" href="#">
                        <img src="{{ user.profile.profile_picture.url }}" class="special-img img-circle">

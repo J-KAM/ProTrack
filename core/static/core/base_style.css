@@ -51,6 +51,7 @@ body {
     width: 130px;
 }
 
+.panel-h1{
 .error {
     color:red;
 }
@@ -83,6 +84,8 @@ body {
 
 .panel-hr {
     border-width: 1px;
+.panel-hr {
+    border-width:1px;
     border-color: darkgray;
     /*border-color: #428bca;*/
 }
@@ -101,3 +104,4 @@ body {
 .my-div {
     width: 100%;
 }
+>>>>>>> Temporary merge branch 2
