@@ -157,3 +157,4 @@ wheels/
 
 .idea/preferred-vcs.xml
 django_project/core_app/core/migrations/0002_auto_20170824_1327.py
+\.idea/inspectionProfiles/profiles_settings\.xml

@@ -11,6 +11,10 @@
     <link href='https://fonts.googleapis.com/css?family=Sofia' rel='stylesheet' type='text/css'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!--date-picker widget-->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
     {% block extra_css %} {% endblock %}
 </head>
 <body>
@@ -45,7 +49,7 @@
                         <a href="{% url 'milestones:preview' %}">Milestones</a>
                     </li>
                     <li>
-                        <a href="{% url 'issues:preview' %}">Issues</a>
+                        <a href="{% url 'issues:preview_all' %}">Issues</a>
                     </li>
                 </ul>
 
@@ -66,7 +70,6 @@
                         <li><a href = "{% url 'projects:create' %}">New project</a></li>
                         <li class = "divider"></li>
                         <li><a href = "{% url 'milestones:create' %}">New milestone</a></li>
-                        <li><a href = "{% url 'issues:create' %}">New issue</a></li>
                         <li><a href = "{% url 'organizations:create' %}">New organization</a></li>
                     </ul>
                     </li>

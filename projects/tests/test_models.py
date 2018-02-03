@@ -29,13 +29,13 @@ class ProjectModelTest(TestCase):
         owner_label = project._meta.get_field('owner').verbose_name
         organization_owner_label = project._meta.get_field('organization_owner').verbose_name
 
-        self.assertEquals(name_label, 'name')
-        self.assertEquals(url_label, 'url')
-        self.assertEquals(description_label, 'description')
-        self.assertEquals(created_label, 'created')
-        self.assertEquals(num_of_stars_label, 'num of stars')
-        self.assertEquals(owner_label, 'owner')
-        self.assertEquals(organization_owner_label, 'organization owner')
+        self.assertEqual(name_label, 'name')
+        self.assertEqual(url_label, 'url')
+        self.assertEqual(description_label, 'description')
+        self.assertEqual(created_label, 'created')
+        self.assertEqual(num_of_stars_label, 'num of stars')
+        self.assertEqual(owner_label, 'owner')
+        self.assertEqual(organization_owner_label, 'organization owner')
 
     def test_field_nullable(self):
         project = Project.objects.get(id=1)
@@ -58,34 +58,34 @@ class ProjectModelTest(TestCase):
     def test_default_values(self):
         project = Project.objects.get(id=1)
         num_of_stars_default = project._meta.get_field('num_of_stars').default
-        self.assertEquals(num_of_stars_default, 0)
+        self.assertEqual(num_of_stars_default, 0)
 
     def test_name_max_length(self):
         project = Project.objects.get(id=1)
         max_length = project._meta.get_field('name').max_length
-        self.assertEquals(max_length, 80)
+        self.assertEqual(max_length, 80)
 
     def test_object_name(self):
         project = Project.objects.get(id=1)
-        self.assertEquals('First project', str(project))
+        self.assertEqual('First project', str(project))
 
     def test_name_values(self):
         project1 = Project.objects.get(id=1)
         project2 = Project.objects.get(id=2)
         project3 = Project.objects.get(id=3)
 
-        self.assertEquals(project1.name, 'First project')
-        self.assertEquals(project2.name, 'MySecond')
-        self.assertEquals(project3.name, 'Treci')
+        self.assertEqual(project1.name, 'First project')
+        self.assertEqual(project2.name, 'MySecond')
+        self.assertEqual(project3.name, 'Treci')
 
     def test_url_values(self):
         project1 = Project.objects.get(id=1)
         project2 = Project.objects.get(id=2)
         project3 = Project.objects.get(id=3)
 
-        self.assertEquals(project1.url, 'localhost:8000/pera/First project')
-        self.assertEquals(project2.url, 'localhost:8000/JKAM/MySecond')
-        self.assertEquals(project3.url, 'localhost:8000/zika/First project')
+        self.assertEqual(project1.url, 'localhost:8000/pera/First project')
+        self.assertEqual(project2.url, 'localhost:8000/JKAM/MySecond')
+        self.assertEqual(project3.url, 'localhost:8000/zika/First project')
 
     def test_owner_values(self):
         user1 = User.objects.get(username="pera")
@@ -95,12 +95,12 @@ class ProjectModelTest(TestCase):
         organization1 = Organization.objects.get(name="JKAM")
         project3 = Project.objects.get(id=3)
 
-        self.assertEquals(project1.owner, user1)
-        self.assertEquals(project1.organization_owner, None)
-        self.assertEquals(project2.owner, None)
-        self.assertEquals(project2.organization_owner, organization1)
-        self.assertEquals(project3.owner, user2)
-        self.assertEquals(project3.organization_owner, None)
+        self.assertEqual(project1.owner, user1)
+        self.assertEqual(project1.organization_owner, None)
+        self.assertEqual(project2.owner, None)
+        self.assertEqual(project2.organization_owner, organization1)
+        self.assertEqual(project3.owner, user2)
+        self.assertEqual(project3.organization_owner, None)
 
 
 
