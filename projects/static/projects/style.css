@@ -4,6 +4,14 @@
     min-width: 550px;
 }
 
+.panel-body-details {
+    padding: 10px 0 10px 0;
+}
+
+.tab-pane-details {
+    margin-left: 10px;
+}
+
 p {
     display: inline;
 }
@@ -37,10 +45,18 @@ input[type='text'], select {
     color: #565555;
 }
 
+
 .panel-before-heading{
     margin-left: 2%;
 }
 
 .project-link {
     font-size: 30px;
+}
+
+.btn-table {
+    text-align: right;
+    float: right;
+    padding-bottom: 1%;
+    padding-top: 1%;
 }

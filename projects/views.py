@@ -16,6 +16,8 @@ from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 
+from issues.models import Issue
+from milestones.models import Milestone
 from organizations.models import Organization
 from projects.forms import CreateProjectForm, UpdateProjectForm
 from projects.models import Project
@@ -114,6 +116,40 @@ class ProjectUpdate(UpdateView):
 class ProjectDetail(DetailView):
     model = Project
     template_name = 'projects/detail_preview.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project_milestones'] = Milestone.objects.filter(project=context['project'])
+        context['open_milestones'] = context['project_milestones'].filter(status="OPEN")
+        context['closed_milestones'] = context['project_milestones'].filter(status="CLOSED")
+        issues = Issue.objects.filter(project=context['project'])
+        context['open_issues'] = issues.filter(status="Open")
+        context['in_progress_issues'] = issues.filter(status="In progress")
+        context['done_issues'] = issues.filter(status="Done")
+        context['closed_issues'] = issues.filter(status="Closed")
+        return context
+
+# class ProjectDetail(DetailView):
+#     template_name = 'projects/detail_preview.html'
+#     context_object_name = 'project'
+#
+#     def get_queryset(self, **kwargs):
+#         project = Project.objects.get(id=self.kwargs['pk'])
+#         return project
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         project = context['project']
+#
+#         context['all_milestones'] = Milestone.objects.filter(project=project)
+#         context['open_milestones'] = context['all_milestones'].filter(status="OPEN")
+#         context['closed_milestones'] = context['all_milestones'].filter(status="CLOSED")
+#         return context
+#         #
+#         # context['open_issues'] = context['all_issues'].filter(status="Open")
+#         # context['in_progress_issues'] = context['all_issues'].filter(status="In progress")
+#         # context['done_issues'] = context['all_issues'].filter(status="Done")
+#         # context['closed_issues'] = context['all_issues'].filter(status="Closed")
 
 
 class ProjectDelete(DeleteView):
