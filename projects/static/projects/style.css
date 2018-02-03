@@ -12,6 +12,11 @@ table {
     width: 100%;
 }
 
+input[type='text'], select {
+    width: 150px;
+    box-sizing: border-box;
+}
+
 .list-item-title {
     font-weight: bold;
     font-size: 24px;

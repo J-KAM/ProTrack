@@ -33,6 +33,9 @@ ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'projects.apps.ProjectsConfig',
+    'issues.apps.IssuesConfig',
+    'milestones.apps.MilestonesConfig',
+    'organizations.apps.OrganizationsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

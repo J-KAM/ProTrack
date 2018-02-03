@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+    <div class="panel panel-success milestone-panel">
+        <div class="panel-heading">
+            <h1 class="panel-title panel-h1">Confirmation</h1>
+        </div>
+        <div class="panel-body">
+            <form method="post" action="">
+                {% csrf_token %}
+                <h4>Are you sure you want to delete organization {{ object }}?</h4>
+                <p style = "color: gray">Projects associated with this organization will be deleted. Files, milestones and issues associated with organization's projects will be deleted. Once you delete a organization you cannot revert it.</p>
+                <div align="right">
+                    <hr>
+                    <button type="submit" class="btn btn-success">Delete</button>
+                    <a href="{% url 'organizations:preview' %}" class="btn btn-info" role="button">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
