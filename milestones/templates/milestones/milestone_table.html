@@ -29,6 +29,7 @@
             <p><span class="glyphicon glyphicon-list-alt"></span> Issues: 0 open 0 closed</p>
         </td>
         <td class = "col-md-3" align="center">
+            <a href = "{% url 'milestones:detail' milestone.id %}">Details</a></br>
             {% if milestone.status == 'OPEN' %}
                 <a href = "{% url 'milestones:update' milestone.id %}">Edit</a></br>
                 <a href = "{% url 'milestones:close' milestone.id %}">Close</a></br>

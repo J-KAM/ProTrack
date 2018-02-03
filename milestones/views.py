@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
+from issues.models import Issue
 from projects.models import Project
 from .models import Milestone
 from .forms import MilestoneForm
@@ -21,11 +21,30 @@ class MilestonesPreview(generic.ListView):
             milestones = Milestone.objects.filter(project__in=projects)
             return milestones
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['open_milestones'] = context['all_milestones'].filter(status="OPEN")
         context['closed_milestones'] = context['all_milestones'].filter(status="CLOSED")
+        return context
+
+
+class MilestoneDetail(generic.ListView):
+    template_name = 'milestones/detail_preview.html'
+    context_object_name = 'all_issues'
+
+    def get_queryset(self, **kwargs):
+        if self.request.user.is_authenticated():
+            milestone = Milestone.objects.get(id=self.kwargs['id'])
+            issues = Issue.objects.filter(milestone=milestone)
+            return issues
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['open_issues'] = context['all_issues'].filter(status="Open")
+        context['in_progress_issues'] = context['all_issues'].filter(status="In progress")
+        context['done_issues'] = context['all_issues'].filter(status="Done")
+        context['closed_issues'] = context['all_issues'].filter(status="Closed")
+        context['milestone'] = Milestone.objects.get(id=self.kwargs['id'])
         return context
 
 

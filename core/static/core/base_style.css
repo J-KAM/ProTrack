@@ -51,39 +51,12 @@ body {
     width: 130px;
 }
 
-.panel-h1{
-.error {
-    color:red;
-}
-
-.right {
-    text-align: right;
-    float: right;
-}
-
-.alert {
-    width: 30%;
-}
-
-.inlineDivs {
-    width: 25%;
-    float: left;
-    display: inline;
-}
-
-.profileImage {
-    height: 130px;
-    width: 130px;
-}
-
 .panel-h1 {
     text-align: center;
     font-weight: bold;
     font-size: 14px;
 }
 
-.panel-hr {
-    border-width: 1px;
 .panel-hr {
     border-width:1px;
     border-color: darkgray;
@@ -104,4 +77,4 @@ body {
 .my-div {
     width: 100%;
 }
->>>>>>> Temporary merge branch 2
+

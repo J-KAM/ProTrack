@@ -16,9 +16,8 @@ class Milestone(models.Model):
     due_date = models.DateField()
     total_progress = models.PositiveIntegerField(default=0)
     total_time_spent = models.FloatField(default=0.0)
-    status = models.CharField(max_length=6,choices=STATUS_CHOICES,default="OPEN")
-    #TODO: Change this if possible
-    project = models.ForeignKey(Project,on_delete=models.CASCADE,null=True)
+    status = models.CharField(max_length=6,choices=STATUS_CHOICES,default="OPEN")    
+    project = models.ForeignKey(Project,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
