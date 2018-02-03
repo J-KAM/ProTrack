@@ -29,7 +29,9 @@
                     <p>ovde ide kod</p>
                 </div>
                 <div class = "tab-pane" id = "issues">
-                    <p>issues</p>
+                    {% with project=project %}
+                    {% include 'issues/issues_table.html' %}
+                    {% endwith %}
                 </div>
                 <div class = "tab-pane" id = "settings">
                     <ul class = "nav nav-tabs" id = "settingsTab">
