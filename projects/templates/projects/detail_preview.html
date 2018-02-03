@@ -11,9 +11,9 @@
     <div class = "panel panel-success panel-list">
         <div class = "panel-before-heading">
             {% if project.owner != None %}
-                <a href = "{% url 'core:profile' %}" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+                <a href = "{% url 'projects:preview' %}" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
             {% else %}
-                <a href = "#" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+                <a href = "{% url 'organizations:details' project.organization_owner.id %}" class = "project-link">{{project.organization_owner.name}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
             {% endif %}
         </div>
         <div class = "panel-heading">

@@ -3,7 +3,16 @@ from django.test import TestCase
 from django.urls import reverse
 
 
+
 class UserFormViewTest(TestCase):
+
+    def setUp(self):
+        test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',
+                                 first_name='Pera', last_name="Peric")
+        test_user1.save()
+        test_user1 = User.objects.create_user(username='mika', email='mika@gmail.com', password='mika333',
+                                 first_name='Mika', last_name="Mikic")
+        test_user1.save()
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/register/')
@@ -29,6 +38,16 @@ class UserFormViewTest(TestCase):
         response = self.client.post('/register', user_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'core/registration_form.html')
+
+    def test_login(self):
+        user = User.objects.get(username="pera")
+        credentials = {
+            'username': user.username,
+            'password': user.password
+        }
+        response = self.client.post('', credentials, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(User.objects.get(username="pera").is_authenticated())
 
 
 class SignInFormViewTest(TestCase):
@@ -57,10 +76,11 @@ class UserUpdateFormViewTest(TestCase):
                                  first_name='Mika', last_name="Mikic")
         test_user1.save()
 
+
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse('core:profile'))
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith('/accounts/login/'))
+        self.assertTrue(response.url.startswith('/?next=/home/profile/'))
 
     def test_logged_in(self):
         login = self.client.login(username="pera", password="pera1234")
@@ -155,7 +175,7 @@ class UserUpdateFormViewTest(TestCase):
         # test when user is not logged in
         response = self.client.get(reverse('core:home'))
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith('/accounts/login/'))
+        self.assertTrue(response.url.startswith('/?next=/home/'))
 
         # test when user is logged in
         login = self.client.login(username="pera", password="pera1234")
