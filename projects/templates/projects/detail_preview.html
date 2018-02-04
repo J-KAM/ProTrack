@@ -20,18 +20,30 @@
             <ul class = "nav nav-pills" id = "projectTab">
                 <li class = "active"><a data-toggle = "tab" href = "#code"><span class="glyphicon glyphicon-edit"></span> Code</a></li>
                 <li><a data-toggle = "tab" href = "#issues"><span class="glyphicon glyphicon-tasks"></span> Issues</a></li>
+                <li><a data-toggle = "tab" href = "#milestones"><span class="glyphicon glyphicon-flag"></span> Milestones</a></li>
                 <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
             </ul>
         </div>
-        <div class = "panel-body">
+        <div class = "panel-body-details">
             <div id = "content" class = "tab-content">
+
                 <div class = "tab-pane active" id = "code">
                     <p>ovde ide kod</p>
                 </div>
+
                 <div class = "tab-pane" id = "issues">
-                    <p>issues</p>
+                    {% with project=project open_issues=open_issues in_progress_issues=in_progress_issues done_issues=done_issues closed_issues=closed_issues%}
+                    {% include 'projects/issue_panel.html' %}
+                    {% endwith %}
                 </div>
-                <div class = "tab-pane" id = "settings">
+
+                <div class = "tab-pane" id = "milestones">
+                    {% with all_milestones=project_milestones open_milestones=open_milestones closed_milestones=closed_milestones  %}
+                    {% include 'projects/milestone_panel.html' %}
+                    {% endwith %}
+                </div>
+
+                <div class = "tab-pane tab-pane-details" id = "settings">
                     <ul class = "nav nav-tabs" id = "settingsTab">
                         <li class = "active"><a data-toggle = "tab" href = "#options"> Options</a></li>
                         <li><a data-toggle = "tab" href = "#collaborators"> Collaborators </a></li>
@@ -47,6 +59,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

@@ -1,14 +1,20 @@
+{% if project %}
+<a href = "{% url 'milestones:create_from_project' project.id %}" class="btn btn-success right" role="button">New milestone</a>
+{% endif %}
 <table class = "table">
     <tbody>
     {% for milestone in milestones %}
     <tr>
         <td class = "col-md-5">
-            <p class="list-item-title">{{ milestone.name }}</p>&nbsp;<p class="list-item-subtitle">- Project name</p></br>
+            <p class="list-item-title">{{ milestone.name }}</p>&nbsp;<p class="list-item-subtitle">&nbsp;&nbsp;( <span class="glyphicon glyphicon-briefcase"></span> {{milestone.project.name}} )</p></br>
+            {% if milestone.status == 'OPEN' %}
+                <span class="label label-default badge-label">OPEN</span>
+            {% endif %}
             {% if milestone.is_past_due %}
                 <span class="label label-warning badge-label">PAST DUE</span>
             {% endif %}
             {% if milestone.status == 'CLOSED' %}
-                <span class="label label-success badge-label">CLOSED</span>
+                <span class="label label-danger badge-label">CLOSED</span>
             {% endif %}
             <p class = "list-item-date"><span class="glyphicon glyphicon-calendar"></span> Start date: {{ milestone.start_date|date:"SHORT_DATE_FORMAT" }}</p>
             &nbsp;
@@ -26,13 +32,14 @@
             <p><span class="glyphicon glyphicon-list-alt"></span> Issues: 0 open 0 closed</p>
         </td>
         <td class = "col-md-3" align="center">
+            <a href = "{% url 'milestones:detail' milestone.id %}">Details</a></br>
             {% if milestone.status == 'OPEN' %}
-                <a href = "#">Edit</a></br>
-                <a href = "#">Close</a></br>
+                <a href = "{% url 'milestones:update' milestone.id %}">Edit</a></br>
+                <a href = "{% url 'milestones:close' milestone.id %}">Close</a></br>
             {% else %}
-                <a href = "#">Reopen</a></br>
+                <a href = "{% url 'milestones:reopen' milestone.id %}">Reopen</a></br>
             {% endif %}
-            <a href = "#" color="red">Delete</a>
+            <a href = "{% url 'milestones:delete' milestone.id %}">Delete</a>
         </td>
     </tr>
     {% endfor %}

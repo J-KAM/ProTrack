@@ -27,12 +27,12 @@ class CreateProjectFormTest(TestCase):
     def test_owner_type_initial_value(self):
         form = CreateProjectForm()
 
-        self.assertEquals(form.fields['owner_type'].initial, 'o')
+        self.assertEqual(form.fields['owner_type'].initial, 'o')
 
     def test_field_number(self):
         form = CreateProjectForm()
 
-        self.assertEquals(len(form.fields), 4)
+        self.assertEqual(len(form.fields), 4)
 
     def test_invalid_form(self):
         form_data = {
@@ -61,7 +61,7 @@ class UpdateProjectFormTest(TestCase):
     def test_field_number(self):
         form = UpdateProjectForm()
 
-        self.assertEquals(len(form.fields), 2)
+        self.assertEqual(len(form.fields), 2)
 
     def test_valid_form(self):
         form_data = {
