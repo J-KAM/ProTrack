@@ -86,6 +86,15 @@ class IssueFormView(CreateView):
             issue.assignees = form.cleaned_data['assignees']
             issue.save()
 
+            milestone = issue.milestone
+
+            if milestone is not None:
+                milestone.total_time_spent = milestone.total_time_spent + issue.total_time_spent
+                num_of_issues = Issue.objects.filter(milestone=milestone).count()
+                issue_progress = int(issue.progress.split('%')[0])
+                milestone.total_progress = (milestone.total_progress + issue_progress) / num_of_issues
+                milestone.save()
+
             if issue is not None:
                 return redirect('issues:preview_all')
 
@@ -129,6 +138,15 @@ class IssueUpdate(UpdateView):
 
             issue.assignees = form.cleaned_data['assignees']
             issue.save()
+
+            milestone = issue.milestone
+
+            if milestone is not None:
+                milestone.total_time_spent = milestone.total_time_spent + issue.total_time_spent
+                num_of_issues = Issue.objects.filter(milestone=milestone).count()
+                issue_progress = int(issue.progress.split('%')[0])
+                milestone.total_progress = (milestone.total_progress + issue_progress) / num_of_issues
+                milestone.save()
 
             if issue is not None:
                 return redirect('issues:preview_all')
