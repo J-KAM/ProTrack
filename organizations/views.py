@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
@@ -47,9 +48,10 @@ class OrganizationFormView(CreateView):
 
         if form.is_valid():
             organization = form.save(commit=False)
+            organization.owner = request.user
             organization.save()
             organization.members.add(request.user)
-            organization.owner = request.user
+
             organization.save()
             return redirect('organizations:preview')
 

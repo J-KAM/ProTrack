@@ -9,7 +9,7 @@ class OrganizationFormViewTest(TestCase):
 
     def setUp(self):
         test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',first_name='Pera', last_name='Peric')
-        test_user1.save()
+        self.USER1_ID = test_user1.id
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse('organizations:create'))
@@ -38,16 +38,18 @@ class OrganizationUpdateViewTest(TestCase):
 
     def setUp(self):
         test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',first_name='Pera', last_name='Peric')
-        test_user1.save()
+        self.USER1_ID = test_user1.id
+
         test_org1 = Organization.objects.create(name='JKAM', owner=test_user1, description="desc JKAM")
+        self.ORG1_ID = test_org1.id
 
     def test_redirect_if_not_logged_in(self):
-        response = self.client.get(reverse('organizations:update', kwargs={'id':1}))
-        self.assertRedirects(response, '/?next=/organizations/1/')
+        response = self.client.get(reverse('organizations:update', kwargs={'id': self.ORG1_ID}))
+        self.assertRedirects(response, '/?next=/organizations/' + str(self.ORG1_ID) + '/')
 
     def test_logged_in(self):
         login = self.client.login(username="pera", password="pera1234")
-        response = self.client.get(reverse('organizations:update', kwargs={'id': 4}))
+        response = self.client.get(reverse('organizations:update', kwargs={'id': self.ORG1_ID}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'organizations/organization_form.html')
 
@@ -60,23 +62,14 @@ class OrganizationUpdateViewTest(TestCase):
 
         }
 
-        response = self.client.post(reverse('organizations:update', kwargs={'id':5 }), organization_data)
+        response = self.client.post(reverse('organizations:update', kwargs={'id': self.ORG1_ID}), organization_data)
         self.assertEqual(response.status_code, 302)
 
-        organization = Organization.objects.get(id=5)
+        organization = Organization.objects.get(id=self.ORG1_ID)
         self.assertEqual(organization.description, 'updated description of JKAM')
 
 
 class OrganizationPreviewTest(TestCase):
-
-    # @classmethod
-    # def setUp(cls):
-    #     num_of_organizations = 5
-    #     test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',first_name='Pera', last_name='Peric')
-    #     test_user1.save()
-    #
-    #     for org_num in range(num_of_organizations):
-    #         Organization.objects.create(name='Org %s' %org_num, owner=test_user1, description="desc of org %s" %org_num)
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/organizations/')
@@ -90,7 +83,6 @@ class OrganizationPreviewTest(TestCase):
         response = self.client.get(reverse('organizations:preview'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'organizations/preview.html')
-
 
 
 
