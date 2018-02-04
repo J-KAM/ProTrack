@@ -1,0 +1,17 @@
+<table class = "table">
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td class = "col-md-5">
+            <img src="{{ user.profile.profile_picture.url }}" class="special-img img-circle"> &nbsp;&nbsp;
+            <p class="list-item-title">{{ user.username }}</p>&nbsp;</br>
+        </td>
+        <td class = "col-md-3" align="center">
+             {% if issue.status != 'Closed' %}
+                <a href = "{% url 'issues:remove_assignment' iid=issue.id uid=user.id %}" class="btn btn-danger" role = "danger">Remove assignment</a></br>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

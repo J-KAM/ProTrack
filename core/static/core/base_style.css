@@ -51,11 +51,12 @@ body {
     width: 130px;
 }
 
-.panel-h1{
+.panel-h1 {
     text-align: center;
     font-weight: bold;
     font-size: 14px;
 }
+
 .panel-hr {
     border-width:1px;
     border-color: darkgray;
@@ -71,4 +72,8 @@ body {
 .milestone-form {
     display: block;
     text-align: center;
+}
+
+.my-div {
+    width: 100%;
 }

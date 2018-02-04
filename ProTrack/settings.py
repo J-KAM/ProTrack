@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
     'issues.apps.IssuesConfig',
     'milestones.apps.MilestonesConfig',
+    'organizations.apps.OrganizationsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,7 +87,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': 'root',
         #'HOST': 'db',
-        'HOST': 'localhost',
+         'HOST': 'localhost',
         'PORT': 5432,
     }
 }
@@ -142,5 +143,13 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+#email service
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'protrack.service@gmail.com'
+EMAIL_HOST_PASSWORD = 'protrack'
+EMAIL_PORT = 587
+
 #login redirect
 LOGIN_URL = 'core:sign_in'
+LOGIN_REDIRECT_URL = 'core:home'

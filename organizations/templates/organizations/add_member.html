@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title%}Members{% endblock %}
+
+{% block body %}
+
+    <div class="panel panel-success milestone-panel">
+        <div class="panel-heading">
+            <h1 class="panel-title panel-h1">Members</h1>
+        </div>
+        <div class="panel-body milestone-form">
+            <div>
+                 <table class="table">
+                    <tbody>
+                    {% for member in organization.invited_members.all %}
+                    <tr>
+                        <td class = "col-md-5">{{member.username}}</td>
+                        <td class = "col-md-5">This user has been invited to join in organization <b>{{organization.name}}</b></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <hr>
+            <div>
+                <h4>Search ProTrack users by username or email</h4>
+                <h6>An invitation will be sent to the user's email.</h6>
+                </br>
+                <form action = "{% url 'organizations:invite' %}" method="post" class="form-inline">
+                    {% csrf_token %}
+                    <input type = "text" class = "form-control" name = "member" value = "" placeholder="Search members..." required>
+                    <input type = "hidden" name="organization_id" value = "{{organization.id}}">
+                    <button type = "submit" class = "btn btn-success">Invite</button>
+                    <a href = "{% url 'organizations:details' organization.id %}" class="btn btn-info" role="button">Done</a>
+                </form>
+            </div>
+                </br><p class="error">{{error_message}}</p>
+        </div>
+    </div>
+
+{% endblock %}

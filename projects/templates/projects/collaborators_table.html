@@ -1,0 +1,23 @@
+<div class="btn-table">
+    <a href = "{% url 'projects:add_collaborators' project.id %}" class="btn btn-success" role = "danger"><span class = "glyphicon glyphicon-plus"></span> Invite collaborator(s)</a></br>
+</div>
+<table class="table">
+    <tbody>
+        {% if project.collaborators.count == 0 %}
+        <p class="list-item-description">There are currently no collaborators on this project.</p>
+        {% else %}
+            {% for collaborator in project.collaborators.all %}
+            <tr>
+                <td class = "col-md-5">
+                    <img src="{{ user.profile.profile_picture.url }}" class = "special-img img-circle"> &nbsp;&nbsp;
+                    <p class = "list-item-title">{{collaborator.username}}</p>
+                </td>
+                <td class = "col-md-3" align="center">
+                    <a href = "{% url 'projects:remove_collaborator' pid=project.id uid=collaborator.id%}" class="btn btn-danger" role = "danger">Remove collaborator</a></br>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+<hr>
