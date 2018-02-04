@@ -15,10 +15,6 @@
             <p class = "list-item-date"><span class="glyphicon glyphicon-calendar"></span> Due date: {{ milestone.due_date|date:"SHORT_DATE_FORMAT" }}</p></br>
             <p class = "list-item-description">{{milestone.description}}</p>
             </div>
-        <div align="right">
-            <a href = "{% url 'milestones:update' milestone.id %}" class="btn btn-success" role="button">Edit milestone</a>
-            <a href = "{% url 'milestones:close' milestone.id %}" class="btn btn-info" role="button">Close milestone</a>
-        </div>
     </div>
 
     <div class = "progress panel-list">
@@ -30,6 +26,14 @@
 
     <div class="panel panel-success panel-list">
         <div class="panel-heading">
+            <div class="right">
+                   {% if milestone.status != 'CLOSED' %}
+                        <a href = "{% url 'milestones:update' milestone.id %}" class="btn btn-success"><span class = "glyphicon glyphicon-edit"></span>Edit</a>&nbsp;
+                        <a href = "{% url 'milestones:close' milestone.id %}" class="btn btn-info">Close</a>
+                   {% else %}
+                        <a href = "{% url 'milestones:reopen' milestone.id %}" class="btn btn-info">Reopen</a>
+                   {% endif %}
+            </div>
             <ul class = "nav nav-pills" id = "issueTab">
                 <li class = "active"><a data-toggle ="tab" href = "#open">Open <span class = "badge">{{open_issues.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#inProgress">In progress <span class = "badge">{{in_progress_issues.count}}</span></a></li>
