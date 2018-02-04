@@ -1,0 +1,62 @@
+.panel-list {
+    width:80%;
+    margin: 0 auto;
+    min-width: 550px;
+}
+
+.panel-body-details {
+    padding: 10px 0 10px 0;
+}
+
+.tab-pane-details {
+    margin-left: 10px;
+}
+
+p {
+    display: inline;
+}
+
+table {
+    width: 100%;
+}
+
+input[type='text'], select {
+    width: 150px;
+    box-sizing: border-box;
+}
+
+.list-item-title {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.list-item-subtitle {
+    font-size: 16px;
+}
+
+.list-item-date {
+    font-size: 15px;
+    color: #565555;
+}
+
+.list-item-description {
+    font-size: 15px;
+    font-style: italic;
+    color: #565555;
+}
+
+
+.panel-before-heading{
+    margin-left: 2%;
+}
+
+.project-link {
+    font-size: 30px;
+}
+
+.btn-table {
+    text-align: right;
+    float: right;
+    padding-bottom: 1%;
+    padding-top: 1%;
+}

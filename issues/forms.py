@@ -14,7 +14,8 @@ class IssueForm(forms.ModelForm):
 
     class Meta:
         model = Issue
-        fields = ['title', 'description', 'time_spent', 'progress', 'type', 'weight', 'priority', 'status']
+        fields = ['title', 'description', 'time_spent', 'progress', 'milestone', 'type', 'weight', 'priority',
+                  'assignees', 'status']
         widgets = {'description': forms.Textarea(attrs={'rows': 6, 'cols': 43,
                                                         'style': 'resize:none;'}),
         }

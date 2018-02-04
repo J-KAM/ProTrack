@@ -1,0 +1,12 @@
+{% autoescape off %}
+
+Hi {{user.username}},<br>
+
+You have been invited to collaborate on a project.<br>
+Please click <a href ="http://{{domain}}{% url 'projects:show_invitation' uidb64=uid pidb64=pid %}">here</a> to accept or decline the invitation.
+
+<br>
+
+Thank you for using ProTrack.
+
+{% endautoescape %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Projects{% endblock %}
+{% block extra_css %}
+    {% load staticfiles %}
+    <link href="{% static 'projects/style.css' %}" rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block body %}
+    <div class = "panel panel-success panel-list">
+        <div class = "panel-heading">
+            <ul class = "nav nav-pills" id = "projectsTab">
+                <li class = "active"><a data-toggle = "tab" href = "#all">My projects</a></li>
+                <li><a data-toggle = "tab" href = "#owned">Owned projects</a></li>
+                <li><a data-toggle = "tab" href = "#collaborated">Collaborated projects</a></li>
+            </ul>
+        </div>
+
+        <div class = "panel-body">
+            <div id = "content" class = "tab-content">
+                <div class = "tab-pane active" id = "all">
+                    {% with projects=all_projects tab='a' %}
+                    {% include 'projects/projects_table.html' %}
+                    {% endwith %}
+                </div>
+                <div class = "tab-pane" id = "owned">
+                    {% with projects=owned_projects tab='o' %}
+                    {% include 'projects/projects_table.html' %}
+                    {% endwith %}
+                </div>
+                <div class = "tab-pane" id = "collaborated">
+                    {% with projects=collaborated_projects tab='c' %}
+                    {% include 'projects/projects_table.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
