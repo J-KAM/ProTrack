@@ -1,5 +1,5 @@
 body {
-    background: white url("images/sypmhony.png");
+    background: white url("images/it-15.jpg");
 }
 
 .navbar-brand {
@@ -49,4 +49,31 @@ body {
 .profileImage {
     height: 130px;
     width: 130px;
+}
+
+.panel-h1 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.panel-hr {
+    border-width:1px;
+    border-color: darkgray;
+    /*border-color: #428bca;*/
+}
+
+.milestone-panel {
+    width: 50%;
+    margin: 0 auto;
+    min-width: 550px;
+}
+
+.milestone-form {
+    display: block;
+    text-align: center;
+}
+
+.my-div {
+    width: 100%;
 }
