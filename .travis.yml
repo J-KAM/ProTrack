@@ -20,6 +20,9 @@ after_script:
 
 env:
   - DOCKER_COMPOSE_VERSION = 1.4.2
+  - PGDATABASE
+  - PGUSER
+  - PGPASSWORD
 
 before_install:
   - docker --version
