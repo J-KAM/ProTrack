@@ -1,10 +1,13 @@
+import requests
 from datetime import date
 
+from django import template
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.db import IntegrityError
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -81,7 +84,7 @@ class ProjectCreate(CreateView):
                     members = Organization.objects.get(id=project.organization_owner.id).members.all()
                     for member in members:
                         project.collaborators.add(member)
-                return redirect('projects:preview')
+                return render(request, 'projects/add_collaborators.html', {'project': project})
             except IntegrityError:
                 error_message = "Entered data is not valid. Please try again."
 
@@ -96,6 +99,10 @@ class ProjectUpdate(UpdateView):
     def get(self, request, **kwargs):
         self.object = Project.objects.get(id=self.kwargs['id'])
         form = self.get_form(self.form_class)
+        if self.object.is_git:
+            form.initial['project_type'] = 'g'
+        else:
+            form.initial['project_type'] = 'p'
         return render(request, self.template_name, {'form': form, 'object': self.object, 'action': 'Edit'})
 
     @method_decorator(login_required)
@@ -119,42 +126,48 @@ class ProjectDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['project_milestones'] = Milestone.objects.filter(project=context['project'])
+
+        project = context['project']
+
+        #get project commits
+        if project.is_git:
+            branches_url = 'https://api.github.com/repos/' + project.git_owner + '/' + project.git_name + '/branches'
+            commits_url = 'https://api.github.com/repos/' + project.git_owner + '/' + project.git_name + '/commits'
+            context['branches'] = requests.get(branches_url).json()
+            context['commits_data'] = requests.get(commits_url).json()
+
+        #get project milestones
+        context['project_milestones'] = Milestone.objects.filter(project=project)
         context['open_milestones'] = context['project_milestones'].filter(status="OPEN")
         context['closed_milestones'] = context['project_milestones'].filter(status="CLOSED")
-        issues = Issue.objects.filter(project=context['project'])
+
+        #get project issues
+        issues = Issue.objects.filter(project=project)
         context['open_issues'] = issues.filter(status="Open")
         context['in_progress_issues'] = issues.filter(status="In progress")
         context['done_issues'] = issues.filter(status="Done")
         context['closed_issues'] = issues.filter(status="Closed")
-        return context
 
-# class ProjectDetail(DetailView):
-#     template_name = 'projects/detail_preview.html'
-#     context_object_name = 'project'
-#
-#     def get_queryset(self, **kwargs):
-#         project = Project.objects.get(id=self.kwargs['pk'])
-#         return project
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         project = context['project']
-#
-#         context['all_milestones'] = Milestone.objects.filter(project=project)
-#         context['open_milestones'] = context['all_milestones'].filter(status="OPEN")
-#         context['closed_milestones'] = context['all_milestones'].filter(status="CLOSED")
-#         return context
-#         #
-#         # context['open_issues'] = context['all_issues'].filter(status="Open")
-#         # context['in_progress_issues'] = context['all_issues'].filter(status="In progress")
-#         # context['done_issues'] = context['all_issues'].filter(status="Done")
-#         # context['closed_issues'] = context['all_issues'].filter(status="Closed")
+        return context
 
 
 class ProjectDelete(DeleteView):
     model = Project
     success_url = reverse_lazy('projects:preview')
+
+
+@login_required
+def get_commits(request):
+    selected_branch = request.GET.get('selected_branch', None)
+    project_id = request.GET.get('project_id', None)
+
+    if project_id is not None:
+        project = Project.objects.get(id = project_id)
+        if project.is_git:
+            commits_url = 'https://api.github.com/repos/' + project.git_owner + '/' + project.git_name + '/commits?sha=' + selected_branch
+
+    commits = requests.get(commits_url).json()
+    return JsonResponse(commits, safe=False)
 
 
 @login_required
