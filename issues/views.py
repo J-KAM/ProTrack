@@ -2,11 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
+
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 
+from activities.views import save_activity
 from issues.forms import IssueForm
 from issues.models import Issue
 from milestones.models import Milestone
@@ -83,12 +85,19 @@ class IssueFormView(CreateView):
 
             issue.save()
 
-            issue.assignees = form.cleaned_data['assignees']
-            issue.save()
+            save_activity(user=request.user, action='opened', resource=issue)
+            save_activity(user=request.user, action='added to project', resource=issue)
+
+            if form.changed_data.__contains__('assignees'):
+                issue.assignees = form.cleaned_data['assignees']
+                issue.save()
+                save_activity(user=request.user, action='assigned', resource=issue)
 
             milestone = issue.milestone
 
             if milestone is not None:
+                save_activity(user=request.user, action='set milestone', resource=issue)
+
                 milestone.total_time_spent = milestone.total_time_spent + issue.total_time_spent
                 num_of_issues = Issue.objects.filter(milestone=milestone).count()
                 issue_progress = int(issue.progress.split('%')[0])
@@ -136,8 +145,19 @@ class IssueUpdate(UpdateView):
             issue.time_spent = 0.0
             issue.save()
 
-            issue.assignees = form.cleaned_data['assignees']
-            issue.save()
+            save_activity(user=request.user, action='updated', resource=issue)
+
+            if form.changed_data.__contains__('assignees'):
+                issue.assignees = form.cleaned_data['assignees']
+                issue.save()
+                save_activity(user=request.user, action='assigned', resource=issue)
+
+            if form.changed_data.__contains__('milestone'):
+                if issue.milestone is not None:
+                    save_activity(user=request.user, action='set milestone', resource=issue)
+                else:
+                    save_activity(user=request.user, action='removed milestone', resource=issue)
+
 
             milestone = issue.milestone
 
@@ -160,6 +180,8 @@ def close_issue(request, **kwargs):
     issue.status = 'Closed'
     issue.save()
 
+    save_activity(user=request.user, action='closed', resource=issue)
+
     return redirect("issues:preview_all")
 
 
@@ -169,6 +191,8 @@ def reopen_issue(request, **kwargs):
     issue.status = 'Open'
     issue.save()
 
+    save_activity(user=request.user, action='reopened', resource=issue)
+
     return redirect("issues:preview_all")
 
 
@@ -177,5 +201,7 @@ def remove_assignment(request, **kwargs):
     issue = Issue.objects.get(id=kwargs['iid'])
     assignee = User.objects.get(id=kwargs['uid'])
     issue.assignees.remove(assignee)
+
+    save_activity(user=request.user, action='assigned', resource=issue)
 
     return redirect('issues:details', id=issue.id)
