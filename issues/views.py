@@ -91,12 +91,13 @@ class IssueFormView(CreateView):
             if form.changed_data.__contains__('assignees'):
                 issue.assignees = form.cleaned_data['assignees']
                 issue.save()
-                save_activity(user=request.user, action='assigned', resource=issue)
+                save_activity(user=request.user, action='assigned', resource=issue, content=",".join(a.username for a in issue.assignees.all()))
 
             milestone = issue.milestone
 
             if milestone is not None:
-                save_activity(user=request.user, action='set milestone', resource=issue)
+                save_activity(user=request.user, action='set milestone', resource=issue,
+                              content=issue.milestone.name)
 
                 milestone.total_time_spent = milestone.total_time_spent + issue.total_time_spent
                 num_of_issues = Issue.objects.filter(milestone=milestone).count()
@@ -150,14 +151,14 @@ class IssueUpdate(UpdateView):
             if form.changed_data.__contains__('assignees'):
                 issue.assignees = form.cleaned_data['assignees']
                 issue.save()
-                save_activity(user=request.user, action='assigned', resource=issue)
+                save_activity(user=request.user, action='assigned', resource=issue, content=",".join(a.username for a in issue.assignees.all()))
 
             if form.changed_data.__contains__('milestone'):
                 if issue.milestone is not None:
-                    save_activity(user=request.user, action='set milestone', resource=issue)
+                    save_activity(user=request.user, action='set milestone', resource=issue,
+                                  content=issue.milestone.name)
                 else:
                     save_activity(user=request.user, action='removed milestone', resource=issue)
-
 
             milestone = issue.milestone
 
@@ -205,3 +206,4 @@ def remove_assignment(request, **kwargs):
     save_activity(user=request.user, action='assigned', resource=issue)
 
     return redirect('issues:details', id=issue.id)
+
