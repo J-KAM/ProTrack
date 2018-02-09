@@ -42,7 +42,7 @@
 
                 <div class = "tab-pane active" id = "commits">
                     {% if project.is_git %}
-                        {% with project=project branches=branches commits_data=commits_data %}
+                        {% with project=project default_branch=default_branch branches=branches commits_data=commits_data %}
                         {% include 'projects/code_panel.html' %}
                         {% endwith %}
                     {% else %}

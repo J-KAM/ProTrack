@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^invitation/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<pidb64>[0-9A-Za-z_\-]+)/$', views.show_invitation, name="show_invitation"),
     url(r'^invitation/manage/$', views.manage_invitation, name="manage"),
     url(r'^commits/$', views.get_commits, name="commits"),
+    url(r'^(?P<pid>[0-9]+)/(?P<cid>\w+)/commit/$', views.get_commit, name="commit"),
 ]

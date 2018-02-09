@@ -1,5 +1,5 @@
 import requests
-from datetime import date
+from datetime import date, datetime
 
 from django import template
 from django.contrib.auth.decorators import login_required
@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.dateparse import parse_date
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -131,8 +132,11 @@ class ProjectDetail(DetailView):
 
         #get project commits
         if project.is_git:
+            repo_url = 'https://api.github.com/repos/' + project.git_owner + '/' + project.git_name
             branches_url = 'https://api.github.com/repos/' + project.git_owner + '/' + project.git_name + '/branches'
             commits_url = 'https://api.github.com/repos/' + project.git_owner + '/' + project.git_name + '/commits'
+
+            context['default_branch'] = requests.get(repo_url).json()['default_branch']
             context['branches'] = requests.get(branches_url).json()
             context['commits_data'] = requests.get(commits_url).json()
 
@@ -168,6 +172,20 @@ def get_commits(request):
 
     commits = requests.get(commits_url).json()
     return JsonResponse(commits, safe=False)
+
+
+@login_required
+def get_commit(request, pid, cid):
+    project = Project.objects.get(id=pid)
+
+    if project is not None and project.is_git:
+        commit_url = 'https://api.github.com/repos/' + project.git_owner + '/' + project.git_name + '/commits/' + cid
+        commit = requests.get(commit_url).json()
+
+        commit_date = datetime.strptime(commit['commit']['author']['date'], '%Y-%m-%dT%H:%M:%SZ')
+        return render(request, 'projects/commit_detail.html', {'commit_data': commit, 'date': commit_date})
+
+    return render(request, 'core/home_page.html')
 
 
 @login_required
