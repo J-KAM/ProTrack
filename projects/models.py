@@ -14,10 +14,18 @@ class Project(models.Model):
     organization_owner = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     collaborators = models.ManyToManyField(User, related_name='collaborators')
     invited_collaborators = models.ManyToManyField(User, related_name='invited_collaborators')
+    git_owner = models.CharField(max_length=255, null=True, blank=True)
+    git_name = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         unique_together = ('name', 'url')
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_git(self):
+        if self.git_owner is not None and self.git_owner != '':
+            return True
+        return False
 
