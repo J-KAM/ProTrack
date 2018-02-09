@@ -63,6 +63,7 @@ class ProjectCreate(CreateView):
     def post(self, request):
         form = self.form_class(request.POST)
         form.fields['organization_owner'].required = False
+        error_message = ""
 
         if form.is_valid():
             project = form.save(commit=False)
@@ -110,6 +111,7 @@ class ProjectUpdate(UpdateView):
     def post(self, request, **kwargs):
         project = Project.objects.get(id=self.kwargs['id'])
         form = self.form_class(request.POST, instance=project)
+        error_message = ""
 
         if form.is_valid():
             try:

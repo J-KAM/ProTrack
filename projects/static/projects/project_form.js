@@ -1,6 +1,11 @@
 $(document).ready(function(){
     $('select[name=organization_owner]').attr('required',true);
 
+    if($('#id_owner_type').val() == 'm') {
+        $('#organization_owner').hide();
+        $('select[name=organization_owner]').attr('required',false);
+    }
+
     if($('#id_project_type').val() == 'p') {
         $('#git_owner').hide();
         $('#git_name').hide();
@@ -28,6 +33,8 @@ $(document).ready(function(){
         } else {
             $('#git_owner').hide();
             $('#git_name').hide();
+            $('input[name=git_owner]').val('');
+            $('input[name=git_name]').val('');
             $('input[name=git_owner]').attr('required', false);
             $('input[name=git_name]').attr('required', false);
         }

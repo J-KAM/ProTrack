@@ -9,7 +9,6 @@ class ProjectModelTest(TestCase):
 
     def setUp(self):
         test_user1 = User.objects.create(username='pera', email='pera@gmail.com', password='pera1234',first_name='Pera',last_name='Peric')
-        # test_user1.save()
         self.USER1_ID = test_user1.id
 
         test_user2 = User.objects.create(username='zika', email='zika@gmail.com', password='zikinasifra',first_name='Zika', last_name='Zikic')
@@ -18,9 +17,9 @@ class ProjectModelTest(TestCase):
         test_organization1 = Organization.objects.create(name='JKAM', owner=test_user1)
         self.ORG1_ID = test_organization1.id
 
-        test_project1 = Project.objects.create(name='First project', url='localhost:8000/pera/First project',description='my first project', created='2018-02-01', num_of_stars=0,owner=test_user1, organization_owner=None)
-        test_project2 = Project.objects.create(name='MySecond', url='localhost:8000/JKAM/MySecond', description='my second project', created='2018-01-15', num_of_stars=0,owner=None, organization_owner=test_organization1)
-        test_project3 = Project.objects.create(name='Treci', url='localhost:8000/zika/First project', description='zikin first project', created='2018-01-25', num_of_stars=0,owner=test_user2, organization_owner=None)
+        test_project1 = Project.objects.create(name='First project', url='localhost:8000/pera/First project',description='my first project', created='2018-02-01', num_of_stars=0,owner=test_user1, organization_owner=None, git_owner=None, git_name=None)
+        test_project2 = Project.objects.create(name='MySecond', url='localhost:8000/JKAM/MySecond', description='my second project', created='2018-01-15', num_of_stars=0,owner=None, organization_owner=test_organization1, git_owner='J-KAM', git_name='TransportTracker')
+        test_project3 = Project.objects.create(name='Treci', url='localhost:8000/zika/First project', description='zikin first project', created='2018-01-25', num_of_stars=0,owner=test_user2, organization_owner=None, git_owner=None, git_name=None)
 
         self.PRO1_ID = test_project1.id
         self.PRO2_ID = test_project2.id
@@ -35,6 +34,8 @@ class ProjectModelTest(TestCase):
         num_of_stars_label = project._meta.get_field('num_of_stars').verbose_name
         owner_label = project._meta.get_field('owner').verbose_name
         organization_owner_label = project._meta.get_field('organization_owner').verbose_name
+        git_owner_label = project._meta.get_field('git_owner').verbose_name
+        git_name_label = project._meta.get_field('git_name').verbose_name
 
         self.assertEqual(name_label, 'name')
         self.assertEqual(url_label, 'url')
@@ -43,6 +44,8 @@ class ProjectModelTest(TestCase):
         self.assertEqual(num_of_stars_label, 'num of stars')
         self.assertEqual(owner_label, 'owner')
         self.assertEqual(organization_owner_label, 'organization owner')
+        self.assertEqual(git_owner_label, 'git owner')
+        self.assertEqual(git_name_label, 'git name')
 
     def test_field_nullable(self):
         project = Project.objects.get(id=self.PRO1_ID)
@@ -53,6 +56,8 @@ class ProjectModelTest(TestCase):
         num_of_stars_nullable = project._meta.get_field('num_of_stars').null
         owner_nullable = project._meta.get_field('owner').null
         organization_owner_nullable = project._meta.get_field('organization_owner').null
+        git_owner_nullable = project._meta.get_field('git_owner').null
+        git_name_nullable = project._meta.get_field('git_name').null
 
         self.assertFalse(name_nullable)
         self.assertFalse(url_nullable)
@@ -61,20 +66,34 @@ class ProjectModelTest(TestCase):
         self.assertFalse(num_of_stars_nullable)
         self.assertTrue(owner_nullable)
         self.assertTrue(organization_owner_nullable)
+        self.assertTrue(git_owner_nullable)
+        self.assertTrue(git_name_nullable)
 
     def test_default_values(self):
         project = Project.objects.get(id=self.PRO1_ID)
         num_of_stars_default = project._meta.get_field('num_of_stars').default
         self.assertEqual(num_of_stars_default, 0)
 
-    def test_name_max_length(self):
+    def test_max_lengths(self):
         project = Project.objects.get(id=self.PRO1_ID)
-        max_length = project._meta.get_field('name').max_length
-        self.assertEqual(max_length, 80)
+        name_max_length = project._meta.get_field('name').max_length
+        git_owner_max_length = project._meta.get_field('git_owner').max_length
+        git_name_max_length = project._meta.get_field('git_name').max_length
+
+        self.assertEqual(name_max_length, 80)
+        self.assertEqual(git_owner_max_length, 255)
+        self.assertEqual(git_name_max_length, 255)
 
     def test_object_name(self):
         project = Project.objects.get(id=self.PRO1_ID)
         self.assertEqual('First project', str(project))
+
+    def test_is_git(self):
+        project1 = Project.objects.get(id=self.PRO1_ID)
+        project2 = Project.objects.get(id=self.PRO2_ID)
+
+        self.assertFalse(project1.is_git)
+        self.assertTrue(project2.is_git)
 
     def test_name_values(self):
         project1 = Project.objects.get(id=self.PRO1_ID)
