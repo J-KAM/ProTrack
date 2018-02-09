@@ -27,6 +27,7 @@ class Activity(models.Model):
 
     date_time = models.DateTimeField()
     content = models.CharField(max_length=255, null=True)
+    content_id = models.PositiveIntegerField(null=True)
 
     def __str__(self):
         return self.user.username + "-" + self.action
