@@ -159,10 +159,11 @@ class IssueUpdate(UpdateView):
 
             if form.changed_data.__contains__('milestone'):
                 if issue.milestone is not None:
-                    save_activity(user=request.user, action='removed milestone', resource=issue,
-                                  content=old_milestone.name, content_id=old_milestone.id)
+                    if old_milestone is not None:
+                        save_activity(user=request.user, action='removed milestone', resource=issue,
+                                        content=old_milestone.name, content_id=old_milestone.id)
                     save_activity(user=request.user, action='set milestone', resource=issue,
-                                  content=issue.milestone.name)
+                                  content=issue.milestone.name, content_id=issue.milestone.id)
                 else:
                     save_activity(user=request.user, action='removed milestone', resource=issue,
                                   content=old_milestone.name, content_id=old_milestone.id)
