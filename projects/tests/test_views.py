@@ -3,12 +3,13 @@ from django.test import TestCase
 
 from django.urls import reverse
 
+from projects.models import Project
+
 
 class ProjectCreateFormViewTest(TestCase):
 
     def setUp(self):
         test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',first_name='Pera', last_name='Peric')
-        test_user1.save()
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse('projects:create'))
@@ -31,16 +32,16 @@ class ProjectCreateFormViewTest(TestCase):
 
         login = self.client.login(username='pera', password='pera1234')
         response = self.client.post(reverse('projects:create'), project_data)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'projects/add_collaborators.html')
+        self.assertEqual(response.status_code, 302)
 
 
 class ProjectUpdateFormViewTest(TestCase):
 
     def setUp(self):
         test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',first_name='Pera', last_name='Peric')
-        test_user1.save()
+        test_project1 = Project.objects.create(name='First project', url='localhost:8000/pera/First project',description='my first project', created='2018-02-01', num_of_stars=0,owner=test_user1, organization_owner=None)
+        self.PRO1_ID = test_project1.id
 
     def test_redirect_if_not_logged_in(self):
-        response = self.client.get(reverse('projects:update', kwargs={'id':1}))
-        self.assertRedirects(response, '/?next=/projects/1/')
+        response = self.client.get(reverse('projects:update', kwargs={'id': self.PRO1_ID}))
+        self.assertRedirects(response, '/?next=/projects/' + str(self.PRO1_ID) + '/')

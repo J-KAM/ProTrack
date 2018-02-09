@@ -33,12 +33,16 @@ ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'projects.apps.ProjectsConfig',
+    'issues.apps.IssuesConfig',
+    'milestones.apps.MilestonesConfig',
+    'organizations.apps.OrganizationsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [
@@ -136,7 +140,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_FINDERS = ('django.contrib.staticfiles.finders.AppDirectoriesFinder',)
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 

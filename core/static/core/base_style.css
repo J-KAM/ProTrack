@@ -1,5 +1,5 @@
 body {
-    background: white url("images/sypmhony.png");
+    background: white url("images/it-15.jpg");
 }
 
 .navbar-brand {
@@ -51,30 +51,6 @@ body {
     width: 130px;
 }
 
-.error {
-    color:red;
-}
-
-.right {
-    text-align: right;
-    float: right;
-}
-
-.alert {
-    width: 30%;
-}
-
-.inlineDivs {
-    width: 25%;
-    float: left;
-    display: inline;
-}
-
-.profileImage {
-    height: 130px;
-    width: 130px;
-}
-
 .panel-h1 {
     text-align: center;
     font-weight: bold;
@@ -82,7 +58,7 @@ body {
 }
 
 .panel-hr {
-    border-width: 1px;
+    border-width:1px;
     border-color: darkgray;
     /*border-color: #428bca;*/
 }

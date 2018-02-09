@@ -6,17 +6,16 @@ from django.test import TestCase
 
 class UserModelTest(TestCase):
 
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(self):
         test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',
-                            first_name='Pera', last_name="Peric")
-        test_user1.save()
-        test_user1 = User.objects.create_user(username='mika', email='mika@gmail.com', password='mika333',
-                            first_name='Mika', last_name="Mikic")
-        test_user1.save()
+                                              first_name='Pera', last_name="Peric")
+        self.USER1_ID = test_user1.id
+        test_user2 = User.objects.create_user(username='mika', email='mika@gmail.com', password='mika333',
+                                              first_name='Mika', last_name="Mikic")
+        self.USER2_ID = test_user2.id
 
     def test_field_label(self):
-        user = User.objects.get(id=1)
+        user = User.objects.get(id=self.USER1_ID)
         username_label = user._meta.get_field('username').verbose_name
         password_label = user._meta.get_field('password').verbose_name
         email_label = user._meta.get_field('email').verbose_name
@@ -30,51 +29,31 @@ class UserModelTest(TestCase):
         self.assertEquals(last_name_label, 'last name')
 
     def test_first_name_values(self):
-        user1 = User.objects.get(id=1)
-        user2 = User.objects.get(id=2)
+        user1 = User.objects.get(id=self.USER1_ID)
+        user2 = User.objects.get(id=self.USER2_ID)
 
         self.assertEquals(user1.first_name, 'Pera')
         self.assertEquals(user2.first_name, 'Mika')
 
     def test_last_name_values(self):
-        user1 = User.objects.get(id=1)
-        user2 = User.objects.get(id=2)
+        user1 = User.objects.get(id=self.USER1_ID)
+        user2 = User.objects.get(id=self.USER2_ID)
 
         self.assertEquals(user1.last_name, 'Peric')
         self.assertEquals(user2.last_name, 'Mikic')
 
     def test_username_values(self):
-        user1 = User.objects.get(id=1)
-        user2 = User.objects.get(id=2)
+        user1 = User.objects.get(id=self.USER1_ID)
+        user2 = User.objects.get(id=self.USER2_ID)
 
         self.assertEquals(user1.username, 'pera')
         self.assertEquals(user2.username, 'mika')
 
     def test_email_values(self):
-        user1 = User.objects.get(id=1)
-        user2 = User.objects.get(id=2)
+        user1 = User.objects.get(id=self.USER1_ID)
+        user2 = User.objects.get(id=self.USER2_ID)
 
         self.assertEquals(user1.email, 'pera@gmail.com')
         self.assertEquals(user2.email, 'mika@gmail.com')
 
-    def test_login(self):
-        user = User.objects.get(id=1)
-        credentials = {
-            'username': user.username,
-            'password': user.password
-        }
-        response = self.client.post('', credentials, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(User.objects.get(id=1).is_authenticated())
 
-    def test_registration(self):
-        user = {
-            'username': 'zika',
-            'password': 'zika',
-            'email': 'zika@gmail.com',
-            'first_name': 'Zika',
-            'last_name': 'Zikic'
-        }
-        response = self.client.post('/register/', user, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(User.objects.all()[2].first_name, 'Zika')
