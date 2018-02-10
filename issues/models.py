@@ -3,6 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 # Create your models here.
+
 from activities.models import Activity
 from milestones.models import Milestone
 from projects.models import Project
@@ -64,7 +65,7 @@ class Issue(models.Model):
 
     total_time_spent = models.FloatField(null=False, default=0.0)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, null=False)
-    milestone = models.ForeignKey(Milestone, on_delete=models.CASCADE, null=True)
+    milestone = models.ForeignKey(Milestone, on_delete=models.SET_NULL, null=True)
     assignees = models.ManyToManyField(User, related_name='assignees')
     
     activities = GenericRelation(Activity, related_query_name='issues', content_type_field='content_type',

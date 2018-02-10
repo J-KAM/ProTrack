@@ -8,7 +8,7 @@ from django.views import generic
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-from activities.views import save_activity
+from activities.models import save_activity
 from issues.forms import IssueForm
 from issues.models import Issue
 from milestones.models import Milestone
@@ -163,7 +163,7 @@ class IssueUpdate(UpdateView):
                     save_activity(user=request.user, action='set milestone', resource=issue,
                                   content=issue.milestone.name, content_id=issue.milestone.id)
                 else:
-                    save_activity(user=request.user, action='removed milestone', resource=issue,
+                    save_activity(user=request.user, action='removed milestone', resource=issue,)
             new_milestone = issue.milestone
             if old_milestone is not None or new_milestone is not None:
                 if old_milestone == new_milestone:
