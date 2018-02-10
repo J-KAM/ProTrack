@@ -90,9 +90,7 @@ class IssueFormView(CreateView):
 
             if milestone is not None:
                 milestone.total_time_spent = milestone.total_time_spent + issue.total_time_spent
-                num_of_issues = Issue.objects.filter(milestone=milestone).count()
-                issue_progress = int(issue.progress.split('%')[0])
-                milestone.total_progress = (milestone.total_progress + issue_progress) / num_of_issues
+                milestone.total_progress = calculate_milestone_progress(milestone)
                 milestone.save()
 
             if issue is not None:
@@ -123,6 +121,8 @@ class IssueUpdate(UpdateView):
     @method_decorator(login_required)
     def post(self, request, **kwargs):
         issue = Issue.objects.get(id=self.kwargs['id'])
+        old_milestone = issue.milestone
+
         form = self.form_class(request.POST, instance=issue)
         form.fields['milestone'].required = False
         form.fields['assignees'].required = False
@@ -139,14 +139,21 @@ class IssueUpdate(UpdateView):
             issue.assignees = form.cleaned_data['assignees']
             issue.save()
 
-            milestone = issue.milestone
-
-            if milestone is not None:
-                milestone.total_time_spent = milestone.total_time_spent + issue.total_time_spent
-                num_of_issues = Issue.objects.filter(milestone=milestone).count()
-                issue_progress = int(issue.progress.split('%')[0])
-                milestone.total_progress = (milestone.total_progress + issue_progress) / num_of_issues
-                milestone.save()
+            new_milestone = issue.milestone
+            if old_milestone is not None or new_milestone is not None:
+                if old_milestone == new_milestone:
+                    new_milestone.total_time_spent += time_spent
+                    new_milestone.total_progress = calculate_milestone_progress(new_milestone)
+                    new_milestone.save()
+                else:
+                    if new_milestone is not None:
+                        new_milestone.total_time_spent += issue.total_time_spent
+                        new_milestone.total_progress = calculate_milestone_progress(new_milestone)
+                        new_milestone.save()
+                    if old_milestone is not None:
+                        old_milestone.total_time_spent -= (issue.total_time_spent - time_spent)
+                        old_milestone.total_progress = calculate_milestone_progress(old_milestone)
+                        old_milestone.save()
 
             if issue is not None:
                 return redirect('issues:preview_all')
@@ -179,3 +186,18 @@ def remove_assignment(request, **kwargs):
     issue.assignees.remove(assignee)
 
     return redirect('issues:details', id=issue.id)
+
+
+def calculate_milestone_progress(milestone):
+    num_of_issues = num_of_issues = Issue.objects.filter(milestone=milestone).count()
+
+    if num_of_issues == 0:
+        return 0
+
+    issues = Issue.objects.filter(milestone=milestone)
+    progress_sum = 0
+    for issue in issues:
+        issue_progress = int(issue.progress.split('%')[0])
+        progress_sum += issue_progress
+
+    return progress_sum / num_of_issues
