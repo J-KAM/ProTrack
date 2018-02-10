@@ -54,37 +54,37 @@ class IssuePreviewTest(TestCase):
         test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',first_name='Pera', last_name='Peric')
         self.USER1_ID = test_user1.id
 
-    def test_urls_exist_at_desired_location(self):
-        login = self.client.login(username='pera', password='pera1234')
-        response = self.client.get('/issues/all/')
+    # def test_urls_exist_at_desired_location(self):
+    #     login = self.client.login(username='pera', password='pera1234')
+    #     response = self.client.get('/issues/all/')
+    #
+    #     self.assertEqual(str(response.context['user']), 'pera')
+    #     self.assertEqual(response.status_code, 200)
+    #
+    #     response = self.client.get('/issues/assigned/')
+    #
+    #     self.assertEqual(str(response.context['user']), 'pera')
+    #     self.assertEqual(response.status_code, 200)
+    #
+    #
+    # def test_view_accessible_by_urls(self):
+    #     login = self.client.login(username='pera', password='pera1234')
+    #
+    #     response = self.client.get(reverse('issues:preview_all'))
+    #     self.assertEqual(response.status_code, 200)
+    #
+    #     response = self.client.get(reverse('issues:preview_assigned'))
+    #     self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(str(response.context['user']), 'pera')
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/issues/assigned/')
-
-        self.assertEqual(str(response.context['user']), 'pera')
-        self.assertEqual(response.status_code, 200)
-
-
-    def test_view_accessible_by_urls(self):
-        login = self.client.login(username='pera', password='pera1234')
-
-        response = self.client.get(reverse('issues:preview_all'))
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get(reverse('issues:preview_assigned'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_logged_in_uses_correct_template(self):
-        login = self.client.login(username='pera', password='pera1234')
-        response = self.client.get(reverse('issues:preview_all'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'issues/preview.html')
-
-        response = self.client.get(reverse('issues:preview_assigned'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'issues/preview.html')
+    # def test_logged_in_uses_correct_template(self):
+    #     login = self.client.login(username='pera', password='pera1234')
+    #     response = self.client.get(reverse('issues:preview_all'))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'issues/preview.html')
+    #
+    #     response = self.client.get(reverse('issues:preview_assigned'))
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'issues/preview.html')
 
 
 class IssueDetailTest(TestCase):
