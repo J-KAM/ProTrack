@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from issues.models import Issue
+from milestones.models import Milestone
 from projects.models import Project
 
 
@@ -136,8 +137,16 @@ class IssueUpdateViewTest(TestCase):
 
         self.PRO1_ID = test_project1.id
 
+        milestone1 = Milestone.objects.create(name='Initial', description='my inital milestone',
+                                              start_date='2018-02-03', due_date='2018-02-07', total_progress=0,
+                                              total_time_spent=0.0, status='OPEN', project=test_project1)
+        self.MILE1_ID = milestone1.id
+
         issue1 = Issue.objects.create(title="Issue 1", description="my issue 1", weight='3', progress='0%',
                                       type='Bug', status='Open', priority='Normal', project=test_project1,
+                                      )
+        issue2 = Issue.objects.create(title="Issue 2", description="my issue 2", weight='3', progress='0%',
+                                      type='Bug', status='Open', priority='Normal', project=test_project1, milestone=milestone1
                                       )
         self.ISS1_ID = issue1.id
 
@@ -172,6 +181,29 @@ class IssueUpdateViewTest(TestCase):
 
         issue = Issue.objects.get(id=self.ISS1_ID)
         self.assertEqual(issue.description, 'My first issue description')
+
+    def test_milestone_update(self):
+        login = self.client.login(username="pera", password="pera1234")
+
+        issue_data = {
+            'title': 'Issue1',
+            'description': 'My first issue description',
+            'time_spent': 2,
+            'milestone': str(self.MILE1_ID),
+            'progress': '40%',
+            'type': 'Feature',
+            'priority': 'Normal',
+            'assignees': [str(self.USER1_ID)],
+            'status': 'Open',
+            'weight': 1,
+
+        }
+
+        response = self.client.post(reverse('issues:update', kwargs={'id': self.ISS1_ID}), issue_data)
+        self.assertEqual(response.status_code, 302)
+
+        milestone = Milestone.objects.get(id=self.MILE1_ID)
+        self.assertEqual(milestone.total_time_spent, 2.0)
 
 class ViewMethodsTest(TestCase):
 

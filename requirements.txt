@@ -1,4 +1,4 @@
 Django==1.11.4
 psycopg2
 Pillow
-requests
+requests==2.18.4

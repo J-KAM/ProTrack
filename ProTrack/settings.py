@@ -101,7 +101,7 @@ else:
             'USER': 'root',
             'PASSWORD': 'root',
             'HOST': 'db',
-            # 'HOST': 'localhost',
+            #'HOST': 'localhost',
             'PORT': 5432,
         }
     }
