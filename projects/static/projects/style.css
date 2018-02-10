@@ -45,9 +45,10 @@ input[type='text'], select {
     color: #565555;
 }
 
-
-.panel-before-heading{
-    margin-left: 2%;
+.panel-before-heading-git {
+    background: #DFF0D8;
+    border: 1px solid #DFF0D8;
+    border-radius: 5px;
 }
 
 .project-link {
@@ -59,4 +60,25 @@ input[type='text'], select {
     float: right;
     padding-bottom: 1%;
     padding-top: 1%;
+}
+
+.github-project {
+    background: #DFF0D8;
+}
+
+.commit-td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50px;
+}
+
+.commit-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#selected_branch {
+    width: 35%;
+    min-width: 200px;
 }
