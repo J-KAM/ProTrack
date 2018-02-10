@@ -41,3 +41,8 @@ p {
 .issue-link {
     font-size: 30px;
 }
+
+.activityUserImage {
+    height: 20px;
+    width: 20px;
+}
