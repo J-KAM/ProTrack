@@ -48,7 +48,7 @@ class MilestoneDetail(generic.ListView):
         return context
 
 
-class MilestoneFormView(CreateView):
+class MilestoneCreateView(CreateView):
     form_class = MilestoneForm
     template_name = 'milestones/milestone_form.html'
 
@@ -67,7 +67,39 @@ class MilestoneFormView(CreateView):
         if form.is_valid():
             milestone = form.save(commit=False)
             milestone.save()
-            return redirect('milestones:preview')
+
+            if milestone is not None:
+                return redirect('milestones:preview')
+
+        return render(request, 'milestones/milestone_form.html', {'form': form, 'action': 'New'})
+
+
+class MilestoneCreateFromProjectView(CreateView):
+    form_class = MilestoneForm
+    template_name = 'milestones/milestone_form.html'
+
+    @method_decorator(login_required)
+    def get(self, request, **kwargs):
+        form = self.get_form(self.form_class)
+        project = Project.objects.get(id=kwargs['project_id'])
+        form.fields['project'].queryset = Project.objects.filter(collaborators=request.user) | Project.objects.filter(owner=request.user)
+        form.fields['project'].initial = str(project.id)
+        form.fields['project'].disabled = True
+        return render(request, self.template_name, {'form': form, 'action': 'New'})
+
+    @method_decorator(login_required)
+    def post(self, request, **kwargs):
+        form = self.form_class(request.POST)
+        project = Project.objects.get(id=kwargs['project_id'])
+        form.fields['project'].initial = str(project.id)
+        form.fields['project'].disabled = True
+
+        if form.is_valid():
+            milestone = form.save(commit=False)
+            milestone.save()
+
+            if milestone is not None:
+                return redirect('milestones:preview')
 
         return render(request, 'milestones/milestone_form.html', {'form': form, 'action': 'New'})
 

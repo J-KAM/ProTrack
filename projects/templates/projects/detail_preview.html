@@ -9,31 +9,60 @@
 {% block body %}
 
     <div class = "panel panel-success panel-list">
-        <div class = "panel-before-heading">
+        {% if project.is_git %}
+        <div class = "panel-before-heading-git">
+            {% if project.owner != None %}
+                <a href = "{% url 'projects:preview' %}" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+            {% else %}
+                <a href = "{% url 'organizations:details' project.organization_owner.id %}" class = "project-link">{{project.organization_owner.name}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+            {% endif %}
+            </br><p class = "list-item-date"><span class = "glyphicon glyphicon-user"></span> GitHub owner: {{project.git_owner}}</p></br>
+            <p class = "list-item-date"><span class = "glyphicon glyphicon-briefcase"></span> GitHub name: {{project.git_name}}</p></br>
+        </div>
+        {% else %}
+        <div>
             {% if project.owner != None %}
                 <a href = "{% url 'projects:preview' %}" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
             {% else %}
                 <a href = "{% url 'organizations:details' project.organization_owner.id %}" class = "project-link">{{project.organization_owner.name}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
             {% endif %}
         </div>
+        {% endif %}
+
         <div class = "panel-heading">
             <ul class = "nav nav-pills" id = "projectTab">
-                <li class = "active"><a data-toggle = "tab" href = "#code"><span class="glyphicon glyphicon-edit"></span> Code</a></li>
+                <li class = "active"><a data-toggle = "tab" href = "#commits"><span class="glyphicon glyphicon-edit"></span> Commits</a></li>
                 <li><a data-toggle = "tab" href = "#issues"><span class="glyphicon glyphicon-tasks"></span> Issues</a></li>
+                <li><a data-toggle = "tab" href = "#milestones"><span class="glyphicon glyphicon-flag"></span> Milestones</a></li>
                 <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
             </ul>
         </div>
-        <div class = "panel-body">
+        <div class = "panel-body-details">
             <div id = "content" class = "tab-content">
-                <div class = "tab-pane active" id = "code">
-                    <p>ovde ide kod</p>
+
+                <div class = "tab-pane active" id = "commits">
+                    {% if project.is_git %}
+                        {% with project=project default_branch=default_branch branches=branches commits_data=commits_data %}
+                        {% include 'projects/code_panel.html' %}
+                        {% endwith %}
+                    {% else %}
+                        <p>This is a ProTrack project. You can only see commits for GitHub projects.</p>
+                    {% endif %}
                 </div>
+
                 <div class = "tab-pane" id = "issues">
-                    {% with project=project %}
-                    {% include 'issues/issues_table.html' %}
+                    {% with project=project open_issues=open_issues in_progress_issues=in_progress_issues done_issues=done_issues closed_issues=closed_issues%}
+                    {% include 'projects/issue_panel.html' %}
                     {% endwith %}
                 </div>
-                <div class = "tab-pane" id = "settings">
+
+                <div class = "tab-pane" id = "milestones">
+                    {% with all_milestones=project_milestones open_milestones=open_milestones closed_milestones=closed_milestones  %}
+                    {% include 'projects/milestone_panel.html' %}
+                    {% endwith %}
+                </div>
+
+                <div class = "tab-pane tab-pane-details" id = "settings">
                     <ul class = "nav nav-tabs" id = "settingsTab">
                         <li class = "active"><a data-toggle = "tab" href = "#options"> Options</a></li>
                         <li><a data-toggle = "tab" href = "#collaborators"> Collaborators </a></li>
@@ -49,6 +78,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
