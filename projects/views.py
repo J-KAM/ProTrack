@@ -53,7 +53,7 @@ class ProjectCreate(CreateView):
 
         if request.META.get('HTTP_REFERER') is not None:
             url_path = request.META.get('HTTP_REFERER').split('/')
-            if url_path[3] == "organizations" and url_path[5] == "details":  # creating project in organization
+            if len(url_path) == 7 and url_path[3] == "organizations" and url_path[5] == "details":  # creating project in organization
                 organization = Organization.objects.get(id=int(url_path[4]))
                 form.initial['organization_owner'] = organization
 

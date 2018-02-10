@@ -2,11 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
+
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 
+from activities.models import save_activity
 from issues.forms import IssueForm
 from issues.models import Issue
 from milestones.models import Milestone
@@ -83,12 +85,20 @@ class IssueFormView(CreateView):
 
             issue.save()
 
-            issue.assignees = form.cleaned_data['assignees']
-            issue.save()
+            save_activity(user=request.user, action='opened', resource=issue)
+            save_activity(user=request.user, action='added to project', resource=issue)
+
+            if form.changed_data.__contains__('assignees'):
+                issue.assignees = form.cleaned_data['assignees']
+                issue.save()
+                save_activity(user=request.user, action='assigned', resource=issue, content=",".join(a.username for a in issue.assignees.all()))
 
             milestone = issue.milestone
 
             if milestone is not None:
+                save_activity(user=request.user, action='set milestone', resource=issue,
+                              content=issue.milestone.name, content_id=milestone.id)
+
                 milestone.total_time_spent = milestone.total_time_spent + issue.total_time_spent
                 milestone.total_progress = calculate_milestone_progress(milestone)
                 milestone.save()
@@ -122,6 +132,8 @@ class IssueUpdate(UpdateView):
     def post(self, request, **kwargs):
         issue = Issue.objects.get(id=self.kwargs['id'])
         old_milestone = issue.milestone
+        old_assignees = issue.assignees.all()
+        list_old_assignees = list(old_assignees)
 
         form = self.form_class(request.POST, instance=issue)
         form.fields['milestone'].required = False
@@ -136,9 +148,22 @@ class IssueUpdate(UpdateView):
             issue.time_spent = 0.0
             issue.save()
 
-            issue.assignees = form.cleaned_data['assignees']
-            issue.save()
+            save_activity(user=request.user, action='updated', resource=issue)
 
+            if form.changed_data.__contains__('assignees'):
+                issue.assignees = form.cleaned_data['assignees']
+                issue.save()
+                assignment_activity(request.user, issue, list_old_assignees)
+
+            if form.changed_data.__contains__('milestone'):
+                if issue.milestone is not None:
+                    if old_milestone is not None:
+                        save_activity(user=request.user, action='removed milestone', resource=issue,
+                                        content=old_milestone.name, content_id=old_milestone.id)
+                    save_activity(user=request.user, action='set milestone', resource=issue,
+                                  content=issue.milestone.name, content_id=issue.milestone.id)
+                else:
+                    save_activity(user=request.user, action='removed milestone', resource=issue,)
             new_milestone = issue.milestone
             if old_milestone is not None or new_milestone is not None:
                 if old_milestone == new_milestone:
@@ -167,6 +192,8 @@ def close_issue(request, **kwargs):
     issue.status = 'Closed'
     issue.save()
 
+    save_activity(user=request.user, action='closed', resource=issue)
+
     return redirect("issues:preview_all")
 
 
@@ -175,6 +202,8 @@ def reopen_issue(request, **kwargs):
     issue = Issue.objects.get(id=kwargs['id'])
     issue.status = 'Open'
     issue.save()
+
+    save_activity(user=request.user, action='reopened', resource=issue)
 
     return redirect("issues:preview_all")
 
@@ -185,7 +214,26 @@ def remove_assignment(request, **kwargs):
     assignee = User.objects.get(id=kwargs['uid'])
     issue.assignees.remove(assignee)
 
+    save_activity(user=request.user, action='unassigned', resource=issue,
+                  content=assignee.username)
+
     return redirect('issues:details', id=issue.id)
+
+
+def assignment_activity(user, issue, old_assignees):
+    new_assignees = issue.assignees.all()
+    intersection = set(old_assignees).intersection(new_assignees)
+    removed_assignees = set(old_assignees).difference(intersection)
+    added_assignees = set(new_assignees).difference(intersection)
+
+    if len(removed_assignees) > 0:
+        save_activity(user=user, action='unassigned', resource=issue,
+                      content=",".join(a.username for a in removed_assignees))
+
+    if len(added_assignees) > 0:
+        save_activity(user=user, action='assigned', resource=issue,
+                      content=",".join(a.username for a in added_assignees))
+
 
 
 def calculate_milestone_progress(milestone):

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'issues.apps.IssuesConfig',
     'milestones.apps.MilestonesConfig',
     'organizations.apps.OrganizationsConfig',
+    'activities.apps.ActivitiesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -101,7 +102,7 @@ else:
             'USER': 'root',
             'PASSWORD': 'root',
             'HOST': 'db',
-            #'HOST': 'localhost',
+            # 'HOST': 'localhost',
             'PORT': 5432,
         }
     }
