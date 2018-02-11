@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -34,7 +35,10 @@ class MilestoneDetail(generic.ListView):
 
     def get_queryset(self, **kwargs):
         if self.request.user.is_authenticated():
-            milestone = Milestone.objects.get(id=self.kwargs['id'])
+            try:
+                milestone = Milestone.objects.get(id=self.kwargs['id'])
+            except Milestone.DoesNotExist:
+                raise Http404("Milestone does not exist.")
             issues = Issue.objects.filter(milestone=milestone)
             return issues
 

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [
@@ -81,17 +82,30 @@ WSGI_APPLICATION = 'ProTrack.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 #
 #
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'pro_track_db',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        #'HOST': 'db',
-         'HOST': 'localhost',
-        'PORT': 5432,
+
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'travis_db',
+            'USER': 'postgres',
+            'PASSWORD': '',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'pro_track_db',
+            'USER': 'root',
+            'PASSWORD': 'root',
+            'HOST': 'db',
+            # 'HOST': 'localhost',
+            'PORT': 5432,
+        }
+    }
 
 # DATABASES = {
 #     'default': {
