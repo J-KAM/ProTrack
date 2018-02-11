@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
+from activities.models import save_activity
 from issues.models import Issue
 from projects.models import Project
 from .models import Milestone
@@ -71,6 +72,8 @@ class MilestoneCreateView(CreateView):
         if form.is_valid():
             milestone = form.save(commit=False)
             milestone.save()
+            save_activity(user=request.user, action='opened', resource=milestone)
+            save_activity(user=request.user, action='added to project', resource=milestone)
 
             if milestone is not None:
                 return redirect('milestones:preview')
@@ -101,6 +104,8 @@ class MilestoneCreateFromProjectView(CreateView):
         if form.is_valid():
             milestone = form.save(commit=False)
             milestone.save()
+            save_activity(user=request.user, action='opened', resource=milestone)
+            save_activity(user=request.user, action='added to project', resource=milestone)
 
             if milestone is not None:
                 return redirect('milestones:preview')
@@ -129,6 +134,8 @@ class MilestoneUpdate(UpdateView):
 
         if form.is_valid():
             milestone.save()
+            if len(form.changed_data) > 0:
+                save_activity(user=request.user, action='updated', resource=milestone)
 
             if milestone is not None:
                 return redirect('milestones:preview')
@@ -148,6 +155,8 @@ def close_milestone(request, **kwargs):
     milestone.status = 'CLOSED'
     milestone.save()
 
+    save_activity(user=request.user, action='closed', resource=milestone)
+
     return redirect('milestones:preview')
 
 
@@ -156,5 +165,7 @@ def reopen_milestone(request, **kwargs):
     milestone = Milestone.objects.get(id=kwargs['id'])
     milestone.status = 'OPEN'
     milestone.save()
+
+    save_activity(user=request.user, action='reopened', resource=milestone)
 
     return redirect('milestones:preview')
