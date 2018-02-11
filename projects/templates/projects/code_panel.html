@@ -1,0 +1,67 @@
+ <script>
+        $(document).ready(function(){
+            $('#selected_branch').change(function() {
+                var project_id = $(this).attr('name')
+                $.ajax({
+                    url: '{% url "projects:commits" %}',
+                    data: {
+                        'selected_branch': $(this).val(),
+                        'project_id': $(this).attr('name')
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#commits_table tbody').children('tr').remove();
+                        $.each(data, function(idx, commit_data) {
+                            var url = window.location.href.split('/details/')[0] + '/' + commit_data.sha + '/commit/';
+                            $('#commits_table tbody').append(
+                                "<tr>" +
+                                "<td class = 'col-md-10 commit-td'>" +
+                                    "<p class = 'commit-title'>" + commit_data.commit.message + "</p></br>" +
+                                    "<p class = 'list-item-subtitle'><span class = 'glyphicon glyphicon-user'></span> Author: " + commit_data.commit.author.name + "</p></br>" +
+                                "</td>" +
+                                "<td class = 'col-md-2'>" +
+                                    "<a href = \"" + url + "\">Details</a></td>" +
+                                "</tr>"
+                            )
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <label>Branches: </label>
+        <select id="selected_branch" name="{{project.id}}">
+            {% for branch in branches %}
+                {% if branch.name == default_branch %}
+                    <option value = "{{branch.name}}" selected>{{branch.name}}</option>
+                {% else %}
+                    <option value = "{{branch.name}}">{{branch.name}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="panel-body">
+       <table class = "table" id="commits_table">
+            <tbody>
+            {% for commit_data in commits_data %}
+            <tr>
+                <td class = "col-md-10 commit-td">
+                    <p class = "commit-title">{{commit_data.commit.message}}</p></br>
+                    <p class = "list-item-subtitle">
+                        <span class = "glyphicon glyphicon-user"></span>
+                        Author: {{commit_data.commit.author.name}}
+                    </p></br>
+                </td>
+                <td class = "col-md-2">
+                    <a href = "{% url 'projects:commit' pid=project.id cid=commit_data.sha %}">Details</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    </div>
+</div>

@@ -5,15 +5,20 @@ python:
 
 services:
   - docker
+  - postgresql
 
 install:
   - sudo pip install -r requirements.txt
 
 before_script:
   - docker-compose up --build -d
+  - psql -c 'CREATE DATABASE travis_db;' -U postgres
+  - python -V
 
 script:
-  - python3 manage.py test
+  - python manage.py makemigrations
+  - python manage.py migrate
+  - python manage.py test
 
 after_script:
   - docker-compose down
@@ -38,3 +43,4 @@ branches:
   - master
   - development
   - Project_init
+  - Milestone_testing

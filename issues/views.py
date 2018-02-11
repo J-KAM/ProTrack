@@ -8,7 +8,7 @@ from django.views import generic
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-from activities.views import save_activity
+from activities.models import save_activity
 from issues.forms import IssueForm
 from issues.models import Issue
 from milestones.models import Milestone
@@ -100,9 +100,7 @@ class IssueFormView(CreateView):
                               content=issue.milestone.name, content_id=milestone.id)
 
                 milestone.total_time_spent = milestone.total_time_spent + issue.total_time_spent
-                num_of_issues = Issue.objects.filter(milestone=milestone).count()
-                issue_progress = int(issue.progress.split('%')[0])
-                milestone.total_progress = (milestone.total_progress + issue_progress) / num_of_issues
+                milestone.total_progress = calculate_milestone_progress(milestone)
                 milestone.save()
 
             if issue is not None:
@@ -165,18 +163,22 @@ class IssueUpdate(UpdateView):
                     save_activity(user=request.user, action='set milestone', resource=issue,
                                   content=issue.milestone.name, content_id=issue.milestone.id)
                 else:
-                    save_activity(user=request.user, action='removed milestone', resource=issue,
-                                  content=old_milestone.name, content_id=old_milestone.id)
-            # Ana, imas old_milestone promenljivu koju mozes iskoristiti prilikom sredjivanja
-            # total_time-a, progress-a...
-            milestone = issue.milestone
-
-            if milestone is not None:
-                milestone.total_time_spent = milestone.total_time_spent + issue.total_time_spent
-                num_of_issues = Issue.objects.filter(milestone=milestone).count()
-                issue_progress = int(issue.progress.split('%')[0])
-                milestone.total_progress = (milestone.total_progress + issue_progress) / num_of_issues
-                milestone.save()
+                    save_activity(user=request.user, action='removed milestone', resource=issue,)
+            new_milestone = issue.milestone
+            if old_milestone is not None or new_milestone is not None:
+                if old_milestone == new_milestone:
+                    new_milestone.total_time_spent += time_spent
+                    new_milestone.total_progress = calculate_milestone_progress(new_milestone)
+                    new_milestone.save()
+                else:
+                    if new_milestone is not None:
+                        new_milestone.total_time_spent += issue.total_time_spent
+                        new_milestone.total_progress = calculate_milestone_progress(new_milestone)
+                        new_milestone.save()
+                    if old_milestone is not None:
+                        old_milestone.total_time_spent -= (issue.total_time_spent - time_spent)
+                        old_milestone.total_progress = calculate_milestone_progress(old_milestone)
+                        old_milestone.save()
 
             if issue is not None:
                 return redirect('issues:preview_all')
@@ -232,3 +234,17 @@ def assignment_activity(user, issue, old_assignees):
         save_activity(user=user, action='assigned', resource=issue,
                       content=",".join(a.username for a in added_assignees))
 
+
+def calculate_milestone_progress(milestone):
+    num_of_issues = num_of_issues = Issue.objects.filter(milestone=milestone).count()
+
+    if num_of_issues == 0:
+        return 0
+
+    issues = Issue.objects.filter(milestone=milestone)
+    progress_sum = 0
+    for issue in issues:
+        issue_progress = int(issue.progress.split('%')[0])
+        progress_sum += issue_progress
+
+    return progress_sum / num_of_issues
