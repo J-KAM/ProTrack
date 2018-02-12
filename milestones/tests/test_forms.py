@@ -65,8 +65,8 @@ class MilestoneFormTest(TestCase):
         form_data = {
             'name': 'My first milestone',
             'project': str(project.id),
-            'start_date': '2018-02-10',
-            'due_date': '2018-02-15',
+            'start_date': '2018-10-10',
+            'due_date': '2018-10-22',
             'description': 'milestone description'
         }
 
