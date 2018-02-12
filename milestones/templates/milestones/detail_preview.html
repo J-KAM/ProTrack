@@ -39,6 +39,7 @@
                 <li><a data-toggle ="tab" href = "#inProgress">In progress <span class = "badge">{{in_progress_issues.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#done">Done <span class = "badge">{{done_issues.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#closed">Closed <span class = "badge">{{closed_issues.count}}</span></a></li>
+                <li class="pull-right"><a data-toggle ="tab" href = "#activities"><span class="glyphicon glyphicon-list"></span> Activities</a></li>
             </ul>
         </div>
         <div class="panel-body">
@@ -61,6 +62,12 @@
                 <div class = "tab-pane" id="closed">
                      {% with closed_issues as issues %}
                     {% include 'issues/issues_table.html' %}
+                    {% endwith %}
+                </div>
+
+                 <div class = "tab-pane" id="activities">
+                     {% with activities=milestone.activities.all %}
+                    {% include 'milestones/milestone_activities.html' %}
                     {% endwith %}
                 </div>
             </div>

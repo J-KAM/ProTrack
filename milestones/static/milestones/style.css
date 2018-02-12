@@ -50,3 +50,8 @@ input, select {
     width: 110%;
     box-sizing: border-box;
 }
+
+.activityUserImage {
+    height: 20px;
+    width: 20px;
+}
