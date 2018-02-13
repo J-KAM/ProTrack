@@ -4,6 +4,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView
 
 from comments.forms import CommentForm
+from issues.models import Issue
+from milestones.models import Milestone
 from projects.models import Project
 
 
@@ -28,6 +30,12 @@ class CommentCreateView(CreateView):
 
             if resource_type == 'project' and Project.objects.filter(id=resource_id).exists():
                 resource = Project.objects.get(id=resource_id)
+
+            elif resource_type == 'issue' and Issue.objects.filter(id=resource_id).exists():
+                resource = Issue.objects.get(id=resource_id)
+
+            elif resource_type == 'milestone' and Milestone.objects.filter(id=resource_id).exists():
+                resource = Milestone.objects.get(id=resource_id)
 
             comment.user = request.user
             comment.text = form.fields.get('text')

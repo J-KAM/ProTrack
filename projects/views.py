@@ -153,7 +153,7 @@ class ProjectDetail(DetailView):
         context['done_issues'] = issues.filter(status="Done")
         context['closed_issues'] = issues.filter(status="Closed")
 
-        context['comment_form'] = CommentForm()
+        context['comment_form'] = CommentForm
         return context
 
 

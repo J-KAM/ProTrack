@@ -9,6 +9,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 
 from activities.models import save_activity
+from comments.forms import CommentForm
 from issues.forms import IssueForm
 from issues.models import Issue
 from milestones.models import Milestone
@@ -47,6 +48,11 @@ class IssueDetails(ListView):
     def get_queryset(self):
         if self.request.user.is_authenticated():
             return Issue.objects.get(id=self.kwargs['id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm
+        return context
 
 
 class IssueFormView(CreateView):
