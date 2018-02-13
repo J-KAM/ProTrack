@@ -35,6 +35,7 @@ branches:
   only:
   - master
   - development
+  - deployment
 before_deploy:
 - chmod +x ./deploy.sh
 deploy:
