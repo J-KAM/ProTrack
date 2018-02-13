@@ -1,7 +1,6 @@
 import requests
 from datetime import date, datetime
 
-from django import template
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
@@ -11,7 +10,6 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.utils.dateparse import parse_date
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -20,6 +18,7 @@ from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 
+from comments.forms import CommentForm
 from issues.models import Issue
 from milestones.models import Milestone
 from organizations.models import Organization
@@ -154,6 +153,7 @@ class ProjectDetail(DetailView):
         context['done_issues'] = issues.filter(status="Done")
         context['closed_issues'] = issues.filter(status="Closed")
 
+        context['comment_form'] = CommentForm()
         return context
 
 
