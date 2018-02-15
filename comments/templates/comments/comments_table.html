@@ -15,7 +15,7 @@
     <tr>
         <td class = "col-md-8">
             <p>{{comment.text|safe}}</p><br>
-            <p class="list-item-description"><b>{{comment.user.username}}</b> commented {{comment.date_time|naturaltime}}</p>
+            <p class="list-item-description"><img src="{{ comment.user.profile.profile_picture.url }}" class="activityUserImage img-circle"><b>{{comment.user.username}}</b> commented {{comment.date_time|naturaltime}}</p>
         </td>
         <td class = "col-md-2">
             <button class="btn btn-info"><span class="glyphicon glyphicon-comment"></span></button>
@@ -24,6 +24,7 @@
     {% endfor %}
     </tbody>
 </table>
+
 
 <div id="reply" class="modal fade" role="dialog">
     <div class="modal-dialog" style="width:60%">

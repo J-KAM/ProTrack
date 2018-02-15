@@ -17,7 +17,7 @@
             <h2>{{milestone.name}}</h2>
             <p class = "list-item-date"><span class="glyphicon glyphicon-calendar"></span> Due date: {{ milestone.due_date|date:"SHORT_DATE_FORMAT" }}</p></br>
             <p class = "list-item-description">{{milestone.description}}</p>
-            </div>
+        </div>
     </div>
 
     <div class = "progress panel-list">
@@ -43,6 +43,7 @@
                 <li><a data-toggle ="tab" href = "#done">Done <span class = "badge">{{done_issues.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#closed">Closed <span class = "badge">{{closed_issues.count}}</span></a></li>
                 <li class="pull-right"><a data-toggle ="tab" href = "#activities"><span class="glyphicon glyphicon-list"></span> Activities</a></li>
+                <li class="pull-right"><a data-toggle ="tab" href = "#comments"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
             </ul>
         </div>
         <div class="panel-body">
@@ -67,7 +68,11 @@
                     {% include 'issues/issues_table.html' %}
                     {% endwith %}
                 </div>
-
+                <div class = "tab-pane" id = "comments">
+                    {% with form=comment_form comments=milestone.comments.all %}
+                    {% include 'comments/comments_table.html' %}
+                    {% endwith %}
+                </div>
                  <div class = "tab-pane" id="activities">
                      {% with activities=milestone.activities.all %}
                     {% include 'milestones/milestone_activities.html' %}
