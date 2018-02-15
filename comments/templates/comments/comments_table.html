@@ -1,32 +1,17 @@
-<script>
-    $('document').ready(function() {
-        $('[data-toggle="toggle-tooltip"]').tooltip();
-
-        $('button[name=reply-btn]').click(function () {
-           var comment_id = $(this).parents('tr').find('td[name=comment]').attr('id');
-           $('#resource_id').val(comment_id);
-        });
-        $('button[name=toggle-btn]').click(function () {
-            var comment_id = $(this).parents('tr').find('td[name=comment]').attr('id');
-            $('tr[name=replies' + comment_id + ']').toggle();
-       });
-    });
-</script>
-
-
 {% load humanize %}
 <table class = "table">
     <tbody>
     {% for comment in comments %}
     <tr>
-        <td name="comment" id="{{comment.id}}" style="display:none"></td>
-        <td class = "col-md-8">
-            <p>{{comment.text|safe}}</p><br>
+        <td name="comment_id" id="{{comment.id}}" style="display:none"></td>
+        <td name="comment_content" class = "col-md-8">
+            <p name="comment_text">{{comment.text|safe}}</p><br>
             <p class="list-item-description"><img src="{{ comment.user.profile.profile_picture.url }}" class="activityUserImage img-circle"><b>{{comment.user.username}}</b> commented {{comment.date_time|naturaltime}}</p>
         </td>
         <td class = "col-md-2">
-            <button name="toggle-btn" data-toggle="toggle-tooltip" title="Show/Hide replies" class="btn btn-info"><span class="glyphicon glyphicon-comment">&nbsp;{{comment.comments.all|length}}</span></button>
-            <button name="reply-btn" class="btn btn-success" data-toggle="modal" data-target="#reply">Reply</button>
+            <button name="toggle-btn" data-tooltip="tooltip" title="Show/Hide replies" class="btn btn-info"><span class="glyphicon glyphicon-comment">&nbsp;{{comment.comments.all|length}}</span></button>
+            <button name="edit-btn" class="btn btn-success" data-toggle="modal" data-target="#edit-modal" data-tooltip="tooltip" title="Edit comment"><span class="glyphicon glyphicon-edit"></span></button>
+            <button name="reply-btn" class="btn btn-success" data-toggle="modal" data-target="#reply-modal">Reply</button>
         </td>
     </tr>
     {% for reply in comment.comments.all %}
@@ -44,7 +29,35 @@
 </table>
 
 
-<div id="reply" class="modal fade" role="dialog">
+<div id="edit-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:60%">
+        <div class="modal-content">
+            <div class="modal-header alert-success">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="model-title" align="center">Edit comment</h4>
+                <h6 class="model-title" align="center">Blank comments will not be saved</h6>
+            </div>
+        <div class="modal-body panel-body-comment">
+            <form action = "{% url 'comments:update' %}" method="post" class = "form-horizontal">
+                {% csrf_token %}
+                <input type="hidden" id="update_comment_id" name="update_comment_id" />
+                {% for field in form %}
+                <div class = "form-group">
+                    <div class="comment-area">{{ field }}</div>
+                </div>
+                {% endfor %}
+                <div class = "form-group">
+                    <div class = "div-comment">
+                        <button type = "submit" id = "submit-update" name="comment" class="btn btn-success btn-comment">Comment</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div id="reply-modal" class="modal fade" role="dialog">
     <div class="modal-dialog" style="width:60%">
         <div class="modal-content">
             <div class="modal-header alert-success">
@@ -64,7 +77,7 @@
                 {% endfor %}
                 <div class = "form-group">
                     <div class = "div-comment">
-                        <button type = "submit" id = "btn-reply" name="comment" class="btn btn-success btn-comment">Comment</button>
+                        <button type = "submit" id = "submit-reply" name="comment" class="btn btn-success btn-comment">Comment</button>
                     </div>
                 </div>
             </form>

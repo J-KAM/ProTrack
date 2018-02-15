@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView
+from django.views.generic import UpdateView
 
 from comments.forms import CommentForm
 from comments.models import Comment
@@ -50,3 +51,25 @@ class CommentCreateView(CreateView):
             comment.save()
 
         return redirect(request.META.get('HTTP_REFERER'))
+
+
+class CommentUpdateView(UpdateView):
+    form_class = CommentForm
+    template_name = 'comments/comment_form.html'
+
+    @method_decorator(login_required)
+    def get(self, request, **kwargs):
+        form = self.get_form(self.form_class)
+        return render(request, self.template_name, {'form': form})
+
+    @method_decorator(login_required)
+    def post(self, request, **kwargs):
+        comment_id = request.POST['update_comment_id']
+        comment = Comment.objects.get(id=comment_id)
+        form = self.form_class(request.POST, instance=comment)
+
+        if form.is_valid():
+            comment.save()
+
+        return redirect(request.META.get('HTTP_REFERER'))
+
