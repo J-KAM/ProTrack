@@ -1,8 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.utils.decorators import method_decorator
-from django.views.generic import CreateView
-from django.views.generic import UpdateView
+from django.shortcuts import redirect
 
 from comments.forms import CommentForm
 from comments.models import Comment
@@ -10,19 +7,10 @@ from issues.models import Issue
 from milestones.models import Milestone
 from projects.models import Project
 
-
-class CommentCreateView(CreateView):
-    form_class = CommentForm
-    template_name = 'comments/comment_form.html'
-
-    @method_decorator(login_required)
-    def get(self, request, *args):
-        form = self.get_form(self.form_class)
-        return render(request, self.template_name, {'form': form})
-
-    @method_decorator(login_required)
-    def post(self, request):
-        form = self.form_class(request.POST)
+@login_required
+def comment_create(request):
+    if request.method == "POST":
+        form = CommentForm(request.POST)
 
         if form.is_valid():
             comment = form.save(commit=False)
@@ -52,24 +40,25 @@ class CommentCreateView(CreateView):
 
         return redirect(request.META.get('HTTP_REFERER'))
 
-
-class CommentUpdateView(UpdateView):
-    form_class = CommentForm
-    template_name = 'comments/comment_form.html'
-
-    @method_decorator(login_required)
-    def get(self, request, **kwargs):
-        form = self.get_form(self.form_class)
-        return render(request, self.template_name, {'form': form})
-
-    @method_decorator(login_required)
-    def post(self, request, **kwargs):
+@login_required
+def comment_update(request):
+    if request.method == "POST":
         comment_id = request.POST['update_comment_id']
         comment = Comment.objects.get(id=comment_id)
-        form = self.form_class(request.POST, instance=comment)
+        form = CommentForm(request.POST, instance=comment)
 
         if form.is_valid():
-            comment.save()
+            if comment.user == request.user:
+                comment.save()
 
-        return redirect(request.META.get('HTTP_REFERER'))
+    return redirect(request.META.get('HTTP_REFERER'))
 
+
+@login_required
+def comment_delete(request, comment_id):
+    if Comment.objects.filter(id=comment_id).exists():
+        comment = Comment.objects.get(id=comment_id)
+        if comment.user == request.user:
+            comment.delete()
+
+    return redirect(request.META.get('HTTP_REFERER'))

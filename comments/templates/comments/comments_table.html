@@ -4,24 +4,33 @@
     {% for comment in comments %}
     <tr>
         <td name="comment_id" id="{{comment.id}}" style="display:none"></td>
-        <td name="comment_content" class = "col-md-8">
+        <td name="comment_content" class = "col-md-9">
             <p name="comment_text">{{comment.text|safe}}</p><br>
             <p class="list-item-description"><img src="{{ comment.user.profile.profile_picture.url }}" class="activityUserImage img-circle"><b>{{comment.user.username}}</b> commented {{comment.date_time|naturaltime}}</p>
         </td>
-        <td class = "col-md-2">
-            <button name="toggle-btn" data-tooltip="tooltip" title="Show/Hide replies" class="btn btn-info"><span class="glyphicon glyphicon-comment">&nbsp;{{comment.comments.all|length}}</span></button>
-            <button name="edit-btn" class="btn btn-success" data-toggle="modal" data-target="#edit-modal" data-tooltip="tooltip" title="Edit comment"><span class="glyphicon glyphicon-edit"></span></button>
-            <button name="reply-btn" class="btn btn-success" data-toggle="modal" data-target="#reply-modal">Reply</button>
+        <td class = "col-md-4">
+            <button name="toggle-btn" class="btn btn-info" data-tooltip="tooltip" title="Show/Hide replies"><span class="glyphicon glyphicon-comment">&nbsp;{{comment.comments.all|length}}</span></button>
+            {% if comment.user == user %}
+                <a href="{% url 'comments:delete' comment.id %}" role="button" class="btn btn-danger" data-tooltip="tooltip" title="Delete comment"><span class="glyphicon glyphicon-remove"></span></a>
+                <button name="edit-btn" class="btn btn-success" data-toggle="modal" data-target="#edit-modal" data-tooltip="tooltip" title="Edit comment"><span class="glyphicon glyphicon-edit"></span></button>
+            {% endif %}
+            <button name="reply-btn" class="btn btn-success" data-toggle="modal" data-target="#reply-modal" data-tooltip="tooltip" title="Leave a reply"><span class="glyphicon glyphicon-share"></span></button>
         </td>
     </tr>
     {% for reply in comment.comments.all %}
     <tr name="replies{{comment.id}}" class="reply-row">
-        <td name="comment" id="{{reply.id}}" style="display:none"></td>
-        <td>
+        <td name="reply_id" id="{{reply.id}}" style="display:none"></td>
+        <td name="reply_content">
             <p><b>Re:</b></p>
-            <p>{{reply.text|safe}}</p><br>
+            <p name="reply_text">{{reply.text|safe}}</p><br>
             <p class="list-item-description"><img src="{{ reply.user.profile.profile_picture.url }}" class="activityUserImage img-circle"><b>{{reply.user.username}}</b> replied {{reply.date_time|naturaltime}}</p>
         </td>
+        {% if comment.user == user %}
+        <td>
+            <a href="{% url 'comments:delete' reply.id %}" role="button" class="btn btn-danger" data-tooltip="tooltip" title="Delete reply"><span class="glyphicon glyphicon-remove"></span></a>
+            <button name="edit-reply-btn" class="btn btn-success" data-toggle="modal" data-target="#edit-modal" data-tooltip="tooltip" title="Edit reply"><span class="glyphicon glyphicon-edit"></span></button>
+        </td>
+        {% endif %}
     </tr>
     {% endfor %}
     {% endfor %}
