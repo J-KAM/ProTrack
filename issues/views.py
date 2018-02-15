@@ -241,7 +241,6 @@ def assignment_activity(user, issue, old_assignees):
                       content=",".join(a.username for a in added_assignees))
 
 
-
 def calculate_milestone_progress(milestone):
     num_of_issues = num_of_issues = Issue.objects.filter(milestone=milestone).count()
 

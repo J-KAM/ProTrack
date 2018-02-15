@@ -38,7 +38,7 @@ class CommentCreateView(CreateView):
                 resource = Milestone.objects.get(id=resource_id)
 
             comment.user = request.user
-            comment.text = form.fields.get('text')
+            comment.text = form.cleaned_data['text']
             comment.content_object = resource
             comment.save()
 

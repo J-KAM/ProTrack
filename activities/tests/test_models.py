@@ -37,6 +37,10 @@ class ActivityModelTest(TestCase):
                                             date_time=datetime.datetime.utcnow().replace(tzinfo=utc))
         self.ACT1_ID = activity1.id
 
+        activity2 = Activity.objects.create(user=test_user1, action='opened', content_type=ContentType.objects.get_for_model(Milestone), object_id=milestone1.id,
+                                            date_time=datetime.datetime.utcnow().replace(tzinfo=utc))
+        self.ACT2_ID = activity2.id
+
     def test_field_labels(self):
         activity = Activity.objects.get(id=self.ACT1_ID)
 
@@ -95,10 +99,14 @@ class ActivityModelTest(TestCase):
         self.assertEqual(user1.username + "-" + activity.action, str(activity))
 
     def test_content_object_values(self):
-        activity = Activity.objects.get(id=self.ACT1_ID)
+        activity_issue = Activity.objects.get(id=self.ACT1_ID)
         issue1 = Issue.objects.get(id=self.ISS1_ID)
+        activity_milestone = Activity.objects.get(id=self.ACT2_ID)
+        milestone1 = Milestone.objects.get(id=self.MILE1_ID)
 
-        self.assertEquals(activity.content_object, issue1)
+        self.assertEquals(activity_issue.content_object, issue1)
+        self.assertEquals(activity_milestone.content_object, milestone1)
+
 
         
         
