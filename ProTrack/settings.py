@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'djrichtextfield'
+    'tinymce'
 ]
 
 MIDDLEWARE = [
@@ -148,22 +148,22 @@ AUTH_PASSWORD_VALIDATORS = [
     #     'width': '100%',
     #     'height': '25%'
     # }
-
-DJRICHTEXTFIELD_CONFIG = {
-    'js': ['//cdn.ckeditor.com/4.4.4/standard/ckeditor.js'],
-    'init_template': 'djrichtextfield/init/ckeditor.js',
-    'settings': {
-        'resize_enabled': False,
-        'label': False,
-        'removePlugins': 'elementspath',
-        'toolbar': [
-            {'items': ['Undo', 'Redo', '-', 'Format', '-', 'Bold', 'Italic', '-', 'NumberedList', 'BulletedList']}
-        ],
-        'height': '25%',
-        'width': '100%'
-
-    }
-}
+#
+# DJRICHTEXTFIELD_CONFIG = {
+#     'js': ['//cdn.ckeditor.com/4.4.4/standard/ckeditor.js'],
+#     'init_template': 'djrichtextfield/init/ckeditor.js',
+#     'settings': {
+#         'resize_enabled': False,
+#         'label': False,
+#         'removePlugins': 'elementspath',
+#         'toolbar': [
+#             {'items': ['Undo', 'Redo', '-', 'Format', '-', 'Bold', 'Italic', '-', 'NumberedList', 'BulletedList']}
+#         ],
+#         'height': '25%',
+#         'width': '100%'
+#
+#     }
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/

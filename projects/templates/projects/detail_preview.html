@@ -5,10 +5,8 @@
     {% load staticfiles %}
     <link href="{% static 'projects/style.css' %}" rel='stylesheet' type='text/css'>
     <!--comment-box-->
-    <script type="text/javascript" src="//cdn.ckeditor.com/4.4.4/standard/ckeditor.js"></script>
-    <script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
-    <script type="text/javascript" src="/djrichtextfield/init.js"></script>
+    <script src="{% static 'comments/js/tinymce/tinymce.min.js'%}"></script>
+    <script type='text/javascript' src="{% static 'comments/js/tinymce/custom.js'%}"></script>
 {% endblock %}
 
 {% block body %}

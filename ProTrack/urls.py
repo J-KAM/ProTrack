@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^issues/', include('issues.urls')),
     url(r'^organizations/', include('organizations.urls')),
     url(r'^comments/', include('comments.urls')),
-    url(r'^djrichtextfield/', include('djrichtextfield.urls')),
+    url(r'^tinymce/', include('tinymce.urls')),
 
 ]
 
