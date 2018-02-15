@@ -4,6 +4,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView
 
 from comments.forms import CommentForm
+from comments.models import Comment
 from issues.models import Issue
 from milestones.models import Milestone
 from projects.models import Project
@@ -36,6 +37,12 @@ class CommentCreateView(CreateView):
 
             elif resource_type == 'milestone' and Milestone.objects.filter(id=resource_id).exists():
                 resource = Milestone.objects.get(id=resource_id)
+
+            elif resource_type == 'comment' and Comment.objects.filter(id=resource_id).exists():
+                resource = Comment.objects.get(id=resource_id)
+
+            else:
+                return redirect(request.META.get('HTTP_REFERER'))
 
             comment.user = request.user
             comment.text = form.cleaned_data['text']
