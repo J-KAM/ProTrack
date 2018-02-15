@@ -1,8 +1,14 @@
 <script>
     $('document').ready(function() {
-       $('button[name=reply-btn]').click(function () {
-           var comment_id = $(this).attr('id');
+        $('[data-toggle="toggle-tooltip"]').tooltip();
+
+        $('button[name=reply-btn]').click(function () {
+           var comment_id = $(this).parents('tr').find('td[name=comment]').attr('id');
            $('#resource_id').val(comment_id);
+        });
+        $('button[name=toggle-btn]').click(function () {
+            var comment_id = $(this).parents('tr').find('td[name=comment]').attr('id');
+            $('tr[name=replies' + comment_id + ']').toggle();
        });
     });
 </script>
@@ -13,14 +19,26 @@
     <tbody>
     {% for comment in comments %}
     <tr>
+        <td name="comment" id="{{comment.id}}" style="display:none"></td>
         <td class = "col-md-8">
             <p>{{comment.text|safe}}</p><br>
             <p class="list-item-description"><img src="{{ comment.user.profile.profile_picture.url }}" class="activityUserImage img-circle"><b>{{comment.user.username}}</b> commented {{comment.date_time|naturaltime}}</p>
         </td>
         <td class = "col-md-2">
-            <button class="btn btn-info"><span class="glyphicon glyphicon-comment"></span></button>
-            <button id="{{comment.id}}" name="reply-btn" type="button" class="btn btn-success" data-toggle="modal" data-target="#reply">Reply</button>
+            <button name="toggle-btn" data-toggle="toggle-tooltip" title="Show/Hide replies" class="btn btn-info"><span class="glyphicon glyphicon-comment">&nbsp;{{comment.comments.all|length}}</span></button>
+            <button name="reply-btn" class="btn btn-success" data-toggle="modal" data-target="#reply">Reply</button>
         </td>
+    </tr>
+    {% for reply in comment.comments.all %}
+    <tr name="replies{{comment.id}}" class="reply-row">
+        <td name="comment" id="{{reply.id}}" style="display:none"></td>
+        <td>
+            <p><b>Re:</b></p>
+            <p>{{reply.text|safe}}</p><br>
+            <p class="list-item-description"><img src="{{ reply.user.profile.profile_picture.url }}" class="activityUserImage img-circle"><b>{{reply.user.username}}</b> replied {{reply.date_time|naturaltime}}</p>
+        </td>
+    </tr>
+    {% endfor %}
     {% endfor %}
     </tbody>
 </table>
