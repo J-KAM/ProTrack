@@ -10,8 +10,8 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
   web:
-    build: .
-#    image: jkam/protrack:latest
+#    build: .
+    image: jkam/protrack:latest
     environment:
       - PGDATABASE
       - PGUSER
