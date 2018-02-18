@@ -5,7 +5,6 @@ from comments.forms import CommentForm
 from comments.models import Comment
 from issues.models import Issue
 from milestones.models import Milestone
-from projects.models import Project
 
 @login_required
 def comment_create(request):
@@ -18,10 +17,7 @@ def comment_create(request):
             resource_id = request.POST['resource_id']
             resource_type = request.POST['resource_type']
 
-            if resource_type == 'project' and Project.objects.filter(id=resource_id).exists():
-                resource = Project.objects.get(id=resource_id)
-
-            elif resource_type == 'issue' and Issue.objects.filter(id=resource_id).exists():
+            if resource_type == 'issue' and Issue.objects.filter(id=resource_id).exists():
                 resource = Issue.objects.get(id=resource_id)
 
             elif resource_type == 'milestone' and Milestone.objects.filter(id=resource_id).exists():

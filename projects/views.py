@@ -18,7 +18,6 @@ from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 
-from comments.forms import CommentForm
 from issues.models import Issue
 from milestones.models import Milestone
 from organizations.models import Organization
@@ -153,7 +152,6 @@ class ProjectDetail(DetailView):
         context['done_issues'] = issues.filter(status="Done")
         context['closed_issues'] = issues.filter(status="Closed")
 
-        context['comment_form'] = CommentForm
         return context
 
 
