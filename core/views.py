@@ -1,17 +1,22 @@
+import operator
 from email.utils import unquote
+from functools import reduce
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
-from ProTrack import settings
 from core.forms import ProfileForm, UserUpdateForm
+from issues.views import search_issues
+from milestones.views import search_milestones
+from organizations.views import search_organizations
+from projects.views import search_projects
 from .forms import UserForm, SignInForm
 
 
@@ -141,3 +146,34 @@ def update_profile(request):
     else:
         profile_form = ProfileForm(instance=request.user.profile)
     return render(request, 'core/profile_form.html', {'profile_form': profile_form})
+
+
+def search(request):
+    if request.method == 'GET':
+        keywords = request.GET['q']
+
+        if keywords:
+            keywords_list = keywords.split()
+            projects = search_projects(keywords_list)
+            users = search_users(keywords_list)
+            organizations = search_organizations(keywords_list)
+            issues = search_issues(keywords_list)
+            milestones = search_milestones(keywords_list)
+
+    return render(request, 'core/search_results.html', {'users': users,
+                                                        'projects': projects,
+                                                        'organizations': organizations,
+                                                        'issues': issues,
+                                                        'milestones': milestones })
+
+
+def search_users(keywords_list):
+    result = User.objects.filter(
+        reduce(operator.and_, (Q(username__icontains=q) for q in keywords_list)) |
+        reduce(operator.or_, (Q(first_name__icontains=q) for q in keywords_list)) |
+        reduce(operator.or_, (Q(last_name__icontains=q) for q in keywords_list)) |
+        reduce(operator.and_, (Q(email__icontains=q) for q in keywords_list))
+    )
+
+    return result
+

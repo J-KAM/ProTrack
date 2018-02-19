@@ -1,17 +1,19 @@
+import operator
+from functools import reduce
+
 import requests
 from datetime import date, datetime
 
-from django import template
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.db import IntegrityError
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.utils.dateparse import parse_date
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -287,3 +289,12 @@ def check_collaborator(user, project):
         error_message = 'User is already invited to be a collaborator. Please try again.'
         return error_message
     return ""
+
+
+def search_projects(keywords_list):
+    result = Project.objects.filter(
+        reduce(operator.and_, (Q(name__icontains=q) for q in keywords_list)) |
+        reduce(operator.and_, (Q(description__icontains=q) for q in keywords_list))
+    )
+
+    return result
