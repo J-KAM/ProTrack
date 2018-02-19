@@ -1,6 +1,8 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from datetime import date
 
+from activities.models import Activity
 from projects.models import Project
 
 STATUS_CHOICES = (
@@ -18,6 +20,9 @@ class Milestone(models.Model):
     total_time_spent = models.FloatField(default=0.0)
     status = models.CharField(max_length=6,choices=STATUS_CHOICES,default="OPEN")    
     project = models.ForeignKey(Project,on_delete=models.CASCADE)
+
+    activities = GenericRelation(Activity, related_query_name='milestones', content_type_field='content_type',
+                                 object_id_field='object_id')
 
     def __str__(self):
         return self.name

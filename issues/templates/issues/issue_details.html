@@ -24,7 +24,7 @@
             <ul class = "nav nav-pills" id = "issueTab">
                 <li class = "active"><a data-toggle ="tab" href = "#details"><span class="glyphicon glyphicon-list-alt"></span> Details</a></li>
                 <li><a data-toggle ="tab" href = "#assignees"><span class="glyphicon glyphicon-user"></span> Assignees <span class = "badge">{{issue.assignees.all.count}}</span></a></li>
-                <!--comments and commits-->
+                <li><a data-toggle ="tab" href = "#activities"><span class="glyphicon glyphicon-list"></span> Activities</a></li>
             </ul>
         </div>
 
@@ -38,8 +38,14 @@
                 </div>
 
                 <div class = "tab-pane" id = "assignees">
-                    {% with users=issue.assignees.all issue=issue%}
+                    {% with users=issue.assignees.all issue=issue %}
                     {% include 'issues/assignees_table.html' %}
+                    {% endwith %}
+                </div>
+
+                <div class = "tab-pane" id = "activities">
+                    {% with activities=issue.activities.all %}
+                    {% include 'issues/issue_activities.html' %}
                     {% endwith %}
                 </div>
 
