@@ -7,12 +7,12 @@
     <div class="panel-body milestone-form">
         <div>
             <label  class = "control-label">Project: </label>
-            <p> {{ issue.project.name }}</p>
+            <p><a href = "{% url 'projects:detail' issue.project.id %}">{{issue.project.name}}</a></p>
         </div>
         <div>
             <label  class = "control-label">Milestone: </label>
             {% if issue.milestone is not None %}
-                <p> {{ issue.milestone.name }}</p>
+                <p> <a href = "{% url 'milestones:detail' issue.milestone.id %}">{{issue.milestone.name}}</a></p>
             {% else  %}
                  <p> -------------- </p>
             {% endif %}
