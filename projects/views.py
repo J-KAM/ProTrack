@@ -164,7 +164,21 @@ class ProjectDetail(DetailView):
         context['done_issues'] = issues.filter(status="Done")
         context['closed_issues'] = issues.filter(status="Closed")
 
+        context['editable'] = check_restrictions(self.request.user, project)
+
         return context
+
+
+def check_restrictions(active_user,project):
+    if project.owner is not None:
+        if active_user == project.owner or active_user in project.collaborators.all():
+            return True
+    elif project.organization_owner is not None:
+        organization_owner = Organization.objects.get(id=project.organization_owner)
+        if active_user in organization_owner.members or active_user in project.collaborators.all():
+            return True
+
+    return False
 
 
 class ProjectDelete(DeleteView):

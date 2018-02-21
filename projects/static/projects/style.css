@@ -62,6 +62,14 @@ input[type='text'], select {
     padding-top: 1%;
 }
 
+.btn-invite {
+    text-align: right;
+    float: right;
+    padding-bottom: 1%;
+    padding-top: 1%;
+    padding-right: 1%;
+}
+
 .github-project {
     background: #DFF0D8;
 }
@@ -81,5 +89,19 @@ input[type='text'], select {
 #selected_branch {
     width: 35%;
     min-width: 200px;
+}
+
+.special-img {
+    position: relative;
+    top: -5px;
+    float: left;
+    left: -5px;
+    height: 30px;
+    width: 30px;
+}
+
+.small-img {
+    height: 20px;
+    width: 20px;
 }
 

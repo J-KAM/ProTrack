@@ -32,12 +32,14 @@
     <div class="panel panel-success panel-list">
         <div class="panel-heading">
             <div class="right">
+                {% if editable %}
                    {% if milestone.status != 'CLOSED' %}
                         <a href = "{% url 'milestones:update' milestone.id %}" class="btn btn-success"><span class = "glyphicon glyphicon-edit"></span>Edit</a>&nbsp;
                         <a href = "{% url 'milestones:close' milestone.id %}" class="btn btn-info">Close</a>
                    {% else %}
                         <a href = "{% url 'milestones:reopen' milestone.id %}" class="btn btn-info">Reopen</a>
                    {% endif %}
+                {% endif %}
             </div>
             <ul class = "nav nav-pills" id = "issueTab">
                 <li class = "active"><a data-toggle ="tab" href = "#open">Open <span class = "badge">{{open_issues.count}}</span></a></li>

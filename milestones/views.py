@@ -14,6 +14,7 @@ from activities.models import save_activity
 from comments.forms import CommentForm
 from issues.models import Issue
 from projects.models import Project
+from projects.views import check_restrictions
 from .models import Milestone
 from .forms import MilestoneForm
 
@@ -54,9 +55,12 @@ class MilestoneDetail(generic.ListView):
         context['in_progress_issues'] = context['all_issues'].filter(status="In progress")
         context['done_issues'] = context['all_issues'].filter(status="Done")
         context['closed_issues'] = context['all_issues'].filter(status="Closed")
-        context['milestone'] = Milestone.objects.get(id=self.kwargs['id'])
 
+        milestone = Milestone.objects.get(id=self.kwargs['id'])
+        context['milestone'] = milestone
         context['comment_form'] = CommentForm
+        context['editable'] = check_restrictions(self.request.user, milestone.project)
+
         return context
 
 
