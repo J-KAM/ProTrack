@@ -1,8 +1,11 @@
+import operator
+from functools import reduce
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db import IntegrityError
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -193,3 +196,11 @@ def check_member(user, organization):
         return error_message
     return ""
 
+
+def search_organizations(keywords_list):
+    result = Organization.objects.filter(
+        reduce(operator.and_, (Q(name__icontains=q) for q in keywords_list)) |
+        reduce(operator.and_, (Q(description__icontains=q) for q in keywords_list))
+    )
+
+    return result
