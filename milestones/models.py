@@ -3,6 +3,7 @@ from django.db import models
 from datetime import date
 
 from activities.models import Activity
+from comments.models import Comment
 from projects.models import Project
 
 STATUS_CHOICES = (
@@ -21,6 +22,7 @@ class Milestone(models.Model):
     status = models.CharField(max_length=6,choices=STATUS_CHOICES,default="OPEN")    
     project = models.ForeignKey(Project,on_delete=models.CASCADE)
 
+    comments = GenericRelation(Comment, related_query_name='milestones', content_type_field='content_type', object_id_field='object_id')
     activities = GenericRelation(Activity, related_query_name='milestones', content_type_field='content_type',
                                  object_id_field='object_id')
 

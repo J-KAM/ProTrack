@@ -11,6 +11,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from activities.models import save_activity
+from comments.forms import CommentForm
 from issues.models import Issue
 from projects.models import Project
 from .models import Milestone
@@ -54,6 +55,8 @@ class MilestoneDetail(generic.ListView):
         context['done_issues'] = context['all_issues'].filter(status="Done")
         context['closed_issues'] = context['all_issues'].filter(status="Closed")
         context['milestone'] = Milestone.objects.get(id=self.kwargs['id'])
+
+        context['comment_form'] = CommentForm
         return context
 
 
