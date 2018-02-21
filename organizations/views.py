@@ -144,7 +144,7 @@ def show_invitation(request, uidb64, oidb64):
         return render(request, 'organizations/invitation.html', {'user_id': uid, 'organization_id': oid,
                                                                  'organization_name': organization.name, 'new': organization.invited_members.filter(id=uid).exists()})
     else:
-        return render(request, 'core/home_page.html')
+        return redirect('core:home')
 
 
 def manage_invitation(request):
@@ -166,7 +166,7 @@ def manage_invitation(request):
         elif user is not None and 'decline' in request.POST:
             organization.invited_members.remove(user)
             organization.save()
-        return render(request, 'core/home_page.html')
+        return redirect('core:home')
 
 
 @login_required

@@ -69,16 +69,10 @@ class SignInFormView(View):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return render(request, 'core/home_page.html', None)
+                return redirect('core:home')
 
         return render(request, self.template_name, {'form':form,
                                                     'error_message': 'Invalid username and/or password. Please try again.'})
-
-
-@login_required
-def home(request):
-    return render(request, "core/home_page.html")
-
 
 class UserUpdateFormView(View):
     user_update_form_class = UserUpdateForm
