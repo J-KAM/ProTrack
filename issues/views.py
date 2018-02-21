@@ -1,5 +1,9 @@
+import operator
+from functools import reduce
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, redirect
 
 
@@ -9,6 +13,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 
 from activities.models import save_activity
+from comments.forms import CommentForm
 from issues.forms import IssueForm
 from issues.models import Issue
 from milestones.models import Milestone
@@ -47,6 +52,11 @@ class IssueDetails(ListView):
     def get_queryset(self):
         if self.request.user.is_authenticated():
             return Issue.objects.get(id=self.kwargs['id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm
+        return context
 
 
 class IssueFormView(CreateView):
@@ -248,3 +258,12 @@ def calculate_milestone_progress(milestone):
         progress_sum += issue_progress
 
     return progress_sum / num_of_issues
+
+
+def search_issues(keywords_list):
+    result = Issue.objects.filter(
+        reduce(operator.and_, (Q(title__icontains=q) for q in keywords_list)) |
+        reduce(operator.and_, (Q(description__icontains=q) for q in keywords_list))
+    )
+
+    return result

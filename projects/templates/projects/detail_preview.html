@@ -35,6 +35,12 @@
                 <li><a data-toggle = "tab" href = "#issues"><span class="glyphicon glyphicon-tasks"></span> Issues</a></li>
                 <li><a data-toggle = "tab" href = "#milestones"><span class="glyphicon glyphicon-flag"></span> Milestones</a></li>
                 <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+                <li class="pull-right"><a data-toggle ="tab" href = "#stargazers" class="btn btn-default">{{project.stargazers.all.count}}</a></li>
+                    {% if user not in project.stargazers.all %}
+                        <li class="pull-right"><a href = "{% url 'projects:star' pid=project.id uid=user.id %}" class="btn btn-default"><span class = "glyphicon glyphicon-star-empty"></span> Star </a></li>
+                    {% else %}
+                        <li class="pull-right"><a href = "{% url 'projects:unstar' pid=project.id uid=user.id %}" class="btn btn-default"><span class = "glyphicon glyphicon-star"></span> Unstar </a></li>
+                    {% endif %}
             </ul>
         </div>
         <div class = "panel-body-details">
@@ -76,9 +82,14 @@
                             {% include 'projects/collaborators_table.html' %}
                             {% endwith %}
                         </div>
+
                     </div>
                 </div>
-
+                <div class = "tab-pane" id = "stargazers">
+                    {% with project=project %}
+                    {% include 'projects/stargazers.html' %}
+                    {% endwith %}
+                </div>
             </div>
         </div>
     </div>

@@ -1,4 +1,8 @@
+import operator
+from functools import reduce
+
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -7,6 +11,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from activities.models import save_activity
+from comments.forms import CommentForm
 from issues.models import Issue
 from projects.models import Project
 from .models import Milestone
@@ -50,6 +55,8 @@ class MilestoneDetail(generic.ListView):
         context['done_issues'] = context['all_issues'].filter(status="Done")
         context['closed_issues'] = context['all_issues'].filter(status="Closed")
         context['milestone'] = Milestone.objects.get(id=self.kwargs['id'])
+
+        context['comment_form'] = CommentForm
         return context
 
 
@@ -169,3 +176,12 @@ def reopen_milestone(request, **kwargs):
     save_activity(user=request.user, action='reopened', resource=milestone)
 
     return redirect('milestones:preview')
+
+
+def search_milestones(keywords_list):
+    result = Milestone.objects.filter(
+        reduce(operator.and_, (Q(name__icontains=q) for q in keywords_list)) |
+        reduce(operator.and_, (Q(description__icontains=q) for q in keywords_list))
+    )
+
+    return result
