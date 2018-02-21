@@ -181,4 +181,4 @@ class UserUpdateFormViewTest(TestCase):
         login = self.client.login(username="pera", password="pera1234")
         response = self.client.get(reverse('core:home'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'core/home_page.html')
+        self.assertTemplateUsed(response, 'projects/preview.html')

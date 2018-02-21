@@ -34,7 +34,9 @@
                 <li class = "active"><a data-toggle = "tab" href = "#commits"><span class="glyphicon glyphicon-edit"></span> Commits</a></li>
                 <li><a data-toggle = "tab" href = "#issues"><span class="glyphicon glyphicon-tasks"></span> Issues</a></li>
                 <li><a data-toggle = "tab" href = "#milestones"><span class="glyphicon glyphicon-flag"></span> Milestones</a></li>
-                <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+                {% if editable %}
+                    <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+                {% endif %}
                 <li class="pull-right"><a data-toggle ="tab" href = "#stargazers" class="btn btn-default">{{project.stargazers.all.count}}</a></li>
                     {% if user not in project.stargazers.all %}
                         <li class="pull-right"><a href = "{% url 'projects:star' pid=project.id uid=user.id %}" class="btn btn-default"><span class = "glyphicon glyphicon-star-empty"></span> Star </a></li>
@@ -63,7 +65,7 @@
                 </div>
 
                 <div class = "tab-pane" id = "milestones">
-                    {% with all_milestones=project_milestones open_milestones=open_milestones closed_milestones=closed_milestones  %}
+                    {% with all_milestones=project_milestones open_milestones=open_milestones closed_milestones=closed_milestones %}
                     {% include 'projects/milestone_panel.html' %}
                     {% endwith %}
                 </div>

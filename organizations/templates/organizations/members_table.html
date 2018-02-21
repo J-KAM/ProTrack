@@ -10,7 +10,7 @@
             <p class="list-item-title">{{ user.username }}</p>&nbsp;</br>
         </td>
         <td class = "col-md-3" align="center">
-            {% if user.id != organization.owner.id %}
+            {% if user.id != organization.owner.id and editable %}
                 <a href = "{% url 'organizations:remove_from_org' id_org=organization.id id_mem=user.id %}" class="btn btn-danger" role = "danger">Remove from organization</a></br>
             {% endif %}
         </td>

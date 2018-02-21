@@ -29,8 +29,8 @@
             <ul class = "nav nav-pills" id = "issueTab">
                 <li class = "active"><a data-toggle ="tab" href = "#details"><span class="glyphicon glyphicon-list-alt"></span> Details</a></li>
                 <li><a data-toggle ="tab" href = "#assignees"><span class="glyphicon glyphicon-user"></span> Assignees <span class = "badge">{{issue.assignees.all.count}}</span></a></li>
-                <li><a data-toggle ="tab" href = "#comments"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
-                <li><a data-toggle ="tab" href = "#activities"><span class="glyphicon glyphicon-list"></span> Activities</a></li>
+                <li class="pull-right"><a data-toggle ="tab" href = "#activities"><span class="glyphicon glyphicon-list"></span> Activities</a></li>
+                <li class="pull-right"><a data-toggle ="tab" href = "#comments"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
             </ul>
         </div>
 
@@ -49,17 +49,18 @@
                     {% endwith %}
                 </div>
 
+                <div class = "tab-pane" id = "activities">
+                    {% with activities=issue.activities.all %}
+                    {% include 'issues/issue_activities.html' %}
+                    {% endwith %}
+                </div>
+
                 <div class = "tab-pane" id = "comments">
                     {% with form=comment_form comments=issue.comments.all %}
                     {% include 'comments/comments_table.html' %}
                     {% endwith %}
                 </div>
 
-                <div class = "tab-pane" id = "activities">
-                    {% with activities=issue.activities.all %}
-                    {% include 'issues/issue_activities.html' %}
-                    {% endwith %}
-                </div>
             </div>
         </div>
  </div>

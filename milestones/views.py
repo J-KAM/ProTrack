@@ -7,18 +7,19 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views import generic
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from activities.models import save_activity
 from comments.forms import CommentForm
 from issues.models import Issue
 from projects.models import Project
+from projects.views import check_restrictions
 from .models import Milestone
 from .forms import MilestoneForm
 
 
-class MilestonesPreview(generic.ListView):
+class MilestonesPreview(ListView):
     template_name = 'milestones/preview.html'
     context_object_name = 'all_milestones'
 
@@ -35,7 +36,7 @@ class MilestonesPreview(generic.ListView):
         return context
 
 
-class MilestoneDetail(generic.ListView):
+class MilestoneDetail(ListView):
     template_name = 'milestones/detail_preview.html'
     context_object_name = 'all_issues'
 
@@ -54,9 +55,12 @@ class MilestoneDetail(generic.ListView):
         context['in_progress_issues'] = context['all_issues'].filter(status="In progress")
         context['done_issues'] = context['all_issues'].filter(status="Done")
         context['closed_issues'] = context['all_issues'].filter(status="Closed")
-        context['milestone'] = Milestone.objects.get(id=self.kwargs['id'])
 
+        milestone = Milestone.objects.get(id=self.kwargs['id'])
+        context['milestone'] = milestone
         context['comment_form'] = CommentForm
+        context['editable'] = check_restrictions(self.request.user, milestone.project)
+
         return context
 
 
@@ -95,7 +99,12 @@ class MilestoneCreateFromProjectView(CreateView):
     @method_decorator(login_required)
     def get(self, request, **kwargs):
         form = self.get_form(self.form_class)
-        project = Project.objects.get(id=kwargs['project_id'])
+
+        try:
+            project = Project.objects.get(id=kwargs['project_id'])
+        except Project.DoesNotExist:
+            raise Http404("Milestone's project does not exist.")
+
         form.fields['project'].queryset = Project.objects.filter(collaborators=request.user) | Project.objects.filter(owner=request.user)
         form.fields['project'].initial = str(project.id)
         form.fields['project'].disabled = True
@@ -126,7 +135,11 @@ class MilestoneUpdate(UpdateView):
 
     @method_decorator(login_required)
     def get(self, request, **kwargs):
-        self.object = Milestone.objects.get(id=self.kwargs['id'])
+        try:
+            self.object = Milestone.objects.get(id=self.kwargs['id'])
+        except Milestone.DoesNotExist:
+            raise Http404('Milestone does not exist.')
+
         form = self.get_form(self.form_class)
         form.fields['project'].disabled = True
         form.fields['start_date'].disabled = True
@@ -150,7 +163,6 @@ class MilestoneUpdate(UpdateView):
         return render(request, 'milestones/milestone_form.html', {'form': form, 'object':milestone, 'action': 'Edit'})
 
 
-@method_decorator(login_required, name='dispatch')
 class MilestoneDelete(DeleteView):
     model = Milestone
     success_url = reverse_lazy('milestones:preview')
@@ -158,7 +170,11 @@ class MilestoneDelete(DeleteView):
 
 @login_required
 def close_milestone(request, **kwargs):
-    milestone = Milestone.objects.get(id=kwargs['id'])
+    try:
+        milestone = Milestone.objects.get(id=kwargs['id'])
+    except Milestone.DoesNotExist:
+        raise Http404("Milestone does not exists.")
+
     milestone.status = 'CLOSED'
     milestone.save()
 
@@ -169,7 +185,11 @@ def close_milestone(request, **kwargs):
 
 @login_required
 def reopen_milestone(request, **kwargs):
-    milestone = Milestone.objects.get(id=kwargs['id'])
+    try:
+        milestone = Milestone.objects.get(id=kwargs['id'])
+    except Milestone.DoesNotExist:
+        raise Http404("Milestone does not exists.")
+
     milestone.status = 'OPEN'
     milestone.save()
 

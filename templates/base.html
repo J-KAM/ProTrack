@@ -80,6 +80,8 @@
                         <span class = "caret"></span>
                     </a>
                     <ul class = "dropdown-menu">
+                        <li> <p>Signed in as <b>{{ request.user.username }}</b></p></li>
+                        <li class = "divider"></li>
                         <li><a href = "{% url 'core:profile' %}">Your profile</a></li>
                         <li><a href = "{% url 'projects:preview' %}">Your projects</a></li>
                         <li><a href = "{% url 'organizations:preview' %}">Your organizations</a></li>

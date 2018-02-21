@@ -6,7 +6,7 @@
         <td name="comment_id" id="{{comment.id}}" style="display:none"></td>
         <td name="comment_content" class = "col-md-9">
             <p name="comment_text">{{comment.text|safe}}</p><br>
-            <p class="list-item-description"><img src="{{ comment.user.profile.profile_picture.url }}" class="activityUserImage img-circle"><b>{{comment.user.username}}</b> commented {{comment.date_time|naturaltime}}</p>
+            <p class="list-item-description"><img src="{{ comment.user.profile.profile_picture.url }}" class="small-img img-circle"><b>&nbsp;{{comment.user.username}}</b> commented {{comment.date_time|naturaltime}}</p>
         </td>
         <td class = "col-md-4">
             <button name="toggle-btn" class="btn btn-info" data-tooltip="tooltip" title="Show/Hide replies"><span class="glyphicon glyphicon-comment">&nbsp;{{comment.comments.all|length}}</span></button>

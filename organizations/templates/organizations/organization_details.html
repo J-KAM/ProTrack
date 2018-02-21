@@ -18,8 +18,9 @@
             <ul class = "nav nav-pills" id = "organizationTab">
                 <li class = "active"><a data-toggle ="tab" href = "#projects"><span class="glyphicon glyphicon-blackboard"></span> Projects <span class = "badge">{{organization.project_set.all.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#members"><span class="glyphicon glyphicon-user"></span> Members <span class = "badge">{{organization.members.all.count}}</span></a></li>
-                <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
-
+                {% if editable %}
+                    <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+                {%  endif %}
             </ul>
         </div>
 
