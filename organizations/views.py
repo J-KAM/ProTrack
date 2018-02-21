@@ -33,7 +33,13 @@ class OrganizationDetails(ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated():
-            return User.objects.get(id=self.request.user.id).members.get(id=self.kwargs['id'])
+            return Organization.objects.get(id=self.kwargs['id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        organization = Organization.objects.get(id=self.kwargs['id'])
+        context['editable'] = check_restrictions(self.request.user, organization)
+        return context
 
 
 class OrganizationFormView(CreateView):
@@ -204,3 +210,9 @@ def search_organizations(keywords_list):
     )
 
     return result
+
+
+def check_restrictions(active_user,organization):
+    if active_user == organization.owner or active_user in organization.members.all():
+        return True
+    return False
