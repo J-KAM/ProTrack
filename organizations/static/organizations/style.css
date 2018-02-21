@@ -50,3 +50,13 @@ p {
     text-align: center;
     line-height: 2ex;
 }
+
+
+.btn-my {
+    margin: 0;
+    width: 60px;
+    height: 30px;
+    padding-left: 1ex;
+    text-align: center;
+    line-height: 2ex;
+}

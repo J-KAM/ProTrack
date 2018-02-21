@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -24,7 +25,10 @@ class OrganizationPreview(ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated():
-            return User.objects.get(id=self.request.user.id).members.all()
+            try:
+                return User.objects.get(id=self.request.user.id).members.all()
+            except User.DoesNotExist:
+                raise Http404('User does not exist')
 
 
 class OrganizationDetails(ListView):
@@ -33,7 +37,10 @@ class OrganizationDetails(ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated():
-            return Organization.objects.get(id=self.kwargs['id'])
+            try:
+                return Organization.objects.get(id=self.kwargs['id'])
+            except Organization.DoesNotExist:
+                raise Http404('Organization does not exist.')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -74,7 +81,10 @@ class OrganizationUpdate(UpdateView):
 
     @method_decorator(login_required)
     def get(self, request, **kwargs):
-        self.object = Organization.objects.get(id=self.kwargs['id'])
+        try:
+            self.object = Organization.objects.get(id=self.kwargs['id'])
+        except Organization.DoesNotExist:
+            raise Http404('Organization does not exist.')
         form = self.get_form(self.form_class)
         form.fields['name'].disabled = True
         return render(request, self.template_name, {'form': form, 'object': self.object, 'action': 'Edit'})
@@ -101,8 +111,14 @@ class OrganizationDelete(DeleteView):
 
 @login_required
 def remove_member_from_organization(request, **kwargs):
-    organization = Organization.objects.get(id=kwargs['id_org'])
-    member = User.objects.get(id=kwargs['id_mem'])
+    try:
+        organization = Organization.objects.get(id=kwargs['id_org'])
+    except Organization.DoesNotExist:
+        raise Http404('Organization does not exist')
+    try:
+        member = User.objects.get(id=kwargs['id_mem'])
+    except User.DoesNotExist:
+        raise Http404('Member does not exist')
     organization.members.remove(member)
     if organization.members.count() == 1 and member.id != organization.owner.id:
         return redirect('organizations:preview')
@@ -112,7 +128,10 @@ def remove_member_from_organization(request, **kwargs):
 
 @login_required
 def add_members(request, **kwargs):
-    organization = Organization.objects.get(id=kwargs['id'])
+    try:
+        organization = Organization.objects.get(id=kwargs['id'])
+    except Organization.DoesNotExist:
+        raise Http404('Organization does not exist.')
     return render(request, 'organizations/add_member.html', {'organization': organization})
 
 
