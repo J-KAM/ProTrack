@@ -43,6 +43,14 @@ class ProjectsPreview(ListView):
         return context
 
 
+class StarredProjectsPreview(ListView):
+    template_name = 'projects/starred_projects_preview.html'
+    context_object_name = 'starred_projects'
+
+    def get_queryset(self):
+        return Project.objects.filter(stargazers=self.request.user)
+
+
 class ProjectCreate(CreateView):
     form_class = CreateProjectForm
     template_name='projects/project_form.html'
@@ -289,6 +297,29 @@ def check_collaborator(user, project):
         error_message = 'User is already invited to be a collaborator. Please try again.'
         return error_message
     return ""
+
+
+@login_required
+def star_project(request, **kwargs):
+    project = Project.objects.get(id=kwargs['pid'])
+    user = User.objects.get(id=kwargs['uid'])
+    project.stargazers.add(user)
+    project.num_of_stars = project.num_of_stars + 1
+    project.save()
+
+    return redirect('projects:detail', project.id)
+
+
+@login_required
+def unstar_project(request, **kwargs):
+    project = Project.objects.get(id=kwargs['pid'])
+    user = User.objects.get(id=kwargs['uid'])
+    project.stargazers.remove(user)
+    project.num_of_stars = project.num_of_stars - 1
+    project.save()
+
+    return redirect('projects:detail', project.id)
+
 
 
 def search_projects(keywords_list):
