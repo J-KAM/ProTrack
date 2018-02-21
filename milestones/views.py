@@ -1,4 +1,8 @@
+import operator
+from functools import reduce
+
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -172,3 +176,12 @@ def reopen_milestone(request, **kwargs):
     save_activity(user=request.user, action='reopened', resource=milestone)
 
     return redirect('milestones:preview')
+
+
+def search_milestones(keywords_list):
+    result = Milestone.objects.filter(
+        reduce(operator.and_, (Q(name__icontains=q) for q in keywords_list)) |
+        reduce(operator.and_, (Q(description__icontains=q) for q in keywords_list))
+    )
+
+    return result

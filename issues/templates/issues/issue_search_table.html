@@ -1,0 +1,13 @@
+<table class = "table">
+    <tbody>
+    {% for issue in issues %}
+    <tr>
+        <td>
+            <p class="search-item-title"><a href="{% url 'issues:details' issue.id %}">{{ issue.title }}</a></p></br>
+            <p class="search-item-subtitle"><span class="glyphicon glyphicon-briefcase"></span> {{issue.project.name}}</p></br>
+            <p class="search-item-description">{{ issue.description }}</p></br>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

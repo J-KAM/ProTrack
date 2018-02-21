@@ -18,4 +18,8 @@ urlpatterns = [
     url(r'^invitation/manage/$', views.manage_invitation, name="manage"),
     url(r'^commits/$', views.get_commits, name="commits"),
     url(r'^(?P<pid>[0-9]+)/(?P<cid>\w+)/commit/$', views.get_commit, name="commit"),
+    url(r'^(?P<pid>[0-9]+)/(?P<uid>[0-9]+)/star/$', views.star_project, name="star"),
+    url(r'^(?P<pid>[0-9]+)/(?P<uid>[0-9]+)/unstar/$', views.unstar_project, name="unstar"),
+    url(r'^starred/$', views.StarredProjectsPreview.as_view(), name="starred_projects"),
+
 ]

@@ -1,5 +1,9 @@
+import operator
+from functools import reduce
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, redirect
 
 
@@ -254,3 +258,12 @@ def calculate_milestone_progress(milestone):
         progress_sum += issue_progress
 
     return progress_sum / num_of_issues
+
+
+def search_issues(keywords_list):
+    result = Issue.objects.filter(
+        reduce(operator.and_, (Q(title__icontains=q) for q in keywords_list)) |
+        reduce(operator.and_, (Q(description__icontains=q) for q in keywords_list))
+    )
+
+    return result
