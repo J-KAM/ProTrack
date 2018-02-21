@@ -1,42 +1,47 @@
+{% load humanize %}
 <table class = "table">
     <tbody>
     {% for activity in activities %}
     <tr>
             {% if activity.action == 'opened' %}
                 <td class = "col-md-5">
-                    <p><span class="glyphicon glyphicon-exclamation-sign"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle"> <b>{{activity.user.username}}</b> opened this issue on {{ activity.date_time }}</p>
+                    <p><span class="glyphicon glyphicon-exclamation-sign"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle"> <b>{{activity.user.username}}</b> opened this issue {{activity.date_time|naturaltime }}</p>
                 </td>
             {% elif activity.action == 'closed' %}
                 <td class = "col-md-5">
-                    <p><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle"> <b>{{activity.user.username}}</b> closed this issue on {{ activity.date_time }}</p>
+                    <p><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle"> <b>{{activity.user.username}}</b> closed this issue {{ activity.date_time|naturaltime }}</p>
                 </td>
             {% elif activity.action == 'reopened' %}
                 <td class = "col-md-5">
-                    <p><span class="glyphicon glyphicon-repeat"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle"> <b>{{activity.user.username}}</b> reopened this issue on {{ activity.date_time }}</p>
+                    <p><span class="glyphicon glyphicon-repeat"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle"> <b>{{activity.user.username}}</b> reopened this issue {{ activity.date_time|naturaltime }}</p>
                 </td>
             {% elif activity.action == 'updated' %}
                 <td class = "col-md-5">
-                    <p><span class="glyphicon glyphicon-edit"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> updated this issue on {{ activity.date_time }}</p>
+                    <p><span class="glyphicon glyphicon-edit"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> updated this issue {{ activity.date_time|naturaltime }}</p>
                 </td>
             {% elif activity.action == 'assigned' and activity.content is not None %}
                 <td class = "col-md-5">
-                    <p><span class="glyphicon glyphicon-user"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> assigned this issue to {{ activity.content }} on {{ activity.date_time }}</p>
+                    <p><span class="glyphicon glyphicon-user"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> assigned this issue to {{ activity.content }} {{ activity.date_time|naturaltime }}</p>
                 </td>
             {% elif activity.action == 'unassigned' and activity.content is not None %}
                 <td class = "col-md-5">
-                    <p><span class="glyphicon glyphicon-user"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle"> <b>{{activity.user.username}}</b> unassigned {{ activity.content }} from this issue on {{ activity.date_time }}</p>
+                    <p><span class="glyphicon glyphicon-user"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle"> <b>{{activity.user.username}}</b> unassigned {{ activity.content }} from this issue {{ activity.date_time|naturaltime }}</p>
                 </td>
             {% elif activity.action == 'added to project' %}
                 <td class = "col-md-5">
-                    <p><span class="glyphicon glyphicon-briefcase"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> added this issue to project <a href = "{% url 'projects:detail' activity.content_object.project.id %}">{{ activity.content_object.project.name }}</a> on {{ activity.date_time }}</p>
+                    <p><span class="glyphicon glyphicon-briefcase"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> added this issue to project <a href = "{% url 'projects:detail' activity.content_object.project.id %}">{{ activity.content_object.project.name }}</a> {{ activity.date_time|naturaltime }}</p>
                 </td>
             {% elif activity.action == 'set milestone' %}
                 <td class = "col-md-5">
-                    <p><span class="glyphicon glyphicon-flag"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> set milestone <a href = "{% url 'milestones:detail' activity.content_id %}">{{ activity.content }}</a> for this issue on {{ activity.date_time }}</p>
+                    <p><span class="glyphicon glyphicon-flag"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> set milestone <a href = "{% url 'milestones:detail' activity.content_id %}">{{ activity.content }}</a> for this issue {{ activity.date_time|naturaltime }}</p>
                 </td>
             {% elif activity.action == 'removed milestone' %}
                 <td class = "col-md-5">
-                    <p><span class="glyphicon glyphicon-flag"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> removed milestone <a href = "{% url 'milestones:detail' activity.content_id %}">{{ activity.content }}</a> for this issue on {{ activity.date_time }}</p>
+                    <p><span class="glyphicon glyphicon-flag"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> removed milestone <a href = "{% url 'milestones:detail' activity.content_id %}">{{ activity.content }}</a> for this issue {{ activity.date_time|naturaltime }}</p>
+                </td>
+            {% elif activity.action == 'commented' %}
+                <td class = "col-md-5">
+                    <p><span class="glyphicon glyphicon-comment"></span>&nbsp;<img src="{{ activity.user.profile.profile_picture.url }}" class="activityUserImage img-circle">  <b>{{activity.user.username}}</b> commented this issue {{ activity.date_time|naturaltime  }}</p>
                 </td>
         {%  endif %}
     </tr>

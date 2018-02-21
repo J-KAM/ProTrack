@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 
+from activities.models import save_activity
 from comments.forms import CommentForm
 from comments.models import Comment
 from issues.models import Issue
@@ -33,8 +34,10 @@ def comment_create(request):
             comment.text = form.cleaned_data['text']
             comment.content_object = resource
             comment.save()
+            save_activity(user=request.user, action='commented', resource=resource)
 
         return redirect(request.META.get('HTTP_REFERER'))
+
 
 @login_required
 def comment_update(request):
@@ -46,6 +49,8 @@ def comment_update(request):
         if form.is_valid():
             if comment.user == request.user:
                 comment.save()
+                save_activity(user=request.user, action='commented',
+                              resource=comment.content_object)
 
     return redirect(request.META.get('HTTP_REFERER'))
 
