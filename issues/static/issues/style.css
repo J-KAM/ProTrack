@@ -54,3 +54,13 @@ p {
     padding-bottom: 1%;
     padding-top: 1%;
 }
+
+.btn-my {
+    margin: 0;
+    width: 60px;
+    height: 30px;
+    padding-left: 1ex;
+    text-align: center;
+    line-height: 2ex;
+}
+
