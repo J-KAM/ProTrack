@@ -1,0 +1,17 @@
+<table class="table">
+    <tbody>
+        {% if project.stargazers.all.count == 0 %}
+        <p class="list-item-description">There are currently no stargazers for this project. Be the first to star this project.</p>
+        {% else %}
+            <h3>Stargazers</h3>
+            {% for user in project.stargazers.all %}
+            <tr>
+                <td class = "col-md-5">
+                    <img src="{{ user.profile.profile_picture.url }}" class = "special-img img-circle"> &nbsp;&nbsp;
+                    <p class = "list-item-title">{{user.username}}</p>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
