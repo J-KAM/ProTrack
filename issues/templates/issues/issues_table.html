@@ -38,10 +38,10 @@
 
         </td>
         <td class = "col-md-3" align="center">
-            <a href="{% url 'issues:details' issue.id %}" role="button" class="btn btn-primary btn-my">Details</a></br>
+            <a href="{% url 'issues:details' issue.id %}" role="button" class="btn btn-info btn-my">Details</a></br>
 
             {% if issue.status != 'Closed' %}
-                <a href="{% url 'issues:update' issue.id %}" role="button" class="btn btn-success btn-my">Edit</a></br>
+                <a href="{% url 'issues:update' issue.id %}" role="button" class="btn btn-info btn-my">Edit</a></br>
                 <a href="{% url 'issues:close' issue.id %}" role="button" class="btn btn-info btn-my">Close</a></br>
             {% else %}
             <a href="{% url 'issues:reopen' issue.id %}" role="button" class="btn btn-info btn-my">Reopen</a></br>
