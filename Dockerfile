@@ -4,12 +4,13 @@ RUN apt-get update -yq && apt-get install -yqq python
 RUN apt-get install -y postgresql-client
 RUN pip install --upgrade pip
 RUN mkdir /code
-WORKDIR /code
 ADD requirements.txt /code/
 RUN pip install -r requirements.txt
 
 
 ADD . /code/
+WORKDIR /code
+
 
 EXPOSE 8000
 CMD python manage.py makemigrations
