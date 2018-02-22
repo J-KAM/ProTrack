@@ -4,11 +4,11 @@ RUN apt-get update -yq && apt-get install -yqq python
 RUN apt-get install -y postgresql-client
 RUN pip install --upgrade pip
 RUN mkdir /code
-ADD requirements.txt /code/
+ADD requirements.txt /code
 RUN pip install -r /code/requirements.txt
 
 
-ADD . /code/
+ADD . /code
 WORKDIR /code
 
 
