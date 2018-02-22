@@ -7,8 +7,7 @@ RUN mkdir /code
 WORKDIR /code
 ADD requirements.txt /code/
 RUN pip install -r requirements.txt
-ADD wait-for-postgres.sh /code/
-RUN chmod +x wait-for-postgres.sh
+
 
 ADD . /code/
 

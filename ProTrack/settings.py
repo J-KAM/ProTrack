@@ -25,7 +25,7 @@ SECRET_KEY = 'v!_oz2+bo$f^%edb^#arfr3nb6o2vjx#t@o0+ur!hlbm&%oxa%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "147.91.177.194", "127.0.0.1"]
 
 
 # Application definition
@@ -103,21 +103,13 @@ else:
             'NAME': 'pro_track_db',
             'USER': 'root',
             'PASSWORD': 'root',
-            # 'HOST': 'db',
-            'HOST': 'localhost',
-            'PORT': 5432,
+            'HOST': 'db',
+            'PORT': 8001,
+            # 'HOST': 'localhost',
+            # 'PORT': 5432,
         }
     }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'postgres',
-#         'USER': 'postgres',
-#         'HOST': 'db',
-#         'PORT': 5432,
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

@@ -1,4 +1,4 @@
-version: '3.3'
+version: '2'
 services:
   db:
     image: postgres
@@ -6,6 +6,7 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
+    command: -p 8001
     volumes:
       - database:/var/lib/postgresql/data
   web:
@@ -15,7 +16,7 @@ services:
       - PGDATABASE
       - PGUSER
       - PGPASSWORD
-    command: bash -c "./wait-for-postgres.sh db -- && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
