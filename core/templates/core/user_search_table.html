@@ -1,0 +1,13 @@
+<table class = "table">
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td>
+            <p class="search-item-title"><a href="{% url 'projects:preview' %}"><img src="{{ user.profile.profile_picture.url }}" class = "special-img img-circle"> {{ user.username }}</a></p></br>
+            <p class="search-item-subtitle"> {{user.first_name}} {{user.last_name}} </p></br>
+            <p class="search-item-subtitle"> {{user.email}} </p>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

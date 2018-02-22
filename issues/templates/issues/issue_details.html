@@ -4,6 +4,11 @@
 {% block extra_css %}
     {% load staticfiles %}
     <link href="{% static 'issues/style.css' %}" rel='stylesheet' type='text/css'>
+    <link href="{% static 'comments/style.css' %}" rel='stylesheet' type='text/css'>
+    <!--comment-box-->
+    <script src = "{% static 'comments/comment_editor.js' %}"></script>
+    <script src="{% static 'comments/js/tinymce/tinymce.min.js'%}"></script>
+    <script type='text/javascript' src="{% static 'comments/js/tinymce/custom.js'%}"></script>
 {% endblock %}
 
 {% block body %}
@@ -24,7 +29,8 @@
             <ul class = "nav nav-pills" id = "issueTab">
                 <li class = "active"><a data-toggle ="tab" href = "#details"><span class="glyphicon glyphicon-list-alt"></span> Details</a></li>
                 <li><a data-toggle ="tab" href = "#assignees"><span class="glyphicon glyphicon-user"></span> Assignees <span class = "badge">{{issue.assignees.all.count}}</span></a></li>
-                <li><a data-toggle ="tab" href = "#activities"><span class="glyphicon glyphicon-list"></span> Activities</a></li>
+                <li class="pull-right"><a data-toggle ="tab" href = "#activities"><span class="glyphicon glyphicon-list"></span> Activities</a></li>
+                <li class="pull-right"><a data-toggle ="tab" href = "#comments"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
             </ul>
         </div>
 
@@ -49,8 +55,18 @@
                     {% endwith %}
                 </div>
 
+                <div class = "tab-pane" id = "comments">
+                    {% with form=comment_form comments=issue.comments.all %}
+                    {% include 'comments/comments_table.html' %}
+                    {% endwith %}
+                </div>
+
             </div>
         </div>
  </div>
+
+    {% with form=comment_form resource_type='issue' resource_id=issue.id  %}
+    {% include 'comments/comment_form.html' %}
+    {% endwith %}
 
 {% endblock %}

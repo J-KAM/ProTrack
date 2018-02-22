@@ -1,17 +1,20 @@
+import operator
+from functools import reduce
+
 import requests
 from datetime import date, datetime
 
-from django import template
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.db import IntegrityError
+from django.db.models import Q
+from django.http import Http404
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.utils.dateparse import parse_date
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -39,6 +42,14 @@ class ProjectsPreview(ListView):
         context['owned_projects'] = context['all_projects'].filter(owner=self.request.user)
         context['collaborated_projects'] = context['all_projects'].filter(collaborators=self.request.user)
         return context
+
+
+class StarredProjectsPreview(ListView):
+    template_name = 'projects/starred_projects_preview.html'
+    context_object_name = 'starred_projects'
+
+    def get_queryset(self):
+        return Project.objects.filter(stargazers=self.request.user)
 
 
 class ProjectCreate(CreateView):
@@ -99,7 +110,11 @@ class ProjectUpdate(UpdateView):
 
     @method_decorator(login_required)
     def get(self, request, **kwargs):
-        self.object = Project.objects.get(id=self.kwargs['id'])
+        try:
+            self.object = Project.objects.get(id=self.kwargs['id'])
+        except Project.DoesNotExcept:
+            raise Http404("Project does not exist.")
+
         form = self.get_form(self.form_class)
         if self.object.is_git:
             form.initial['project_type'] = 'g'
@@ -154,7 +169,21 @@ class ProjectDetail(DetailView):
         context['done_issues'] = issues.filter(status="Done")
         context['closed_issues'] = issues.filter(status="Closed")
 
+        context['editable'] = check_restrictions(self.request.user, project)
+
         return context
+
+
+def check_restrictions(active_user,project):
+    if project.owner is not None:
+        if active_user == project.owner or active_user in project.collaborators.all():
+            return True
+    elif project.organization_owner is not None:
+        organization_owner = Organization.objects.get(id=project.organization_owner)
+        if active_user in organization_owner.members or active_user in project.collaborators.all():
+            return True
+
+    return False
 
 
 class ProjectDelete(DeleteView):
@@ -168,7 +197,10 @@ def get_commits(request):
     project_id = request.GET.get('project_id', None)
 
     if project_id is not None:
-        project = Project.objects.get(id = project_id)
+        try:
+            project = Project.objects.get(id = project_id)
+        except Project.DoesNotExist:
+            raise Http404("Project does not exist.")
         if project.is_git:
             commits_url = 'https://api.github.com/repos/' + project.git_owner + '/' + project.git_name + '/commits?sha=' + selected_branch
 
@@ -178,7 +210,10 @@ def get_commits(request):
 
 @login_required
 def get_commit(request, pid, cid):
-    project = Project.objects.get(id=pid)
+    try:
+        project = Project.objects.get(id=pid)
+    except Project.DoesNotExist:
+        raise Http404("Project does not exist.")
 
     if project is not None and project.is_git:
         commit_url = 'https://api.github.com/repos/' + project.git_owner + '/' + project.git_name + '/commits/' + cid
@@ -187,7 +222,7 @@ def get_commit(request, pid, cid):
         commit_date = datetime.strptime(commit['commit']['author']['date'], '%Y-%m-%dT%H:%M:%SZ')
         return render(request, 'projects/commit_detail.html', {'commit_data': commit, 'date': commit_date})
 
-    return render(request, 'core/home_page.html')
+    return redirect('core:home')
 
 
 @login_required
@@ -202,7 +237,11 @@ def remove_collaborator(request, uid, pid):
 
 @login_required
 def add_collaborators(request, **kwargs):
-    project = Project.objects.get(id=kwargs['id'])
+    try:
+        project = Project.objects.get(id=kwargs['id'])
+    except Project.DoesNotExist:
+        raise Http404("Project does not exist.")
+
     return render(request, 'projects/add_collaborators.html', {'project': project})
 
 
@@ -214,7 +253,7 @@ def show_invitation(request, uidb64, pidb64):
         project = Project.objects.get(id=pid)
         return render(request, 'projects/invitation.html', {'user_id': uid, 'project_id': pid, 'project_name': project.name, 'new': project.invited_collaborators.filter(id=uid).exists()})
     else:
-        return render(request, 'core/home_page.html')
+        return redirect('core:home')
 
 
 def manage_invitation(request):
@@ -234,7 +273,7 @@ def manage_invitation(request):
         elif user is not None and 'decline' in request.POST:
             project.invited_collaborators.remove(user)
             project.save()
-        return render(request, 'core/home_page.html')
+        return redirect('core:home')
 
 
 @login_required
@@ -243,7 +282,10 @@ def invite_collaborators(request):
         collaborator = request.POST.get('collaborator')
         project_id = request.POST.get('project_id')
 
-        project = Project.objects.get(id=project_id)
+        try:
+            project = Project.objects.get(id=project_id)
+        except Project.DoesNotExist:
+            raise Http404("Project does not exist.")
 
         if User.objects.filter(username=collaborator).exists():
             user = User.objects.get(username=collaborator)
@@ -287,3 +329,47 @@ def check_collaborator(user, project):
         error_message = 'User is already invited to be a collaborator. Please try again.'
         return error_message
     return ""
+
+
+@login_required
+def star_project(request, **kwargs):
+    try:
+        project = Project.objects.get(id=kwargs['pid'])
+    except Project.DoesNotExist:
+            raise Http404("Project does not exist.")
+    try:
+        user = User.objects.get(id=kwargs['uid'])
+    except User.DoesNotExist:
+        raise Http404("User does not exist.")
+    project.stargazers.add(user)
+    project.num_of_stars = project.num_of_stars + 1
+    project.save()
+
+    return redirect('projects:detail', project.id)
+
+
+@login_required
+def unstar_project(request, **kwargs):
+    try:
+        project = Project.objects.get(id=kwargs['pid'])
+    except Project.DoesNotExist:
+        raise Http404("Project does not exist.")
+    try:
+        user = User.objects.get(id=kwargs['uid'])
+    except User.DoesNotExist:
+        raise Http404("User does not exist.")
+    project.stargazers.remove(user)
+    project.num_of_stars = project.num_of_stars - 1
+    project.save()
+
+    return redirect('projects:detail', project.id)
+
+
+
+def search_projects(keywords_list):
+    result = Project.objects.filter(
+        reduce(operator.and_, (Q(name__icontains=q) for q in keywords_list)) |
+        reduce(operator.and_, (Q(description__icontains=q) for q in keywords_list))
+    )
+
+    return result

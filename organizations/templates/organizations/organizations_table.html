@@ -9,11 +9,10 @@
         </td>
 
         <td class = "col-md-3" align="center">
-                <a href = "{% url 'organizations:details' organization.id %}">Details</a></br>
-                <a href = "{% url 'organizations:update' organization.id %}">Edit</a></br>
-                <a href = "{% url 'organizations:delete' organization.id %}">Delete</a></br>
+                <a href="{% url 'organizations:details' organization.id %}" role="button" class="btn btn-primary btn-my">Details</a></br>
+                <a href="{% url 'organizations:update' organization.id %}" role="button" class="btn btn-success btn-my">Edit</a></br>
+                <a href="{% url 'organizations:delete' organization.id %}" role="button" class="btn btn-danger btn-my">Delete</a></br>
         </td>
-
     </tr>
     {% endfor %}
     </tbody>

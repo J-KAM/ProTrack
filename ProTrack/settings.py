@@ -37,13 +37,15 @@ INSTALLED_APPS = [
     'milestones.apps.MilestonesConfig',
     'organizations.apps.OrganizationsConfig',
     'activities.apps.ActivitiesConfig',
+    'comments.apps.CommentsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'tinymce'
 ]
 
 MIDDLEWARE = [
@@ -101,8 +103,8 @@ else:
             'NAME': 'pro_track_db',
             'USER': 'root',
             'PASSWORD': 'root',
-            'HOST': 'db',
-            # 'HOST': 'localhost',
+            # 'HOST': 'db',
+            'HOST': 'localhost',
             'PORT': 5432,
         }
     }
@@ -135,6 +137,33 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#django-richtextfield configuration
+# 'js': ['//tinymce.cachefly.net/4.2/tinymce.min.js'],
+    # 'init_template': 'djrichtextfield/init/tinymce.js',
+    # 'settings': {
+    #     'menubar': False,
+    #     'statusbar': False,
+    #     'plugins': 'link image code emoticons textcolor colorpicker lists',
+    #     'toolbar': 'undo redo | styleselect | fontsizeselect | forecolor backcolor | emoticons |bold italic underline | numlist bullist | code link | removeformat',
+    #     'width': '100%',
+    #     'height': '25%'
+    # }
+#
+# DJRICHTEXTFIELD_CONFIG = {
+#     'js': ['//cdn.ckeditor.com/4.4.4/standard/ckeditor.js'],
+#     'init_template': 'djrichtextfield/init/ckeditor.js',
+#     'settings': {
+#         'resize_enabled': False,
+#         'label': False,
+#         'removePlugins': 'elementspath',
+#         'toolbar': [
+#             {'items': ['Undo', 'Redo', '-', 'Format', '-', 'Bold', 'Italic', '-', 'NumberedList', 'BulletedList']}
+#         ],
+#         'height': '25%',
+#         'width': '100%'
+#
+#     }
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -153,6 +182,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

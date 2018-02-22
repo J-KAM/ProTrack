@@ -80,3 +80,50 @@ class ProjectUpdateFormViewTest(TestCase):
 
         project = Project.objects.get(id=self.PRO1_ID)
         self.assertEqual(project.name, 'New project name')
+
+
+class ViewMethodsTest(TestCase):
+
+    def setUp(self):
+        test_user1 = User.objects.create_user(username='pera', email='pera@gmail.com', password='pera1234',
+                                              first_name='Pera', last_name='Peric')
+        self.USER1_ID = test_user1.id
+
+        test_user2 = User.objects.create_user(username='mika', email='mika@gmail.com', password='mika1234',
+                                              first_name='Mika', last_name='Mikic')
+        self.USER2_ID = test_user2.id
+
+        test_project1 = Project.objects.create(name='First project', url='localhost:8000/pera/First project',
+                                               description='my first project', created='2018-02-01', num_of_stars=0,
+                                               owner=test_user1, organization_owner=None)
+
+        self.PRO1_ID = test_project1.id
+
+    def test_redirect_if_not_logged_in_star_and_unstar_project(self):
+        response = self.client.get(reverse('projects:star', kwargs={'pid': self.PRO1_ID, 'uid': self.USER1_ID}))
+        self.assertRedirects(response, '/?next=/projects/' + str(self.PRO1_ID) + '/' + str(self.USER1_ID) + '/star/')
+
+        response = self.client.get(reverse('projects:unstar', kwargs={'pid': self.PRO1_ID, 'uid': self.USER1_ID}))
+        self.assertRedirects(response, '/?next=/projects/' + str(self.PRO1_ID) + '/' + str(self.USER1_ID) + '/unstar/')
+
+    def test_logged_in_star_unstar_project(self):
+        login = self.client.login(username="pera", password="pera1234")
+        response = self.client.get(reverse('projects:star', kwargs={'pid': self.PRO1_ID, 'uid': self.USER1_ID}))
+        project = Project.objects.get(id=self.PRO1_ID)
+        self.assertEqual(project.stargazers.all().count(), 1)
+        self.assertEqual(response.status_code, 302)
+
+        login = self.client.login(username="mika", password="mika1234")
+        response = self.client.get(reverse('projects:star', kwargs={'pid': self.PRO1_ID, 'uid': self.USER2_ID}))
+        self.assertEqual(project.stargazers.all().count(), 2)
+        self.assertEqual(response.status_code, 302)
+
+        # unstar
+        response = self.client.get(reverse('projects:unstar', kwargs={'pid': self.PRO1_ID, 'uid': self.USER2_ID}))
+        self.assertEqual(project.stargazers.all().count(), 1)
+        self.assertEqual(response.status_code, 302)
+
+
+
+
+

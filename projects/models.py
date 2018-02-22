@@ -16,6 +16,8 @@ class Project(models.Model):
     invited_collaborators = models.ManyToManyField(User, related_name='invited_collaborators')
     git_owner = models.CharField(max_length=255, null=True, blank=True)
     git_name = models.CharField(max_length=255, null=True, blank=True)
+    stargazers = models.ManyToManyField(User, related_name='stargazers')
+
 
     class Meta:
         unique_together = ('name', 'url')

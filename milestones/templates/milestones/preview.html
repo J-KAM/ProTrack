@@ -22,19 +22,19 @@
             <div id = "content" class = "tab-content">
 
                 <div class = "tab-pane active" id = "open">
-                    {% with open_milestones as milestones %}
+                    {% with milestones=open_milestones editable=True %}
                     {% include 'milestones/milestone_table.html' %}
                     {% endwith %}
                 </div>
 
                 <div class = "tab-pane" id="closed">
-                     {% with closed_milestones as milestones %}
+                     {% with milestones=closed_milestones editable=True %}
                     {% include 'milestones/milestone_table.html' %}
                     {% endwith %}
                 </div>
 
                 <div class = "tab-pane" id="all">
-                    {% with all_milestones as milestones %}
+                    {% with milestones=all_milestones editable=True %}
                     {% include 'milestones/milestone_table.html' %}
                     {% endwith %}
                 </div>

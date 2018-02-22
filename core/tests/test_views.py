@@ -169,16 +169,3 @@ class UserUpdateFormViewTest(TestCase):
         response = self.client.post(reverse('core:change_password'), user_data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'core/change_password.html')
-
-
-    def test_get_home_page(self):
-        # test when user is not logged in
-        response = self.client.get(reverse('core:home'))
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith('/?next=/home/'))
-
-        # test when user is logged in
-        login = self.client.login(username="pera", password="pera1234")
-        response = self.client.get(reverse('core:home'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'core/home_page.html')

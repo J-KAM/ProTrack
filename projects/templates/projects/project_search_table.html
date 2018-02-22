@@ -1,0 +1,22 @@
+<table class = "table">
+    <tbody>
+        {% for project in projects %}
+            {% if project.is_git %}
+            <tr class="github-project">
+            {% else %}
+            <tr>
+            {% endif %}
+                <td>
+                    <p class = "list-item-title"><a href="{% url 'projects:detail' project.id %}"> {{project.name}}</a></p>&nbsp;&nbsp;
+                    <p><span class = "glyphicon glyphicon-star"></span>{{project.num_of_stars}}</p>&nbsp;</br>
+                    {% if project.owner != None %}
+                    <p class = "list-item-subtitle"><img src="{{ project.owner.profile.profile_picture.url }}" class = "special-img img-circle">  Owner: {{project.owner}}</p></br>
+                    {% elif project.organization_owner != None %}
+                    <p class = "list-item-subtitle"><span class = "glyphicon glyphicon-user"></span> Owner: {{project.organization_owner}}</p></br>
+                    {% endif %}
+                    <p class = "list-item-description">{{project.description}}</p>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,23 @@
+<div class="panel panel-success panel-center panel-comment">
+    <div class="panel-heading">
+        <h4 align="center">Write your comment</h4>
+        <h6 align="center">Blank comments will not be saved</h6>
+    </div>
+    <div class = "panel-body-comment">
+        <form action = "{% url 'comments:comment' %}" method="post" class = "form-horizontal">
+            {% csrf_token %}
+            <input type = "hidden" name = "resource_type" value = "{{resource_type}}" />
+            <input type = "hidden" name = "resource_id" value = "{{resource_id}}" />
+            {% for field in form %}
+            <div class = "form-group">
+                <div class="comment-area"> {{ field }}</div>
+            </div>
+            {% endfor %}
+            <div class = "form-group">
+                <div class = "div-comment">
+                    <button type = "submit" id = "btn-comment" name="comment" class="btn btn-success btn-comment">Comment</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

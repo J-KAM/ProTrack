@@ -1,5 +1,10 @@
+import operator
+from functools import reduce
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import render, redirect
 
 
@@ -9,6 +14,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 
 from activities.models import save_activity
+from comments.forms import CommentForm
 from issues.forms import IssueForm
 from issues.models import Issue
 from milestones.models import Milestone
@@ -46,7 +52,15 @@ class IssueDetails(ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated():
-            return Issue.objects.get(id=self.kwargs['id'])
+            try:
+                return Issue.objects.get(id=self.kwargs['id'])
+            except Issue.DoesNotExist:
+                raise Http404('Issue does not exist.')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm
+        return context
 
 
 class IssueFormView(CreateView):
@@ -57,7 +71,10 @@ class IssueFormView(CreateView):
     @method_decorator(login_required)
     def get(self, request, **kwargs):
         form = self.form_class(None)
-        project = Project.objects.get(id=kwargs['project_id'])
+        try:
+            project = Project.objects.get(id=kwargs['project_id'])
+        except Project.DoesNotExist:
+            raise Http404("Issue's project does not exist");
         form.fields['milestone'].queryset = Milestone.objects.filter(project=project)
         if project.owner is not None:
             form.fields['assignees'].queryset = User.objects.filter(id=project.owner.id) | project.collaborators.all()
@@ -116,7 +133,10 @@ class IssueUpdate(UpdateView):
 
     @method_decorator(login_required)
     def get(self, request, **kwargs):
-        self.object = Issue.objects.get(id=self.kwargs['id'])
+        try:
+            self.object = Issue.objects.get(id=self.kwargs['id'])
+        except Issue.DoesNotExist:
+            raise Http404('Issue does not exist.')
         form = self.get_form(self.form_class)
         form.fields['milestone'].queryset = Milestone.objects.filter(project=self.object.project)
         if self.object.project.owner is not None:
@@ -188,7 +208,10 @@ class IssueUpdate(UpdateView):
 
 @login_required
 def close_issue(request, **kwargs):
-    issue = Issue.objects.get(id=kwargs['id'])
+    try:
+        issue = Issue.objects.get(id=kwargs['id'])
+    except Issue.DoesNotExist:
+        raise Http404('Issue does not exist')
     issue.status = 'Closed'
     issue.save()
 
@@ -199,7 +222,10 @@ def close_issue(request, **kwargs):
 
 @login_required
 def reopen_issue(request, **kwargs):
-    issue = Issue.objects.get(id=kwargs['id'])
+    try:
+        issue = Issue.objects.get(id=kwargs['id'])
+    except Issue.DoesNotExist:
+        raise Http404('Issue does not exist')
     issue.status = 'Open'
     issue.save()
 
@@ -210,8 +236,15 @@ def reopen_issue(request, **kwargs):
 
 @login_required
 def remove_assignment(request, **kwargs):
-    issue = Issue.objects.get(id=kwargs['iid'])
-    assignee = User.objects.get(id=kwargs['uid'])
+    try:
+        issue = Issue.objects.get(id=kwargs['iid'])
+    except Issue.DoesNotExist:
+        raise Http404('Issue does not exist')
+
+    try:
+        assignee = User.objects.get(id=kwargs['uid'])
+    except User.DoesNotExist:
+        raise Http404('Assignee does not exist.')
     issue.assignees.remove(assignee)
 
     save_activity(user=request.user, action='unassigned', resource=issue,
@@ -248,3 +281,12 @@ def calculate_milestone_progress(milestone):
         progress_sum += issue_progress
 
     return progress_sum / num_of_issues
+
+
+def search_issues(keywords_list):
+    result = Issue.objects.filter(
+        reduce(operator.and_, (Q(title__icontains=q) for q in keywords_list)) |
+        reduce(operator.and_, (Q(description__icontains=q) for q in keywords_list))
+    )
+
+    return result
