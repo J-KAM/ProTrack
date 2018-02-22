@@ -73,16 +73,8 @@ class OrganizationPreviewTest(TestCase):
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get('/organizations/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_view_url_accessible_by_name(self):
         response = self.client.get(reverse('organizations:preview'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_view_uses_correct_template(self):
-        response = self.client.get(reverse('organizations:preview'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'organizations/preview.html')
-
-
-
+        self.assertEqual(response.status_code, 302)
