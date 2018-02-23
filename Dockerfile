@@ -7,10 +7,9 @@ RUN mkdir /code
 ADD requirements.txt /code
 RUN pip install -r /code/requirements.txt
 
-
 ADD . /code
+VOLUME /code/protrack/media
 WORKDIR /code
-
 
 EXPOSE 8000
 CMD python manage.py runserver 0.0.0.0:8000

@@ -19,6 +19,8 @@ services:
       - HTTP_PROXY=proxy.uns.ac.rs:8080
       - HTTPS_PROXY=proxy.uns.ac.rs:8080
 #    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./ProTrack/media:/code/protrack/media
     ports:
       - "8000:8000"
     depends_on:
