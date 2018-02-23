@@ -36,7 +36,6 @@ branches:
   only:
   - master
   - development
-  - deployment
 before_deploy:
 - chmod +x ./deploy.sh
 deploy:
@@ -45,7 +44,7 @@ deploy:
   script: chmod 600 deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy_key
     $HOST@$HOST_IP 'cd tim3JA && ./deploy.sh'
   on:
-    branch: deployment
+    branch: development
 env:
   matrix:
   - DOCKER_COMPOSE_VERSION = 1.4.2
