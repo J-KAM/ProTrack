@@ -8,7 +8,7 @@ ADD requirements.txt /code
 RUN pip install -r /code/requirements.txt
 
 ADD . /code
-VOLUME /code/protrack/media
+VOLUME /code/media
 WORKDIR /code
 
 EXPOSE 8000
