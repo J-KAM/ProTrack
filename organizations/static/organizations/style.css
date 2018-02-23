@@ -1,0 +1,62 @@
+.panel-list {
+    width: 80%;
+    margin: 0 auto;
+    min-width: 550px;
+}
+
+p {
+    display: inline;
+}
+.list-item-title {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.list-item-subtitle {
+
+    font-size: 18px;
+}
+
+.list-item-date {
+    font-size: 15px;
+    color: #565555;
+}
+
+.list-item-description {
+    font-size: 15px;
+    font-style: italic;
+    color: #565555;
+}
+
+.badge-label {
+    display: block;
+    margin-bottom: 10px;
+    width: 20%;
+}
+
+.panel-before-heading{
+    margin-left: 2%;
+}
+
+.organization-link {
+    font-size: 30px;
+}
+
+.btn-my {
+    margin: 0;
+    width: 60px;
+    height: 30px;
+    padding-left: 1ex;
+    text-align: center;
+    line-height: 2ex;
+}
+
+
+.btn-my {
+    margin: 0;
+    width: 60px;
+    height: 30px;
+    padding-left: 1ex;
+    text-align: center;
+    line-height: 2ex;
+}

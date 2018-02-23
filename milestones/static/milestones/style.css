@@ -19,6 +19,14 @@
 p {
     display: inline;
 }
+
+.btn-table {
+    text-align: right;
+    float: right;
+    padding-bottom: 1%;
+    padding-top: 1%;
+}
+
 .list-item-title {
     font-weight: bold;
     font-size: 24px;
@@ -49,4 +57,18 @@ p {
 input, select {
     width: 110%;
     box-sizing: border-box;
+}
+
+.activityUserImage {
+    height: 20px;
+    width: 20px;
+}
+
+.btn-my {
+    margin: 0;
+    width: 60px;
+    height: 30px;
+    padding-left: 1ex;
+    text-align: center;
+    line-height: 2ex;
 }

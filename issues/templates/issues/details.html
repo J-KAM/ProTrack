@@ -1,0 +1,53 @@
+{% block body %}
+
+    <div class="panel panel-success milestone-panel">
+    <div class="panel-heading">
+        <h1 class="panel-title panel-h1">{{ issue.title }}</h1>
+    </div>
+    <div class="panel-body milestone-form">
+        <div>
+            <label  class = "control-label">Project: </label>
+            <p><a href = "{% url 'projects:detail' issue.project.id %}">{{issue.project.name}}</a></p>
+        </div>
+        <div>
+            <label  class = "control-label">Milestone: </label>
+            {% if issue.milestone is not None %}
+                <p> <a href = "{% url 'milestones:detail' issue.milestone.id %}">{{issue.milestone.name}}</a></p>
+            {% else  %}
+                 <p> -------------- </p>
+            {% endif %}
+        </div>
+        <div>
+            <label  class = "control-label">Type: </label>
+            <p> {{ issue.type }}</p>
+        </div>
+        <div>
+            <label  class = "control-label">Priority: </label>
+            <p> {{ issue.priority }}</p>
+        </div>
+        <div>
+            <label  class = "control-label">Status: </label>
+            <p> {{ issue.status }}</p>
+        </div>
+        <div>
+            <label  class = "control-label">Progress: </label>
+            <p> {{ issue.progress }}</p>
+        </div>
+        <div>
+            <label  class = "control-label">Total time spent: </label>
+            <p> {{ issue.total_time_spent }}</p>
+        </div>
+        <div>
+            <label  class = "control-label">Weight: </label>
+            <p> {{ issue.weight }}</p>
+        </div>
+        <div>
+            <label  class = "control-label">Description: </label>
+            <p> {{ issue.description }}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

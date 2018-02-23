@@ -4,6 +4,14 @@
     min-width: 550px;
 }
 
+.panel-body-details {
+    padding: 10px 0 10px 0;
+}
+
+.tab-pane-details {
+    margin-left: 10px;
+}
+
 p {
     display: inline;
 }
@@ -37,10 +45,72 @@ input[type='text'], select {
     color: #565555;
 }
 
-.panel-before-heading{
-    margin-left: 2%;
+.panel-before-heading-git {
+    background: #DFF0D8;
+    border: 1px solid #DFF0D8;
+    border-radius: 5px;
 }
 
 .project-link {
     font-size: 30px;
 }
+
+.btn-table {
+    text-align: right;
+    float: right;
+    padding-bottom: 1%;
+    padding-top: 1%;
+}
+
+.btn-invite {
+    text-align: right;
+    float: right;
+    padding-bottom: 1%;
+    padding-top: 1%;
+    padding-right: 1%;
+}
+
+.github-project {
+    background: #DFF0D8;
+}
+
+.commit-td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50px;
+}
+
+.commit-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#selected_branch {
+    width: 35%;
+    min-width: 200px;
+}
+
+.special-img {
+    position: relative;
+    top: -5px;
+    float: left;
+    left: -5px;
+    height: 30px;
+    width: 30px;
+}
+
+.small-img {
+    height: 20px;
+    width: 20px;
+}
+
+.btn-my {
+    margin: 0;
+    width: 60px;
+    height: 30px;
+    padding-left: 1ex;
+    text-align: center;
+    line-height: 2ex;
+}
+

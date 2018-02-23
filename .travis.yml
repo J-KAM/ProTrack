@@ -1,40 +1,55 @@
 sudo: required
 langauge: python
 python:
-  - '3.5'
-
+- '3.5'
 services:
-  - docker
-
+- docker
+- postgresql
 install:
-  - sudo pip install -r requirements.txt
-
+- sudo pip install -r requirements.txt
 before_script:
-  - docker-compose up --build -d
-
+- docker-compose up --build -d
+- psql -c 'CREATE DATABASE travis_db;' -U postgres
+- python -V
 script:
-  - python3 manage.py test
-
+- python manage.py makemigrations
+- python manage.py migrate
+- python manage.py test
 after_script:
-  - docker-compose down
-
-env:
-  - DOCKER_COMPOSE_VERSION = 1.4.2
-
+- psql -c 'DROP DATABASE travis_db;' -U postgres
 before_install:
-  - docker --version
-  - docker build -t $DOCKER_USERNAME/protrack:latest .
-  - docker images
-  - curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > ./docker-compose
-  - sudo mv ./docker-compose /usr/bin/docker-compose
-  - sudo chmod +x /usr/bin/docker-compose
-
+- docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+- docker --version
+- docker build -t $DOCKER_USERNAME/protrack:latest .
+- docker images
+- openssl aes-256-cbc -K $encrypted_83630750896a_key -iv $encrypted_83630750896a_iv
+  -in deploy_key.enc -out ./deploy_key -d
 after_success:
-  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-  - docker push $DOCKER_USERNAME/protrack:latest
-
+- docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+- docker push $DOCKER_USERNAME/protrack:latest
+- export SSHPASS=$DEPLOY_PASS
+addons:
+  apt:
+    packages:
+    - sshpass
 branches:
   only:
   - master
-  - development
-  - Project_init
+before_deploy:
+- chmod +x ./deploy.sh
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: chmod 600 deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy_key
+    $HOST@$HOST_IP 'cd tim3JA && ./deploy.sh'
+  on:
+    branch: master
+env:
+  matrix:
+  - DOCKER_COMPOSE_VERSION = 1.4.2
+  global:
+  - secure: CqERG+zlM5CTwQJfwngnsfWOAzg1+9FTaAVbW+MM5iFfRSTvilpMAI8Wu1He3usQAvAmUnPxvAuYctQlwhe2fB4Fu/PO3NSe/Ud3nS2t05+QWNOIprRBVmKWCC5K7oTUwUFa0gM0CmI6yefZhNKu9hYpSqlyIfTTP18e3xJ7iJCN/bxIMdxAmBPOL5/6WqiSrc3lwoDCc9ku1xEXq56vVOboQrJILbZWkyvExyWgl311R3gCAt0RtjqMIKrLRtmQK+TYTnMACIFrdZ/IQJbE1lhGAEVTBCIGSBdG1webPJHwTuJITdU+Jh/HczLPzeOrNmHLcIiKJhBoNaNwZYvI8SMJabQtA3xHefyC9pbwoPmYB0bHcCqIKw0dCIYm1r/fyFprtTxD2tAnngVeA8AW1Su+hvLHuKNhmKWisCbJjfmgH2j6nSD2aZM2y6/kQ6HMcwLiJVUtEjPxe690PjtXz/V29YNdUamYlFWxJ2YZ5kJ5NbepOz2797xm5CIAMdF4PPRFRD3Ic/CG40r2Te93m+4q+ZS0+Ww9bM9QkCoSEoghf155srV+Q0VLA4lRbGPzo81/Ydnx5EkMpw9VuzY1mLz6mUJngJJ8o94jdPDmOCp2snDkO6eUKfNU9cfj1yTpIH36R7PUC1kslJ9IxXZI5SI6meSG2gVdXewi9pS/eDw=
+  - secure: pdAGJmqj5Y/S4+Kspm6+bWAMHXkDlE3gp9jjIcD0DtHIWCnUG446P50kJhWKj72vRHZs3M0jkdRhdw9JTXYM0TQpzgRSPIKHAbQK4+WMEwLAF+cnFv5A6+EUQzr52G8+Qr86U/qjHHZfVvBn/GtMI/zEmVOugBfRZvqQkVI3q0capgCfBgWZUEgWGx12nPvf08jrbEzJVLaUJAIkXem8OC44ZsnZ5vXQoM/LWahrVfzQ5CwIXPHsJpCzI2QOANli8DJKwCo8/UEubrcB9x3pUodS5B/x/4cyOeLqGWLFa9fvkwvvhbTN/xF3NbJxKtP16f+GjnLp0R66tHQvWxdH/m9Me4C4pG8Z0O1ZhyC437r7r/4yZeFzSxYwPco+HDGln6waLM7UiU70xf7GbJVy2XYUnsDxQLiRlT89FEbaP6fwD3bU1AkfM+Tr7xPGP47vMW53UX2uWNA+Fs3mHkw4ujjt2g7/QgOVCdm94mAEj2c9pfR74NMHQ3RQPCsB8ZjDyZdTdLHbkpoDzTVew6lS2k4vDqpD4uINbTPPx27+yRkLIY9gy51ys/6PZjKJi9Vu0+e6wKP4bZeM4/zhgqT8iVrjnjIRqF+R+b/VlGWPy9K/iEevEbHOIP2OXsRUY/blspliUo6XrG57jLbLSFcVnN17URv9Zmbbr21bVMcWY98=
+  - secure: au7bf1uQUdz81YoZRx6cKOee/lWzTZqkm27guBlWwr3S39xZC1vWvXJxrwv0Dm1LV0Zd+YBu3BsVZ8vpw0Jfg0+WRGCGAbFTi/4NxuCz9ekgDSPdpcSGgi7g4E8OPtr0G0d9s1gbE8LRNeC7nOirM3JGhDRhVHDv35hexqAkr31nYxFIu0lKlYUSd4c/9CDtIMpT4vC/+PBnDoFPaNTy7qKts27/DD3sBySz4xDe5djPgn2dWELBj7AA8reWvoZTNiPsyr9pSrPXVMc6H6k6eJB35vA0zEiajgENa8KBbMOxtNII13kt+HA0Q3DwmrrD8hQBH162CrrDNO3+BOQVuTNucT3gk4ujNorBQNgn0XkeLq/fV8kJUT3ZHYgCOoIca2h49v8wW6OtYhhQYMXscRHbL/zbSxX8Svh7ovWrUYG4onwNdLqAsmxAZq44oYtXP09jEtoFffXMZ2EZ0wkMRdiJbXwSAAsXnnGjK7CL5NLPjiuOtyIrOWgEbG6C7i6iGJ54ZEflly2UtqJ5hJF8Zder/EmgZ/qyazFSkZ/CQeVHoMfnPdnUaOVlZP80u/iNQj3gGQp+QNqobxpil8k/G9onskwJyIJ7+Bw96oMNOMgRC7pWgCdi0WInlmpRr2LZ+Xc23fqe5MGbhe6R4/vs4ktbKRkCDIXWpxBGefs1ZR8=
+  - secure: LKn+7LgK1c/7W1elErUmHvoKAaSs0iDT51ro+a4Z/zrb2iYDoFa8XW+lnD3zvRVACxYhMlfKBBGusJQ9E0rZK25MRGQ55NKNPCFEIChVI/JNA9DltsXlocH7nvlvA0T2jYwVQxqb+BwimM9BYyX+znAV4Te3NsVxkR/02LkG0/LGPXqRw2bHpYV7f55B1D/aS8eldV173gXVei2vQ5b6BdOjDHrCvcP984vpKJTZSZz0Osh1fWaWbhdnzrXJuMQEFN2GA7vxztMucQve6wj6WMqbqwwpBLRStPgSnrYzfuYxY/IYg+/RwqFJAgm2mcx1uX1ngBZ7fFQQvxKpd9pFW2+QUN26hGhPobDg5i03Kd39FPICry6C3qE1B5ZGsxc1jsdtHTxgsB5xIH+BODvpeLfPdLVcmwwHPZjB7n8hq+n5KXosR/Foi0qwn0Am+6TTwQW9ZzYsKkS6dAx2/1tbEx907TsuC0X2I8X7GbABvOobBKvousZ9fFMhmj8ALe+FAWYwMED73Q860Otmq+FSoIyVY3xVFWIzAPPt+N82/0+Xm/8QYx2cUGZ5R47VwYBiwuCwHq62HoGGgakqsdblH4g+oz/rSiq1GVzCjDvbt2WU9za3tupIv2+LhG5dZPg+qQ+tpEqECEZINYcc2pt459OdsNnyA4W4KC3coXrw5YM=
+  - secure: jlwqoEwVvIiBqx5WG++aXuQphn8aFTEVhcBLNZBr79gO2yGY5XHmkOu0uzFpXyNCT5GH492II0V2RRwTB3j2raPj2vEoQIrM1S3wcF3GBDBVGRdOMjquSvsSMzmUEe/+QHyuGwuzlapeDibT/ooDktupJHFPVEOqg0uozghWGcgtXRN2HAGxD1cy+t1LcSvqbjFt7asi0s4x3G2siF0s4hvPJ9AzJK+GSGFND9JN+S4GCeCooykpPZPwitf92HOscpZZjGRqrhJB0BFsLw2v3fNmSG0uNdl5zXph3xOEe2OZL0NYBx8DcI25/XiMtAhhENdmiQsOwpu3EegWTAo+IPdoDwhhbJcG+MyAMWIGynquFiIFVt8YMDUCIhTHbLpf79/ZeJ99Kpe1Mrd/dqYxjIOtr3vTBW132U8RZ0/ycB8hphWpcUD/cYpPGAMw0ruRHE4CEBIlZPzxIsQaC8UGPRojA5lKZH34XV9EN8dW+0w4OwtpEylyEfifNGbDpNy9G3eWx02qpoeRHcNSotdW9RMWLo2fwsK9xcfqyq4jCFzFkfNDeWqEfGiG1e8fV/DKKv0VMGGGUDqMb8XNBvyC9RTX9aDVA+md+a9gm/GVz0XOEl9kE7Ru5gzWAvcVKwvhli6Vki1Bqq3UYyz3kH8RVoVUVkB9naD8NCXl2FVu+oA=

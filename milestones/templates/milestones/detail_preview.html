@@ -4,6 +4,11 @@
 {% block extra_css %}
     {% load staticfiles %}
     <link href="{% static 'milestones/style.css' %}" rel='stylesheet' type='text/css'>
+    <link href="{% static 'comments/style.css' %}" rel='stylesheet' type='text/css'>
+    <!--comment-box-->
+    <script src = "{% static 'comments/comment_editor.js' %}"></script>
+    <script src="{% static 'comments/js/tinymce/tinymce.min.js'%}"></script>
+    <script type='text/javascript' src="{% static 'comments/js/tinymce/custom.js'%}"></script>
 {% endblock %}
 
 
@@ -14,10 +19,6 @@
             <h2>{{milestone.name}}</h2>
             <p class = "list-item-date"><span class="glyphicon glyphicon-calendar"></span> Due date: {{ milestone.due_date|date:"SHORT_DATE_FORMAT" }}</p></br>
             <p class = "list-item-description">{{milestone.description}}</p>
-            </div>
-        <div align="right">
-            <a href = "{% url 'milestones:update' milestone.id %}" class="btn btn-success" role="button">Edit milestone</a>
-            <a href = "{% url 'milestones:close' milestone.id %}" class="btn btn-info" role="button">Close milestone</a>
         </div>
     </div>
 
@@ -30,11 +31,23 @@
 
     <div class="panel panel-success panel-list">
         <div class="panel-heading">
+            <div class="right">
+                {% if editable %}
+                   {% if milestone.status != 'CLOSED' %}
+                        <a href = "{% url 'milestones:update' milestone.id %}" class="btn btn-success"><span class = "glyphicon glyphicon-edit"></span>Edit</a>&nbsp;
+                        <a href = "{% url 'milestones:close' milestone.id %}" class="btn btn-info">Close</a>
+                   {% else %}
+                        <a href = "{% url 'milestones:reopen' milestone.id %}" class="btn btn-info">Reopen</a>
+                   {% endif %}
+                {% endif %}
+            </div>
             <ul class = "nav nav-pills" id = "issueTab">
                 <li class = "active"><a data-toggle ="tab" href = "#open">Open <span class = "badge">{{open_issues.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#inProgress">In progress <span class = "badge">{{in_progress_issues.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#done">Done <span class = "badge">{{done_issues.count}}</span></a></li>
                 <li><a data-toggle ="tab" href = "#closed">Closed <span class = "badge">{{closed_issues.count}}</span></a></li>
+                <li class="pull-right"><a data-toggle ="tab" href = "#activities"><span class="glyphicon glyphicon-list"></span> Activities</a></li>
+                <li class="pull-right"><a data-toggle ="tab" href = "#comments"><span class="glyphicon glyphicon-comment"></span> Comments</a></li>
             </ul>
         </div>
         <div class="panel-body">
@@ -59,8 +72,22 @@
                     {% include 'issues/issues_table.html' %}
                     {% endwith %}
                 </div>
+                <div class = "tab-pane" id = "comments">
+                    {% with form=comment_form comments=milestone.comments.all %}
+                    {% include 'comments/comments_table.html' %}
+                    {% endwith %}
+                </div>
+                 <div class = "tab-pane" id="activities">
+                     {% with activities=milestone.activities.all %}
+                    {% include 'milestones/milestone_activities.html' %}
+                    {% endwith %}
+                </div>
             </div>
         </div>
     </div>
+
+    {% with form=comment_form resource_type='milestone' resource_id=milestone.id  %}
+    {% include 'comments/comment_form.html' %}
+    {% endwith %}
 
 {% endblock %}

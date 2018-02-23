@@ -63,6 +63,12 @@ body {
     /*border-color: #428bca;*/
 }
 
+.panel-center {
+    width: 80%;
+    margin: 0 auto;
+    min-width: 550px;
+}
+
 .milestone-panel {
     width: 50%;
     margin: 0 auto;
@@ -78,3 +84,38 @@ body {
     width: 100%;
 }
 
+.panel-comment {
+    margin-top: 5%;
+}
+
+.panel-body-comment {
+    padding: 0 15px 0 15px;
+}
+
+.btn-comment {
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+}
+
+.div-comment {
+    margin-top: -15px;
+}
+
+
+.search-item-title {
+    font-weight: bold;
+    font-size: 24px;
+    display: inline;
+}
+
+.search-item-subtitle {
+    font-size: 16px;
+    display: inline;
+}
+
+.search-item-description {
+    font-size: 15px;
+    font-style: italic;
+    color: #565555;
+}

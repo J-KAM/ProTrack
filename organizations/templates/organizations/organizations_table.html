@@ -1,0 +1,19 @@
+<table class = "table">
+    <tbody>
+    {% for organization in organizations %}
+    <tr>
+        <td class = "col-md-5">
+            <p class="list-item-title">{{ organization.name }}</p></br>
+            <p class = "list-item-subtitle"><span class = "glyphicon glyphicon-user"></span> Owner: {{organization.owner}}</p></br>
+            <p class="list-item-description">{{ organization.description }}</p>
+        </td>
+
+        <td class = "col-md-3" align="center">
+                <a href="{% url 'organizations:details' organization.id %}" role="button" class="btn btn-info btn-my">Details</a></br>
+                <a href="{% url 'organizations:update' organization.id %}" role="button" class="btn btn-info btn-my">Edit</a></br>
+                <a href="{% url 'organizations:delete' organization.id %}" role="button" class="btn btn-info btn-my">Delete</a></br>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
