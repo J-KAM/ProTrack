@@ -20,7 +20,7 @@
                                     "<p class = 'list-item-subtitle'><span class = 'glyphicon glyphicon-user'></span> Author: " + commit_data.commit.author.name + "</p></br>" +
                                 "</td>" +
                                 "<td class = 'col-md-2'>" +
-                                    "<a href = \"" + url + "\">Details</a></td>" +
+                                    "<a href = \"" + url + "\" class=\"btn btn-info btn-my\" role=\"button\">Details</a></td>" +
                                 "</tr>"
                             )
                         });
@@ -57,7 +57,7 @@
                     </p></br>
                 </td>
                 <td class = "col-md-2">
-                    <a href = "{% url 'projects:commit' pid=project.id cid=commit_data.sha %}">Details</a>
+                    <a href = "{% url 'projects:commit' pid=project.id cid=commit_data.sha %}" class="btn btn-info btn-my">Details</a>
                 </td>
             </tr>
         {% endfor %}

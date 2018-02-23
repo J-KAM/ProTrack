@@ -21,9 +21,9 @@
                     <p class = "list-item-description">{{project.description}}</p>
                 </td>
                 <td align = "center">
-                    <a href="{% url 'projects:detail' project.id %}" role="button" class="btn btn-primary btn-my">Details</a></br>
-                    <a href="{% url 'projects:update' project.id %}" role="button" class="btn btn-success btn-my">Edit</a></br>
-                    <a href="{% url 'projects:delete' project.id %}" role="button" class="btn btn-danger btn-my">Delete</a></br>
+                    <a href="{% url 'projects:detail' project.id %}" role="button" class="btn btn-info btn-my">Details</a></br>
+                    <a href="{% url 'projects:update' project.id %}" role="button" class="btn btn-info btn-my">Edit</a></br>
+                    <a href="{% url 'projects:delete' project.id %}" role="button" class="btn btn-info btn-my">Delete</a></br>
                 </td>
             </tr>
         {% endfor %}

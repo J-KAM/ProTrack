@@ -37,15 +37,15 @@
             <p><span class="glyphicon glyphicon-time"></span> Total time: {{milestone.total_time_spent}}</p></br>
         </td>
         <td class = "col-md-3" align="center">
-            <a href="{% url 'milestones:detail' milestone.id %}" role="button" class="btn btn-primary btn-my">Details</a></br>
+            <a href="{% url 'milestones:detail' milestone.id %}" role="button" class="btn btn-info btn-my">Details</a></br>
             {% if editable %}
                 {% if milestone.status == 'OPEN' %}
-                    <a href="{% url 'milestones:update' milestone.id %}" role="button" class="btn btn-success btn-my">Edit</a></br>
+                    <a href="{% url 'milestones:update' milestone.id %}" role="button" class="btn btn-info btn-my">Edit</a></br>
                     <a href="{% url 'milestones:close' milestone.id %}" role="button" class="btn btn-info btn-my">Close</a></br>
                 {% else %}
                     <a href="{% url 'milestones:reopen' milestone.id %}" role="button" class="btn btn-info btn-my">Reopen</a></br>
                 {% endif %}
-                <a href="{% url 'milestones:delete' milestone.id %}" role="button" class="btn btn-danger btn-my">Delete</a></br>
+                <a href="{% url 'milestones:delete' milestone.id %}" role="button" class="btn btn-info btn-my">Delete</a></br>
             {% endif %}
         </td>
     </tr>

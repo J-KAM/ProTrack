@@ -79,6 +79,12 @@ class ProjectCreate(CreateView):
         if form.is_valid():
             project = form.save(commit=False)
 
+            if form.cleaned_data['project_type'] == 'g':
+                repo_url = 'https://api.github.com/repos/' + form.cleaned_data['git_owner'] + '/' + form.cleaned_data['git_name']
+                repo = requests.get(repo_url).json()
+                if repo.get('message') == 'Not Found':
+                    return render(request, 'projects/project_form.html', {'form': form, 'action': 'New', 'error_message': 'GitHub repository with entered git credentials does not exist.'})
+
             if form.cleaned_data['owner_type'] == 'o':
                 project.organization_owner = form.cleaned_data['organization_owner']
                 project.owner = None
