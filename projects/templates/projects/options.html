@@ -1,0 +1,20 @@
+<div>
+    <table class = "table">
+        <tbody>
+            <tr>
+                <td>
+                    <p class = "list-item-title">Edit project</p></br>
+                    <p class = "list-item-description">You can change project name and description</p>
+                </td>
+                <td><a href = "{% url 'projects:update' project.id %}" class="btn btn-success" role="button">Edit</a></td>
+            </tr>
+            <tr>
+                <td>
+                    <p class =" list-item-title">Delete project</p></br>
+                    <p class = "list-item-description">Deleting project causes deleting all files, milestones and issues associated to it.</p>
+                </td>
+                <td><a href = "{% url 'projects:delete' project.id %}" class="btn btn-danger" role="button">Delete</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -25,18 +25,27 @@ SECRET_KEY = 'v!_oz2+bo$f^%edb^#arfr3nb6o2vjx#t@o0+ur!hlbm&%oxa%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "147.91.177.194", "127.0.0.1"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'core.apps.CoreConfig',
+    'projects.apps.ProjectsConfig',
+    'issues.apps.IssuesConfig',
+    'milestones.apps.MilestonesConfig',
+    'organizations.apps.OrganizationsConfig',
+    'activities.apps.ActivitiesConfig',
+    'comments.apps.CommentsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'tinymce'
 ]
 
 MIDDLEWARE = [
@@ -73,13 +82,33 @@ WSGI_APPLICATION = 'ProTrack.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+#
+#
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'travis_db',
+            'USER': 'postgres',
+            'PASSWORD': '',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'pro_track_db',
+            'USER': 'root',
+            'PASSWORD': 'root',
+            'HOST': 'db',
+            'PORT': 8001,
+            # 'HOST': 'localhost',
+            # 'PORT': 5432,
+        }
+    }
 
 
 # Password validation
@@ -100,6 +129,33 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#django-richtextfield configuration
+# 'js': ['//tinymce.cachefly.net/4.2/tinymce.min.js'],
+    # 'init_template': 'djrichtextfield/init/tinymce.js',
+    # 'settings': {
+    #     'menubar': False,
+    #     'statusbar': False,
+    #     'plugins': 'link image code emoticons textcolor colorpicker lists',
+    #     'toolbar': 'undo redo | styleselect | fontsizeselect | forecolor backcolor | emoticons |bold italic underline | numlist bullist | code link | removeformat',
+    #     'width': '100%',
+    #     'height': '25%'
+    # }
+#
+# DJRICHTEXTFIELD_CONFIG = {
+#     'js': ['//cdn.ckeditor.com/4.4.4/standard/ckeditor.js'],
+#     'init_template': 'djrichtextfield/init/ckeditor.js',
+#     'settings': {
+#         'resize_enabled': False,
+#         'label': False,
+#         'removePlugins': 'elementspath',
+#         'toolbar': [
+#             {'items': ['Undo', 'Redo', '-', 'Format', '-', 'Bold', 'Italic', '-', 'NumberedList', 'BulletedList']}
+#         ],
+#         'height': '25%',
+#         'width': '100%'
+#
+#     }
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -118,4 +174,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+#email service
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'protrack.service@gmail.com'
+EMAIL_HOST_PASSWORD = 'protrack'
+EMAIL_PORT = 587
+
+#login redirect
+LOGIN_URL = 'core:sign_in'
+LOGIN_REDIRECT_URL = 'core:home'

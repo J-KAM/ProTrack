@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Projects{% endblock %}
+{% block extra_css %}
+    {% load staticfiles %}
+    <link href="{% static 'projects/style.css' %}" rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block body %}
+
+    <div class = "panel panel-success panel-list">
+        {% if project.is_git %}
+        <div class = "panel-before-heading-git">
+            {% if project.owner != None %}
+                <a href = "{% url 'projects:preview' %}" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+            {% else %}
+                <a href = "{% url 'organizations:details' project.organization_owner.id %}" class = "project-link">{{project.organization_owner.name}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+            {% endif %}
+            </br><p class = "list-item-date"><span class = "glyphicon glyphicon-user"></span> GitHub owner: {{project.git_owner}}</p></br>
+            <p class = "list-item-date"><span class = "glyphicon glyphicon-briefcase"></span> GitHub name: {{project.git_name}}</p></br>
+        </div>
+        {% else %}
+        <div>
+            {% if project.owner != None %}
+                <a href = "{% url 'projects:preview' %}" class = "project-link">{{project.owner.username}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+            {% else %}
+                <a href = "{% url 'organizations:details' project.organization_owner.id %}" class = "project-link">{{project.organization_owner.name}}</a> / <a href = "{% url 'projects:detail' project.id %}" class = "project-link">{{project.name}}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class = "panel-heading">
+            <ul class = "nav nav-pills" id = "projectTab">
+                <li class = "active"><a data-toggle = "tab" href = "#commits"><span class="glyphicon glyphicon-edit"></span> Commits</a></li>
+                <li><a data-toggle = "tab" href = "#issues"><span class="glyphicon glyphicon-tasks"></span> Issues</a></li>
+                <li><a data-toggle = "tab" href = "#milestones"><span class="glyphicon glyphicon-flag"></span> Milestones</a></li>
+                {% if editable %}
+                    <li><a data-toggle = "tab" href = "#settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+                {% endif %}
+                <li class="pull-right"><a data-toggle ="tab" href = "#stargazers" class="btn btn-default">{{project.stargazers.all.count}}</a></li>
+                    {% if user not in project.stargazers.all %}
+                        <li class="pull-right"><a href = "{% url 'projects:star' pid=project.id uid=user.id %}" class="btn btn-default"><span class = "glyphicon glyphicon-star-empty"></span> Star </a></li>
+                    {% else %}
+                        <li class="pull-right"><a href = "{% url 'projects:unstar' pid=project.id uid=user.id %}" class="btn btn-default"><span class = "glyphicon glyphicon-star"></span> Unstar </a></li>
+                    {% endif %}
+            </ul>
+        </div>
+        <div class = "panel-body-details">
+            <div id = "content" class = "tab-content">
+
+                <div class = "tab-pane active" id = "commits">
+                    {% if project.is_git %}
+                        {% with project=project default_branch=default_branch branches=branches commits_data=commits_data %}
+                        {% include 'projects/code_panel.html' %}
+                        {% endwith %}
+                    {% else %}
+                        <p>This is a ProTrack project. You can only see commits for GitHub projects.</p>
+                    {% endif %}
+                </div>
+
+                <div class = "tab-pane" id = "issues">
+                    {% with project=project open_issues=open_issues in_progress_issues=in_progress_issues done_issues=done_issues closed_issues=closed_issues%}
+                    {% include 'projects/issue_panel.html' %}
+                    {% endwith %}
+                </div>
+
+                <div class = "tab-pane" id = "milestones">
+                    {% with all_milestones=project_milestones open_milestones=open_milestones closed_milestones=closed_milestones %}
+                    {% include 'projects/milestone_panel.html' %}
+                    {% endwith %}
+                </div>
+
+                <div class = "tab-pane tab-pane-details" id = "settings">
+                    <ul class = "nav nav-tabs" id = "settingsTab">
+                        <li class = "active"><a data-toggle = "tab" href = "#options"> Options</a></li>
+                        <li><a data-toggle = "tab" href = "#collaborators"> Collaborators </a></li>
+                    </ul>
+                    <div id = "settings-content" class = "tab-content">
+                        <div class = "tab-pane active" id = "options">
+                           {% include 'projects/options.html' %}
+                        </div>
+                        <div class = "tab-pane" id = "collaborators">
+                            {% with project=project %}
+                            {% include 'projects/collaborators_table.html' %}
+                            {% endwith %}
+                        </div>
+
+                    </div>
+                </div>
+                <div class = "tab-pane" id = "stargazers">
+                    {% with project=project %}
+                    {% include 'projects/stargazers.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

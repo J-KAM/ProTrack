@@ -1,0 +1,21 @@
+<div class="right">
+    <a href="{% url 'organizations:add_members' organization.id %}" class="btn btn-success"><span class = "glyphicon glyphicon-plus"></span>Invite member(s)</a></br>
+</div>
+<table class = "table">
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td class = "col-md-5">
+            <img src="{{ user.profile.profile_picture.url }}" class="special-img img-circle"> &nbsp;&nbsp;
+            <p class="list-item-title">{{ user.username }}</p>&nbsp;</br>
+        </td>
+        <td class = "col-md-3" align="center">
+            {% if user.id != organization.owner.id and editable %}
+                <a href = "{% url 'organizations:remove_from_org' id_org=organization.id id_mem=user.id %}" class="btn btn-danger" role = "danger">Remove from organization</a></br>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+

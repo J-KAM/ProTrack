@@ -1,0 +1,13 @@
+<table class = "table">
+    <tbody>
+        {% for organization in organizations %}
+            <tr>
+                <td>
+                    <p class = "search-item-title"><a href="{% url 'organizations:details' organization.id %}"> {{organization.name}}</a></p></br>
+                    <p class = "search-item-subtitle"><span class = "glyphicon glyphicon-user"></span> Owner: {{organization.owner}}</p></br>
+                    <p class="search-item-description">{{ organization.description }}</p>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

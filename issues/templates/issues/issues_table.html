@@ -1,0 +1,53 @@
+{% if project %}
+<div class = "btn-table right">
+    <a href = "{% url 'issues:create' project.id %}" class="btn btn-success right" role="button"><span class = "glyphicon glyphicon-plus"></span>New issue</a>
+</div>
+{% endif %}
+<table class = "table">
+    <tbody>
+    {% for issue in issues %}
+    <tr>
+        <td class = "col-md-5">
+            <p class="list-item-title">{{ issue.title }}</p>&nbsp;<p class="list-item-subtitle"> ( <span class="glyphicon glyphicon-briefcase"></span> <a href = "{% url 'projects:detail' issue.project.id %}">{{issue.project.name}} )</a></p></br>
+            {% if issue.status == 'Open' %}
+                <span class="label label-default badge-label">OPEN</span>
+                {% elif issue.status == 'In progress' %}
+                <span class="label label-info badge-label">IN PROGRESS</span>
+                {% elif issue.status == 'Done' %}
+                    <span class="label label-success badge-label">DONE</span>
+                {%  else %}
+                    <span class="label label-danger badge-label">CLOSED</span>
+            {% endif %}
+
+            {% if issue.milestone %}
+                <p><span class="glyphicon glyphicon-flag"></span> <b>Milestone:</b> {{issue.milestone.name}}</p>&nbsp;<br>&nbsp;
+            {% endif %}
+            <p class="list-item-description">{{ issue.description }}</p>
+        </td>
+        <td class = "col-md-4">
+            <div class = "progress">
+                <div class = "progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{issue.progress_in_numbers}}"
+                     aria-valuemin="0" aria-valuemax="100" style="width:{{issue.progress}}">
+                    {{issue.progress}} complete
+                </div>
+            </div>
+            <p><span class="glyphicon glyphicon-time"></span> <b>Total time:</b> {{issue.total_time_spent}}</p>&nbsp;&nbsp;&nbsp;
+            <p><span class="glyphicon glyphicon-pushpin"></span> <b>Priority:</b> {{issue.priority}}</p></br>
+            <p><span class="glyphicon glyphicon-leaf"></span> <b>Type:</b> {{issue.type}}</p>&nbsp;&nbsp;&nbsp;
+            <p><span class="glyphicon glyphicon-fire"></span> <b>Weight:</b> {{issue.weight}}</p></br>
+
+        </td>
+        <td class = "col-md-3" align="center">
+            <a href="{% url 'issues:details' issue.id %}" role="button" class="btn btn-info btn-my">Details</a></br>
+
+            {% if issue.status != 'Closed' %}
+                <a href="{% url 'issues:update' issue.id %}" role="button" class="btn btn-info btn-my">Edit</a></br>
+                <a href="{% url 'issues:close' issue.id %}" role="button" class="btn btn-info btn-my">Close</a></br>
+            {% else %}
+            <a href="{% url 'issues:reopen' issue.id %}" role="button" class="btn btn-info btn-my">Reopen</a></br>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
